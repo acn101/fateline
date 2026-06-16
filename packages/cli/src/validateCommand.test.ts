@@ -6,8 +6,10 @@ import { dirname, join } from 'node:path';
 import { validateModuleAt } from './validateCommand.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
-// packages/cli/src -> repo root -> modules/core
-const coreDir = join(here, '..', '..', '..', 'modules', 'core');
+// packages/cli/src -> repo root -> modules/*
+const repoRoot = join(here, '..', '..', '..');
+const coreDir = join(repoRoot, 'modules', 'core');
+const sampleDir = join(repoRoot, 'modules', 'sample-expansion');
 
 describe('validateModuleAt', () => {
   it('passes for the real core module (schema + smoke test)', async () => {
@@ -16,6 +18,29 @@ describe('validateModuleAt', () => {
     expect(report.lines.some((l) => l.includes('Schema valid'))).toBe(true);
     expect(report.lines.some((l) => l.includes('Smoke test passed'))).toBe(true);
     expect(report.smoke?.problems).toEqual([]);
+  });
+
+  it('validates an expansion composed with the core module via --with', async () => {
+    // Standalone the expansion never terminates (no vitality stat); with core
+    // it does, so the smoke test passes.
+    const standalone = await validateModuleAt(sampleDir, { lives: 3, maxYears: 20 });
+    expect(standalone.ok).toBe(false);
+
+    const composed = await validateModuleAt(sampleDir, {
+      lives: 10,
+      maxYears: 200,
+      withModules: [coreDir],
+    });
+    expect(composed.ok).toBe(true);
+  });
+
+  it('fails clearly when a --with module cannot load', async () => {
+    const report = await validateModuleAt(coreDir, {
+      lives: 2,
+      withModules: [join(tmpdir(), 'no-such-base-module')],
+    });
+    expect(report.ok).toBe(false);
+    expect(report.lines.some((l) => l.includes('--with'))).toBe(true);
   });
 
   it('reports schema failure for a malformed module', async () => {

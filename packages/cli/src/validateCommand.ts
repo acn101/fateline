@@ -10,6 +10,12 @@ import { compileRegistry, smokeTest, type SmokeReport } from '@fateline/engine';
 export interface ValidateOptions {
   lives?: number;
   maxYears?: number;
+  /**
+   * Additional module directories loaded *before* the target into the smoke
+   * registry. Expansions depend on the base game for a vitality stat etc., so
+   * pass `--with <core-dir>` to test them in a realistic composition.
+   */
+  withModules?: string[];
 }
 
 export interface ValidateReport {
@@ -42,7 +48,22 @@ export async function validateModuleAt(
     `  ${loaded.value.content.stats.length} stat(s), ${loaded.value.content.events.length} event(s)`,
   );
 
-  const registry = compileRegistry([loaded.value]);
+  // Load any base modules (e.g. core) first, then the target, so expansions
+  // are smoke-tested in a realistic composition (README §5.5 load order).
+  const base = [];
+  for (const baseDir of options.withModules ?? []) {
+    const baseLoaded = await loadModuleFromDir(baseDir).catch((err: unknown) => ({
+      ok: false as const,
+      errors: [{ path: '', message: errMessage(err) }],
+    }));
+    if (!baseLoaded.ok) {
+      lines.push(`✗ Could not load --with module at ${baseDir}.`);
+      return { ok: false, lines };
+    }
+    base.push(baseLoaded.value);
+  }
+
+  const registry = compileRegistry([...base, loaded.value]);
   const smoke = smokeTest(registry, options);
 
   if (smoke.ok) {

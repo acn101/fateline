@@ -1,0 +1,45 @@
+# Two events that demonstrate reading and modifying a custom stat, setting a
+# flag, and weighted random outcomes.
+
+- id: evt.help-stranger
+  category: random
+  weight: 8
+  cooldownYears: 2
+  conditions:
+    - { stat: age, op: '>=', value: 8 }
+  title: 'A stranger drops their bag of groceries.'
+  choices:
+    - text: 'Help them pick everything up'
+      outcomes:
+        - weight: 100
+          effects:
+            - { stat: karma, op: '+', value: 10 }
+            - { stat: happiness, op: '+', value: 3 }
+          resultText: 'They thanked you warmly. You feel good about yourself.'
+    - text: 'Walk past'
+      outcomes:
+        - weight: 100
+          effects:
+            - { stat: karma, op: '-', value: 5 }
+          resultText: 'You had places to be. They managed without you.'
+
+- id: evt.karmic-reward
+  category: random
+  weight: 6
+  # Only fires for people who have built up good karma.
+  conditions:
+    - { stat: karma, op: '>=', value: 25 }
+  title: 'Your good deeds seem to be coming back around.'
+  choices:
+    - text: 'Accept your good fortune'
+      outcomes:
+        - weight: 70
+          effects:
+            - { asset: money, op: '+', value: 500 }
+            - { stat: happiness, op: '+', value: 5 }
+          resultText: 'An old friend repaid a kindness with an unexpected gift.'
+        - weight: 30
+          effects:
+            - { stat: happiness, op: '+', value: 8 }
+            - { flag: 'com.example.sample-expansion/felt_lucky', op: 'set', value: true }
+          resultText: 'Nothing tangible — just a deep sense that life is fair.'

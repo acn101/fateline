@@ -1,0 +1,38 @@
+name: Registry gate
+
+# Validates bundled modules with fateline-validate (README §11.2). A module
+# that fails schema validation or the headless smoke test blocks the merge.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'modules/**'
+      - 'registry/**'
+      - 'packages/**'
+  pull_request:
+    paths:
+      - 'modules/**'
+      - 'registry/**'
+      - 'packages/**'
+
+jobs:
+  validate-modules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build the validator
+        run: pnpm --filter @fateline/cli build
+
+      - name: Validate core module
+        run: node packages/cli/dist/bin.js modules/core --lives 100
+
+      - name: Validate expansions (composed with core)
+        run: node packages/cli/dist/bin.js modules/sample-expansion --with modules/core --lives 50

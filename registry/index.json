@@ -1,0 +1,13 @@
+{
+  "$schema": "./registry.schema.json",
+  "version": 1,
+  "modules": [
+    {
+      "id": "com.example.sample-expansion",
+      "name": "Sample Expansion",
+      "description": "A minimal example expansion (adds a karma stat and two events). Copy it as a starting point.",
+      "author": "Fateline",
+      "source": "https://github.com/fateline/fateline/tree/main/modules/sample-expansion"
+    }
+  ]
+}

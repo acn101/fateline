@@ -1,0 +1,11 @@
+id: com.example.sample-expansion
+name: Sample Expansion
+version: 1.0.0
+# Compatible with the same engine range as the core game.
+engineVersion: '>=0.0.0 <1.0.0'
+author: Your Name Here
+description: >-
+  A minimal example expansion to copy from. It declares one custom stat
+  (karma) and adds a couple of events that read and modify it — demonstrating
+  conditions, weighted outcomes, flags, and a declared first-class stat.
+dependencies: []

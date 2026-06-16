@@ -1,0 +1,11 @@
+# A custom first-class stat (README §4.4). `exposeAs` publishes it under a
+# stable global name so other modules can read/write it; omit exposeAs to keep
+# it private (namespaced as com.example.sample-expansion.karma).
+stats:
+  - id: karma
+    label: 'Karma'
+    min: -100
+    max: 100
+    default: 0
+    showInUI: true
+    exposeAs: karma
