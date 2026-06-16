@@ -1,0 +1,29 @@
+{
+  "name": "fateline",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Open-source, moddable, cross-platform text-based life simulator. README.md is the source of truth.",
+  "license": "MIT",
+  "packageManager": "pnpm@11.5.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml}\""
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^25.9.3",
+    "eslint": "^10.5.0",
+    "prettier": "^3.8.4",
+    "turbo": "^2.9.18",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.61.1"
+  }
+}

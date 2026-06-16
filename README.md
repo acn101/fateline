@@ -7,15 +7,17 @@ The user wants to build an open-source alternative to **BitLife** (a text-based 
 This document is a **specification only** — no code is written yet (per the user's explicit choice). It defines the product, the architecture, the module system, and the cross-platform strategy so implementation can begin from a solid, agreed-upon foundation.
 
 ### Key constraints driving the design
+
 - **Must run on iOS, Android, and web** from one codebase.
-- **Apple App Store forbids downloading and executing arbitrary code at runtime.** This is the decisive constraint. It rules out a Minecraft-style "download and run JS/native plugins" model on iOS. The architecture therefore uses **data-driven content packs**: modules are *data* (YAML/JSON) interpreted by a single, app-shipped engine — never downloaded code. This is App-Store-safe, easier for non-coders, and a natural fit for a life-sim where "content" is careers, events, scenarios, etc.
+- **Apple App Store forbids downloading and executing arbitrary code at runtime.** This is the decisive constraint. It rules out a Minecraft-style "download and run JS/native plugins" model on iOS. The architecture therefore uses **data-driven content packs**: modules are _data_ (YAML/JSON) interpreted by a single, app-shipped engine — never downloaded code. This is App-Store-safe, easier for non-coders, and a natural fit for a life-sim where "content" is careers, events, scenarios, etc.
 - The codebase must be **clean, well-organized, and follow current best practices** so external contributors can navigate it and build modules.
 
 ### Decisions locked with the user
+
 - **Module model:** Data-driven content packs (no downloadable code).
 - **Import sources (all four):** GitHub repo/release link, direct file upload, paste raw YAML/JSON, and a curated in-app registry.
 - **Rules language:** Declarative conditions + weighted outcomes (no scripting, no expression evaluator in v1).
-- **MVP scope for *this task*:** Specification only.
+- **MVP scope for _this task_:** Specification only.
 - **i18n / a11y:** Deferred (English-only; not a structural concern for v1).
 
 ---
@@ -25,6 +27,7 @@ This document is a **specification only** — no code is written yet (per the us
 **Fateline** is a turn-based, text-driven life simulator. The player is born with randomized stats, then advances year by year ("Age up"), encountering events, making choices, building relationships, pursuing careers, and accumulating outcomes until death. The base game ships a small but complete set of content; everything beyond that is a **module**.
 
 A **module** ("expansion") is a downloadable content pack that adds:
+
 - **Events** (life situations with choices and weighted outcomes)
 - **Careers** (job ladders, requirements, salaries)
 - **Activities / Actions** (things the player can actively choose each turn)
@@ -42,18 +45,18 @@ Modules are pure data. The engine that interprets them ships inside the app and 
 
 Chosen for maximum code reuse across iOS + Android + web, strong typing, and a healthy modding/contributor ecosystem.
 
-| Concern | Choice | Rationale |
-|---|---|---|
-| Framework | **Expo (React Native) + React Native Web** | One React/TypeScript codebase → iOS, Android, web. New Architecture (Fabric/TurboModules/Hermes) is the 2026 default. |
-| Language | **TypeScript (strict)** | Default for RN in 2026; essential for a typed module schema and a contributor-friendly engine. |
-| Monorepo | **pnpm workspaces + Turborepo** | Standard for Expo + shared packages; clean separation of engine / app / schema / sample modules. |
-| Styling | **NativeWind (Tailwind for RN)** | Consistent styling across native + web from one set of components. |
-| State | **Zustand** | Lightweight, testable, serializes cleanly for save games. |
-| Schema/validation | **Zod** | Runtime validation of untrusted module data + compile-time types from one source of truth. |
-| Module format | **YAML (authoring) → normalized to JSON** | YAML is friendlier for human authors; parsed/validated to JSON internally. |
-| Persistence | **expo-sqlite** (saves) + **AsyncStorage/MMKV** (settings) + filesystem for installed module packages | Robust local saves; no server required for core game. |
-| Testing | **Vitest** (engine, pure logic) + **React Native Testing Library** (UI) + **Detox/Maestro** (E2E, later) | Engine is deterministic and unit-testable in isolation. |
-| Tooling | ESLint + Prettier + TypeScript project references | Enforced clean code for contributors. |
+| Concern           | Choice                                                                                                   | Rationale                                                                                                             |
+| ----------------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Framework         | **Expo (React Native) + React Native Web**                                                               | One React/TypeScript codebase → iOS, Android, web. New Architecture (Fabric/TurboModules/Hermes) is the 2026 default. |
+| Language          | **TypeScript (strict)**                                                                                  | Default for RN in 2026; essential for a typed module schema and a contributor-friendly engine.                        |
+| Monorepo          | **pnpm workspaces + Turborepo**                                                                          | Standard for Expo + shared packages; clean separation of engine / app / schema / sample modules.                      |
+| Styling           | **NativeWind (Tailwind for RN)**                                                                         | Consistent styling across native + web from one set of components.                                                    |
+| State             | **Zustand**                                                                                              | Lightweight, testable, serializes cleanly for save games.                                                             |
+| Schema/validation | **Zod**                                                                                                  | Runtime validation of untrusted module data + compile-time types from one source of truth.                            |
+| Module format     | **YAML (authoring) → normalized to JSON**                                                                | YAML is friendlier for human authors; parsed/validated to JSON internally.                                            |
+| Persistence       | **expo-sqlite** (saves) + **AsyncStorage/MMKV** (settings) + filesystem for installed module packages    | Robust local saves; no server required for core game.                                                                 |
+| Testing           | **Vitest** (engine, pure logic) + **React Native Testing Library** (UI) + **Detox/Maestro** (E2E, later) | Engine is deterministic and unit-testable in isolation.                                                               |
+| Tooling           | ESLint + Prettier + TypeScript project references                                                        | Enforced clean code for contributors.                                                                                 |
 
 > Native modules are wrapped behind unified hooks/interfaces so platform differences never leak into game or engine code.
 
@@ -104,7 +107,9 @@ fateline/
 ## 4. Game Engine Design
 
 ### 4.1 Game State (canonical, serializable)
+
 A single typed object — the save file:
+
 - `character`: id, name, gender, age, alive, birth year
 - `stats`: numeric stats keyed by id (e.g. health, happiness, smarts, looks). **No stat is hardcoded** — even the core four are declared in `modules/core/`. Modules add first-class stats via declarations (see §4.4).
 - `flags`: arbitrary `Record<string, boolean | number | string>` set by events — the free-form variable bag for ad-hoc character/game-state variables that need no engine behavior (e.g. `hasDriverLicense`, `criminalRecord`, `degree`). See §4.4 for when to use a flag vs. a declared field.
@@ -116,6 +121,7 @@ A single typed object — the save file:
 - `installedModuleIds` + versions (so a save knows which content it depends on)
 
 ### 4.2 The Turn Loop ("Age Up")
+
 1. Increment age; apply automatic stat changes (aging, decay).
 2. **Collect candidate events** from all enabled modules whose **conditions** match current state.
 3. **Weight & select** events (weighted random via seeded RNG; respect cooldowns, once-only flags, category caps).
@@ -126,49 +132,56 @@ A single typed object — the save file:
 The player can also take **active actions** between age-ups (apply for job, go to gym, interact with relationship, buy item) — these are module-defined actions with the same conditions/effects vocabulary.
 
 ### 4.3 Determinism
+
 All randomness flows through one seeded PRNG stored in the save. Same seed + same choices = same life. Critical for testing and reproducible bug reports.
 
 ### 4.4 Custom Fields — three tiers
+
 Modules frequently need their own character/game-state variables. The engine supports a deliberate **three-tier model** so authors reach for the lightest tool that fits, and nothing is hardcoded.
 
-| Need | Mechanism | Registration | Engine behavior |
-|---|---|---|---|
-| Ad-hoc, throwaway variable | `flags` | None — just write to it from an effect | None: not shown in UI, not decayed, not clamped. Pure storage. |
-| First-class stat (UI bar, clamping, passive decay, referenced by other modules) | **declared stat** (`content/definitions/stats.yaml`) | Declared in a module | Treated exactly like a built-in stat: clamped to its range, optional yearly drift, displayable, referenceable in conditions/effects. |
-| New *kinds* of fields (resources, meters, currencies) | **Out of scope for v1** | — | Documented as a future schema-version extension; flags + declared stats cover ~all BitLife-style needs. |
+| Need                                                                            | Mechanism                                            | Registration                           | Engine behavior                                                                                                                      |
+| ------------------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Ad-hoc, throwaway variable                                                      | `flags`                                              | None — just write to it from an effect | None: not shown in UI, not decayed, not clamped. Pure storage.                                                                       |
+| First-class stat (UI bar, clamping, passive decay, referenced by other modules) | **declared stat** (`content/definitions/stats.yaml`) | Declared in a module                   | Treated exactly like a built-in stat: clamped to its range, optional yearly drift, displayable, referenceable in conditions/effects. |
+| New _kinds_ of fields (resources, meters, currencies)                           | **Out of scope for v1**                              | —                                      | Documented as a future schema-version extension; flags + declared stats cover ~all BitLife-style needs.                              |
 
 **Declared stat example** (`content/definitions/stats.yaml`):
+
 ```yaml
 stats:
   - id: karma
-    label: "Karma"
+    label: 'Karma'
     min: -100
     max: 100
     default: 0
     showInUI: true
-    yearlyDelta: -2        # optional passive drift applied each age-up
+    yearlyDelta: -2 # optional passive drift applied each age-up
   - id: faith
-    label: "Faith"
+    label: 'Faith'
     min: 0
     max: 100
     default: 50
 ```
+
 The engine clamps, displays, and decays `karma`/`faith` with no special-casing — because `health`, `happiness`, etc. in `modules/core/` are declared the exact same way. This is what makes "the base game is a module" literally true for stats.
 
 **Namespacing & collision safety (decided):**
+
 - **Declared fields are namespaced by module id** by default — internally `karma` becomes `medieval.karma`. Collision-proof: two modules can both declare `karma` without corrupting each other.
 - To **interoperate on purpose**, a declaration sets `exposeAs: karma` to publish a stable global name other modules can read/write. Sharing is opt-in, never accidental.
 - **Flags stay free-form** but the validator **warns on unprefixed flag names** and recommends the `com.author.mod/flag_name` convention to avoid silent cross-module clashes.
 - The validator flags two modules declaring the **same global field id** as a conflict, resolved by load order (later wins) like other content overrides (§5.5).
 
-> Rule of thumb for authors, to go in `docs/MODULE_AUTHORING.md`: *"If it just needs to be remembered, use a flag. If it needs to be seen, bounded, or shared, declare a stat."*
+> Rule of thumb for authors, to go in `docs/MODULE_AUTHORING.md`: _"If it just needs to be remembered, use a flag. If it needs to be seen, bounded, or shared, declare a stat."_
 
 ---
 
 ## 5. Module System (the heart of the project)
 
 ### 5.1 Module Package Layout
+
 A module is a folder/zip:
+
 ```
 my-module/
 ├── module.yaml          # manifest: id, name, version, author, description, engineVersion, dependencies
@@ -183,48 +196,50 @@ my-module/
 ```
 
 ### 5.2 Manifest (`module.yaml`)
+
 ```yaml
-id: com.author.medieval-life       # globally unique (reverse-DNS recommended)
+id: com.author.medieval-life # globally unique (reverse-DNS recommended)
 name: Medieval Life
-version: 1.2.0                      # semver
-engineVersion: ">=1.0.0 <2.0.0"    # compatible engine range
+version: 1.2.0 # semver
+engineVersion: '>=1.0.0 <2.0.0' # compatible engine range
 author: Jane Doe
 description: Adds a medieval era with knights, plagues, and royalty.
-dependencies: []                    # optional other module ids + version ranges
+dependencies: [] # optional other module ids + version ranges
 ```
 
 ### 5.3 Declarative Rules Language (no code)
+
 The agreed model: **declarative conditions + weighted outcomes.** Example event:
 
 ```yaml
 id: evt.found-wallet
 category: random
 weight: 10
-conditions:                         # ALL must be true (implicit AND; `any:`/`all:` for groups)
-  - { stat: age, op: ">=", value: 6 }
-  - { flag: in_jail, op: "==", value: false }
-cooldownYears: 5                    # don't refire too soon
+conditions: # ALL must be true (implicit AND; `any:`/`all:` for groups)
+  - { stat: age, op: '>=', value: 6 }
+  - { flag: in_jail, op: '==', value: false }
+cooldownYears: 5 # don't refire too soon
 once: false
-title: "You found a wallet on the sidewalk."
+title: 'You found a wallet on the sidewalk.'
 choices:
-  - text: "Keep the money"
+  - text: 'Keep the money'
     outcomes:
       - weight: 70
         effects:
-          - { asset: money, op: "+", value: 200 }
-          - { stat: happiness, op: "+", value: 5 }
-        resultText: "You pocketed $200. Nice."
+          - { asset: money, op: '+', value: 200 }
+          - { stat: happiness, op: '+', value: 5 }
+        resultText: 'You pocketed $200. Nice.'
       - weight: 30
         effects:
-          - { flag: criminal_record, op: "set", value: true }
-          - { stat: happiness, op: "-", value: 10 }
-        resultText: "Someone saw you. The police were called."
-  - text: "Turn it in"
+          - { flag: criminal_record, op: 'set', value: true }
+          - { stat: happiness, op: '-', value: 10 }
+        resultText: 'Someone saw you. The police were called.'
+  - text: 'Turn it in'
     outcomes:
       - weight: 100
         effects:
-          - { stat: happiness, op: "+", value: 8 }
-        resultText: "The owner rewarded your honesty."
+          - { stat: happiness, op: '+', value: 8 }
+        resultText: 'The owner rewarded your honesty.'
 ```
 
 **Condition operators:** `==, !=, >, >=, <, <=, in`. Targets: `stat`, `flag`, `age`, `asset`, `relationship`, `career`, `random` (for probability gates). Grouping via `any:` / `all:`.
@@ -233,7 +248,9 @@ choices:
 > Explicitly **out of scope for v1:** arbitrary expression formulas (e.g. `health - random(5,15)`) and any scripting. The declarative model covers ~95% of BitLife-style content and keeps modules safe and validatable. Expression support is a documented future extension behind a schema version bump.
 
 ### 5.4 Validation & Safety (critical — modules are untrusted input)
+
 Every imported module passes through `packages/module-schema`:
+
 1. **Parse** YAML → JSON.
 2. **Zod schema validation** — reject anything malformed; produce human-readable errors.
 3. **Reference integrity** — all referenced ids (careers, follow-up events, strings) resolve.
@@ -244,6 +261,7 @@ Every imported module passes through `packages/module-schema`:
 A module that fails validation is **rejected with a clear report** and never loaded. Because modules are data only, there is no code execution surface — this is what keeps it App-Store-safe.
 
 ### 5.5 Conflict Resolution & Load Order
+
 - Modules can be enabled/disabled individually.
 - Each piece of content is namespaced by module id.
 - Deterministic load order (user-orderable list); later modules can **override** earlier content by id (documented), or **add** to it.
@@ -258,7 +276,7 @@ A module that fails validation is **rejected with a clear report** and never loa
 1. **GitHub repo/release link** (`github.ts`)
    - User pastes a GitHub URL (repo, or specific release).
    - Loader resolves to a downloadable archive: prefer **latest release asset (zip)**; fall back to repo tarball of default branch via GitHub's public archive endpoint (no auth needed for public repos).
-   - Download → unzip in-memory/temp → validate → install. *(No `git` required; plain HTTPS fetch.)*
+   - Download → unzip in-memory/temp → validate → install. _(No `git` required; plain HTTPS fetch.)_
    - Caches the resolved version; supports "check for update."
 
 2. **Direct file upload** (`fileUpload.ts`)
@@ -302,7 +320,7 @@ Components live in `packages/ui`, are platform-agnostic (NativeWind), and render
 > This task delivers the spec only. The phases below are the proposed roadmap for the subsequent implementation tasks — not part of this deliverable.
 
 1. **Phase 0 — Scaffold:** monorepo (pnpm + Turbo), Expo app shell, TS strict, lint/format, **CI with Vitest + coverage gates wired from day one** (§11.3).
-2. **Phase 1 — Schema + Engine core:** `module-schema` (Zod) and `engine` (turn loop, conditions, outcomes, seeded RNG) **with golden-life, unit, property-based, and adversarial tests** (§11.1) — *headless, no UI*. Test-heavy by design; this is the trust-critical core.
+2. **Phase 1 — Schema + Engine core:** `module-schema` (Zod) and `engine` (turn loop, conditions, outcomes, seeded RNG) **with golden-life, unit, property-based, and adversarial tests** (§11.1) — _headless, no UI_. Test-heavy by design; this is the trust-critical core.
 3. **Phase 2 — Core content module:** author `modules/core/` to make a complete minimal life playable through the engine in tests; `core` + `sample-expansion` become test fixtures.
 4. **Phase 3 — Module test harness:** `packages/cli` `fateline-validate` (validation + headless seeded smoke test, §11.2). Built early so it guards module quality from here on.
 5. **Phase 4 — App UI:** wire engine to screens (§7) with Zustand + persistence; component tests incl. dynamic stat rendering; playable on web + simulator.
@@ -315,6 +333,7 @@ Components live in `packages/ui`, are platform-agnostic (NativeWind), and render
 ## 10. Verification (how we'll know the spec's architecture holds up)
 
 Because this task produces a document, "verification" means the spec is internally consistent and de-risks the hard parts. The architecture is validated against these acceptance checks for the eventual build:
+
 - **Engine determinism:** a Vitest suite runs a fixed seed + scripted choices and asserts an exact resulting game state.
 - **Schema rejects bad modules:** unit tests feed malformed/malicious YAML and assert clear rejection (no crash, no execution).
 - **Dogfooding:** the base game runs entirely as a loaded module — if `modules/core/` can express a full life, third-party modules can express anything comparable.
@@ -329,24 +348,26 @@ Two distinct testing problems, addressed separately. Because this is open-source
 
 ### 11.1 Testing our code (engine, schema, loader, UI)
 
-| Layer | Tool | What it covers |
-|---|---|---|
-| **Engine — golden life tests** ⭐ | Vitest | Fixed seed + scripted choices → assert the *exact* final game state. Highest-value tests in the project; catch any unintended behavior change. Enabled by the seeded PRNG (§4.3). |
-| **Engine — unit** | Vitest | Condition evaluator (every operator + `any`/`all` grouping), effect resolver, stat clamping, declared-field decay (§4.4), turn loop, death conditions. |
-| **Engine — property-based** | Vitest + fast-check | Thousands of random seeds asserting invariants that must *always* hold: stats stay in range, money never NaN, turn loop always terminates, a dead character can't age up. Finds emergent/module-interaction bugs hand-written tests miss. |
-| **Schema/loader — adversarial** | Vitest | Malformed/malicious/pathological YAML → assert clean rejection, readable error, **no crash, no execution**: wrong types, unknown fields, negative weights, circular `triggerEvent`, oversized files, unresolved id references. |
-| **UI — component** | React Native Testing Library | Screens render; the **dynamic stat rendering** case (a module's declared stat bar appears with no code change, per §4.4). |
-| **E2E** | Maestro | (Phase 6) start a life → age up → install a module → play it. |
+| Layer                             | Tool                         | What it covers                                                                                                                                                                                                                            |
+| --------------------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Engine — golden life tests** ⭐ | Vitest                       | Fixed seed + scripted choices → assert the _exact_ final game state. Highest-value tests in the project; catch any unintended behavior change. Enabled by the seeded PRNG (§4.3).                                                         |
+| **Engine — unit**                 | Vitest                       | Condition evaluator (every operator + `any`/`all` grouping), effect resolver, stat clamping, declared-field decay (§4.4), turn loop, death conditions.                                                                                    |
+| **Engine — property-based**       | Vitest + fast-check          | Thousands of random seeds asserting invariants that must _always_ hold: stats stay in range, money never NaN, turn loop always terminates, a dead character can't age up. Finds emergent/module-interaction bugs hand-written tests miss. |
+| **Schema/loader — adversarial**   | Vitest                       | Malformed/malicious/pathological YAML → assert clean rejection, readable error, **no crash, no execution**: wrong types, unknown fields, negative weights, circular `triggerEvent`, oversized files, unresolved id references.            |
+| **UI — component**                | React Native Testing Library | Screens render; the **dynamic stat rendering** case (a module's declared stat bar appears with no code change, per §4.4).                                                                                                                 |
+| **E2E**                           | Maestro                      | (Phase 6) start a life → age up → install a module → play it.                                                                                                                                                                             |
 
 **Fixtures are the real modules:** `modules/core/` and `modules/sample-expansion/` double as test fixtures, so the base game is part of the engine test suite — dogfooding again.
 
 ### 11.2 Testing community modules — the `fateline-validate` harness ⭐
 
 `packages/cli` ships a CLI (`fateline-validate <module-path>`) that runs:
+
 1. **Schema + safety validation** — the full §5.4 pipeline (Zod, reference integrity, bounds, cycle detection, asset whitelist, engine-version check).
-2. **Headless seeded smoke test** — runs *N* seeded lives with the module enabled and asserts: no crash, no stuck/unwinnable states, stats stay bounded, turn loop terminates. Reuses the pure `engine` package — no app required.
+2. **Headless seeded smoke test** — runs _N_ seeded lives with the module enabled and asserts: no crash, no stuck/unwinnable states, stats stay bounded, turn loop terminates. Reuses the pure `engine` package — no app required.
 
 This harness is used in two places:
+
 - **Authors run it locally** before submitting — instant feedback, no app, no device.
 - **The curated registry repo runs it in CI** on every PR. **A module cannot merge into the registry unless it passes validation + the smoke test.** This is how the project scales community contributions with near-zero manual review.
 
@@ -358,4 +379,5 @@ This harness is used in two places:
 ---
 
 ## Deliverable for this task
+
 This specification document. No source files are created. On approval, implementation proceeds per the phased roadmap (§9), starting with the monorepo scaffold and the pure engine + schema packages.

@@ -1,0 +1,13 @@
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    coverage: {
+      provider: 'v8',
+      // Trust-critical package — enforce high coverage (README §11.3).
+      thresholds: { lines: 90, functions: 90, branches: 90, statements: 90 },
+      include: ['src/**/*.ts'],
+      exclude: ['src/index.ts', '**/*.test.ts'],
+    },
+  },
+});

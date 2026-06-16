@@ -1,0 +1,4 @@
+{
+  "files": [],
+  "references": [{ "path": "packages/module-schema" }, { "path": "packages/engine" }]
+}
