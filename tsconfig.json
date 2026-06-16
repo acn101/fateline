@@ -6,6 +6,7 @@
     { "path": "packages/module-io" },
     { "path": "packages/cli" },
     { "path": "packages/store" },
+    { "path": "packages/persistence" },
     { "path": "modules/core" }
   ]
 }
