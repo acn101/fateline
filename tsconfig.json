@@ -7,6 +7,7 @@
     { "path": "packages/cli" },
     { "path": "packages/store" },
     { "path": "packages/persistence" },
+    { "path": "packages/module-loader" },
     { "path": "modules/core" }
   ]
 }

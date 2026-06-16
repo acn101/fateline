@@ -37,6 +37,13 @@ export default function NewLifeScreen() {
         <Pressable style={styles.button} accessibilityRole="button" onPress={start}>
           <Text style={styles.buttonText}>Begin a New Life</Text>
         </Pressable>
+        <Pressable
+          style={styles.secondary}
+          accessibilityRole="button"
+          onPress={() => router.push('/modules')}
+        >
+          <Text style={styles.secondaryText}>Manage Modules</Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -56,4 +63,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  secondary: { padding: 14, alignItems: 'center' },
+  secondaryText: { color: '#4f46e5', fontSize: 15, fontWeight: '600' },
 });
