@@ -32,7 +32,7 @@ jobs:
         run: pnpm --filter @fateline/cli build
 
       - name: Validate core module
-        run: node packages/cli/dist/bin.js modules/core --lives 100
+        run: node packages/cli/dist/bin.js mods/core --lives 100
 
       - name: Validate expansions (composed with core)
-        run: node packages/cli/dist/bin.js modules/sample-expansion --with modules/core --lives 50
+        run: node packages/cli/dist/bin.js mods/sample-expansion --with mods/core --lives 50

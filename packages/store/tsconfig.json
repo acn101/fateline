@@ -6,7 +6,7 @@
     "tsBuildInfoFile": "dist/.tsbuildinfo",
     "lib": ["ES2022", "DOM"]
   },
-  "references": [{ "path": "../module-schema" }, { "path": "../engine" }],
+  "references": [{ "path": "../mod-schema" }, { "path": "../engine" }],
   "include": ["src/**/*"],
   "exclude": ["dist", "node_modules", "**/*.test.ts"]
 }

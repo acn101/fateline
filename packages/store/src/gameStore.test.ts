@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { validateModule, type FatelineModule } from '@fateline/module-schema';
+import { validateMod, type FatelineMod } from '@fateline/mod-schema';
 import { createGameStore } from './gameStore.js';
 import { visibleStats } from './selectors.js';
 
-function coreLikeModule(): FatelineModule {
+function coreLikeMod(): FatelineMod {
   const raw = {
     manifest: {
       id: 'com.test.core',
@@ -46,15 +46,15 @@ function coreLikeModule(): FatelineModule {
       ],
     },
   };
-  const r = validateModule(raw);
+  const r = validateMod(raw);
   if (!r.ok) throw new Error(JSON.stringify(r.errors));
-  return r.value as FatelineModule;
+  return r.value as FatelineMod;
 }
 
 describe('createGameStore', () => {
   it('runs the full session lifecycle', () => {
     const store = createGameStore();
-    store.getState().loadModules([coreLikeModule()]);
+    store.getState().loadMods([coreLikeMod()]);
     store.getState().startGame({
       seed: 1,
       character: { name: 'A', gender: 'x', birthYear: 2000 },
@@ -78,7 +78,7 @@ describe('createGameStore', () => {
         .getState()
         .startGame({ seed: 1, character: { name: 'A', gender: 'x', birthYear: 2000 } }),
     ).toThrow();
-    store.getState().loadModules([coreLikeModule()]);
+    store.getState().loadMods([coreLikeMod()]);
     store.getState().startGame({ seed: 1, character: { name: 'A', gender: 'x', birthYear: 2000 } });
     expect(() => store.getState().choose(0)).toThrow(); // no pending event
     store.getState().advance();
@@ -87,7 +87,7 @@ describe('createGameStore', () => {
 
   it('does not advance a dead character', () => {
     const store = createGameStore();
-    store.getState().loadModules([coreLikeModule()]);
+    store.getState().loadMods([coreLikeMod()]);
     store.getState().startGame({ seed: 2, character: { name: 'A', gender: 'x', birthYear: 2000 } });
     const g = store.getState().game!;
     g.character.alive = false;
@@ -100,7 +100,7 @@ describe('createGameStore', () => {
 describe('visibleStats selector', () => {
   it('includes only showInUI stats, joined with current values', () => {
     const store = createGameStore();
-    store.getState().loadModules([coreLikeModule()]);
+    store.getState().loadMods([coreLikeMod()]);
     store.getState().startGame({ seed: 1, character: { name: 'A', gender: 'x', birthYear: 2000 } });
     const stats = visibleStats(store.getState().registry!, store.getState().game!);
     expect(stats.map((s) => s.id)).toEqual(['health']);
@@ -110,7 +110,7 @@ describe('visibleStats selector', () => {
 
   it('falls back to the declared default when a value is missing', () => {
     const store = createGameStore();
-    store.getState().loadModules([coreLikeModule()]);
+    store.getState().loadMods([coreLikeMod()]);
     store.getState().startGame({ seed: 1, character: { name: 'A', gender: 'x', birthYear: 2000 } });
     const game = store.getState().game!;
     delete game.stats['health'];

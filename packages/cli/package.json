@@ -19,8 +19,8 @@
   },
   "dependencies": {
     "@fateline/engine": "workspace:*",
-    "@fateline/module-io": "workspace:*",
-    "@fateline/module-schema": "workspace:*"
+    "@fateline/mod-io": "workspace:*",
+    "@fateline/mod-schema": "workspace:*"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.1.9",

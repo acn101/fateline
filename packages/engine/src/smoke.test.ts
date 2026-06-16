@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { validateModule, type FatelineModule } from '@fateline/module-schema';
+import { validateMod, type FatelineMod } from '@fateline/mod-schema';
 import { compileRegistry } from './registry.js';
 import { smokeTest } from './smoke.js';
 
 function compile(raw: unknown) {
-  const r = validateModule(raw);
+  const r = validateMod(raw);
   if (!r.ok) throw new Error(JSON.stringify(r.errors));
-  return compileRegistry([r.value as FatelineModule]);
+  return compileRegistry([r.value as FatelineMod]);
 }
 
 const manifest = {

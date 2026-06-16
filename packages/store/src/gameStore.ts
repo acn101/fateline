@@ -1,5 +1,5 @@
 import { createStore } from 'zustand/vanilla';
-import type { FatelineModule } from '@fateline/module-schema';
+import type { FatelineMod } from '@fateline/mod-schema';
 import {
   compileRegistry,
   createGame,
@@ -22,7 +22,7 @@ export interface GameStore {
   game: GameState | null;
   pending: PendingEvent | null;
   /** Set once at startup from the enabled modules. */
-  loadModules: (modules: readonly FatelineModule[]) => void;
+  loadMods: (modules: readonly FatelineMod[]) => void;
   startGame: (options: NewGameOptions) => void;
   /** Advance one year; surfaces a pending event if one fires. */
   advance: () => void;
@@ -38,11 +38,11 @@ export function createGameStore() {
     game: null,
     pending: null,
 
-    loadModules: (modules) => set({ registry: compileRegistry(modules) }),
+    loadMods: (modules) => set({ registry: compileRegistry(modules) }),
 
     startGame: (options) => {
       const { registry } = get();
-      if (!registry) throw new Error('loadModules must be called before startGame.');
+      if (!registry) throw new Error('loadMods must be called before startGame.');
       set({ game: createGame(registry, options), pending: null });
     },
 

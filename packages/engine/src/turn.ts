@@ -1,4 +1,4 @@
-import type { GameEvent } from '@fateline/module-schema';
+import type { GameEvent } from '@fateline/mod-schema';
 import type { GameState, Character } from './state.js';
 import { createRng, weightedPick, type RngState } from './rng.js';
 import type { Registry } from './registry.js';
@@ -36,7 +36,7 @@ export function createGame(registry: Registry, options: NewGameOptions): GameSta
     history: [],
     rng: createRng(options.seed),
     eventMemory: {},
-    installedModules: {},
+    installedMods: {},
   };
 }
 

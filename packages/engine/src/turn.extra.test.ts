@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { validateModule, type FatelineModule } from '@fateline/module-schema';
+import { validateMod, type FatelineMod } from '@fateline/mod-schema';
 import { compileRegistry } from './registry.js';
 import { createGame, ageUp, applyChoice } from './turn.js';
 import { setStatClamped } from './accessors.js';
@@ -8,9 +8,9 @@ import type { GameState } from './state.js';
 import { createRng } from './rng.js';
 
 function compile(raw: unknown) {
-  const r = validateModule(raw);
+  const r = validateMod(raw);
   if (!r.ok) throw new Error(JSON.stringify(r.errors));
-  return compileRegistry([r.value as FatelineModule]);
+  return compileRegistry([r.value as FatelineMod]);
 }
 
 const baseManifest = {
@@ -177,7 +177,7 @@ describe('edge paths', () => {
       history: [],
       rng: createRng(1),
       eventMemory: {},
-      installedModules: {},
+      installedMods: {},
     };
     setStatClamped(state, reg, 'undeclared', 9999);
     expect(state.stats['undeclared']).toBe(9999);
@@ -218,7 +218,7 @@ describe('edge paths', () => {
       history: [],
       rng: createRng(1),
       eventMemory: {},
-      installedModules: {},
+      installedMods: {},
     };
     // applyEffects just returns the id; resolveTriggers (via applyChoice) would skip it.
     expect(applyEffects([{ triggerEvent: 'evt.ghost' }], state, reg)).toEqual(['evt.ghost']);

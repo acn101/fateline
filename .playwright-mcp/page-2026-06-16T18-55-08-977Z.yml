@@ -1,0 +1,22 @@
+- generic [ref=e21]:
+    - generic [ref=e23]:
+        - generic [ref=e24]:
+            - generic [ref=e25]: Alan
+            - generic [ref=e26]: Age 0 · Baby
+        - generic [ref=e27]: $0
+        - generic [ref=e28]:
+            - 'generic "Health: 100" [ref=e29]':
+                - generic [ref=e30]: Health
+                - generic [ref=e33]: '100'
+            - 'generic "Happiness: 60" [ref=e34]':
+                - generic [ref=e35]: Happiness
+                - generic [ref=e38]: '60'
+            - 'generic "Smarts: 50" [ref=e39]':
+                - generic [ref=e40]: Smarts
+                - generic [ref=e43]: '50'
+            - 'generic "Looks: 50" [ref=e44]':
+                - generic [ref=e45]: Looks
+                - generic [ref=e48]: '50'
+    - generic [ref=e51]: Your story begins…
+    - button "Age Up ▸" [ref=e53] [cursor=pointer]:
+        - generic [ref=e54]: Age Up ▸

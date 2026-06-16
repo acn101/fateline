@@ -39,7 +39,7 @@ export interface GameState {
   /** Per-event bookkeeping for cooldowns / once-only selection. */
   eventMemory: Record<string, { lastFiredAge: number; fireCount: number }>;
   /** Modules this save depends on, id -> version. */
-  installedModules: Record<string, string>;
+  installedMods: Record<string, string>;
 }
 
 /** Reserved stat id that resolves from `character.age` rather than `stats`. */

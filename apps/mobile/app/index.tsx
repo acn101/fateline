@@ -52,9 +52,9 @@ export default function NewLifeScreen() {
         <Pressable
           style={styles.secondary}
           accessibilityRole="button"
-          onPress={() => router.push('/modules')}
+          onPress={() => router.push('/mods')}
         >
-          <Text style={styles.secondaryText}>Manage Modules</Text>
+          <Text style={styles.secondaryText}>Manage Mods</Text>
         </Pressable>
       </View>
     </SafeAreaView>

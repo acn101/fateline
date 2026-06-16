@@ -1,0 +1,9 @@
+- generic [ref=e10]:
+    - generic [ref=e11]: Fateline
+    - generic [ref=e12]: An open, moddable life simulator.
+    - textbox "Character name" [ref=e13]:
+        - /placeholder: Name your character
+    - button "Begin a New Life" [ref=e14] [cursor=pointer]:
+        - generic [ref=e15]: Begin a New Life
+    - button "Manage Modules" [ref=e16] [cursor=pointer]:
+        - generic [ref=e17]: Manage Modules

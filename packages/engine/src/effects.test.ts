@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import type { Effect, FatelineModule } from '@fateline/module-schema';
+import type { Effect, FatelineMod } from '@fateline/mod-schema';
 import { applyEffects } from './effects.js';
 import { compileRegistry, type Registry } from './registry.js';
 import { createRng } from './rng.js';
 import type { GameState } from './state.js';
 
 function registryWith(): Registry {
-  const mod: FatelineModule = {
+  const mod: FatelineMod = {
     manifest: {
       id: 'com.t.core',
       name: 'C',
@@ -43,7 +43,7 @@ function freshState(): GameState {
     history: [],
     rng: createRng(1),
     eventMemory: {},
-    installedModules: {},
+    installedMods: {},
   };
 }
 

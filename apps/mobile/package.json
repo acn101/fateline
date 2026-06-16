@@ -13,11 +13,10 @@
   },
   "dependencies": {
     "@fateline/engine": "workspace:*",
-    "@fateline/module-core": "workspace:*",
-    "@fateline/module-loader": "workspace:*",
+    "@fateline/mod-core": "workspace:*",
+    "@fateline/mod-loader": "workspace:*",
     "@fateline/persistence": "workspace:*",
     "@fateline/store": "workspace:*",
-    "@fateline/persistence": "workspace:*",
     "@fateline/ui": "workspace:*",
     "expo": "^56.0.12",
     "expo-router": "^56.2.11",

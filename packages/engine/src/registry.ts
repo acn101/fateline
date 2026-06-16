@@ -1,4 +1,4 @@
-import type { FatelineModule, GameEvent, StatDefinition } from '@fateline/module-schema';
+import type { FatelineMod, GameEvent, StatDefinition } from '@fateline/mod-schema';
 
 /**
  * Compiled content registry — the engine's read-only view of all enabled
@@ -43,7 +43,7 @@ export function namespaceId(moduleId: string, localId: string): string {
  * earlier ones on id collision (README §5.5).
  */
 export function compileRegistry(
-  modules: readonly FatelineModule[],
+  modules: readonly FatelineMod[],
   options: CompileOptions = {},
 ): Registry {
   const stats = new Map<string, ResolvedStat>();

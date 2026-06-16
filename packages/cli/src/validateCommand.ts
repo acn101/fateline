@@ -1,4 +1,4 @@
-import { loadModuleFromDir } from '@fateline/module-io';
+import { loadModFromDir } from '@fateline/mod-io';
 import { compileRegistry, smokeTest, type SmokeReport } from '@fateline/engine';
 
 /**
@@ -15,7 +15,7 @@ export interface ValidateOptions {
    * registry. Expansions depend on the base game for a vitality stat etc., so
    * pass `--with <core-dir>` to test them in a realistic composition.
    */
-  withModules?: string[];
+  withMods?: string[];
 }
 
 export interface ValidateReport {
@@ -25,13 +25,13 @@ export interface ValidateReport {
   smoke?: SmokeReport;
 }
 
-export async function validateModuleAt(
+export async function validateModAt(
   dir: string,
   options: ValidateOptions = {},
 ): Promise<ValidateReport> {
   const lines: string[] = [];
 
-  const loaded = await loadModuleFromDir(dir).catch((err: unknown) => {
+  const loaded = await loadModFromDir(dir).catch((err: unknown) => {
     return { ok: false as const, errors: [{ path: '', message: errMessage(err) }] };
   });
 
@@ -51,8 +51,8 @@ export async function validateModuleAt(
   // Load any base modules (e.g. core) first, then the target, so expansions
   // are smoke-tested in a realistic composition (README §5.5 load order).
   const base = [];
-  for (const baseDir of options.withModules ?? []) {
-    const baseLoaded = await loadModuleFromDir(baseDir).catch((err: unknown) => ({
+  for (const baseDir of options.withMods ?? []) {
+    const baseLoaded = await loadModFromDir(baseDir).catch((err: unknown) => ({
       ok: false as const,
       errors: [{ path: '', message: errMessage(err) }],
     }));

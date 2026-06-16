@@ -7,7 +7,7 @@
       "name": "Sample Expansion",
       "description": "A minimal example expansion (adds a karma stat and two events). Copy it as a starting point.",
       "author": "Fateline",
-      "source": "https://github.com/fateline/fateline/tree/main/modules/sample-expansion"
+      "source": "https://github.com/fateline/fateline/tree/main/mods/sample-expansion"
     }
   ]
 }

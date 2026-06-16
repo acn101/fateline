@@ -1,4 +1,4 @@
-import type { Condition, LeafCondition, ComparisonOp } from '@fateline/module-schema';
+import type { Condition, LeafCondition, ComparisonOp } from '@fateline/mod-schema';
 import type { GameState } from './state.js';
 import { getStat, getAsset } from './accessors.js';
 import { nextFloat, type RngState } from './rng.js';

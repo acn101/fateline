@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useStore } from 'zustand';
 import { createGameStore, type GameStore } from '@fateline/store';
-import { coreModule } from '@fateline/module-core';
-import { createMemoryModuleStore, loadInstalled } from '@fateline/module-loader';
+import { coreMod } from '@fateline/mod-core';
+import { createMemoryModStore, loadInstalled } from '@fateline/mod-loader';
 import { SaveManager } from '@fateline/persistence';
 import { createWebStorageBackend } from './storageBackend';
 
@@ -15,23 +15,23 @@ const saveManager = new SaveManager(createWebStorageBackend());
  * The module store is seeded with the bundled core module and grows as the
  * user installs more (Modules screen). After any change, refreshSession()
  * recompiles the engine registry from all installed, dependency-satisfied
- * modules. (A persistent ModuleStore is wired in Phase 7; in-memory for now.)
+ * modules. (A persistent ModStore is wired in Phase 7; in-memory for now.)
  */
 export const gameStore = createGameStore();
 
-const { store: moduleStore, data: moduleData } = createMemoryModuleStore();
-export { moduleStore };
+const { store: modStore, data: moduleData } = createMemoryModStore();
+export { modStore };
 
 // Seed the bundled base game so a fresh install is immediately playable.
-moduleData.modules[coreModule.manifest.id] = coreModule;
-moduleData.order.push(coreModule.manifest.id);
+moduleData.modules[coreMod.manifest.id] = coreMod;
+moduleData.order.push(coreMod.manifest.id);
 
 let installedIds: string[] = [];
 const listeners = new Set<() => void>();
 
 export async function refreshSession(): Promise<void> {
-  const { modules } = await loadInstalled(moduleStore);
-  gameStore.getState().loadModules(modules);
+  const { modules } = await loadInstalled(modStore);
+  gameStore.getState().loadMods(modules);
   installedIds = modules.map((m) => m.manifest.id);
   listeners.forEach((l) => l());
 }

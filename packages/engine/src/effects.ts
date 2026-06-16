@@ -1,4 +1,4 @@
-import type { Effect } from '@fateline/module-schema';
+import type { Effect } from '@fateline/mod-schema';
 import type { GameState, FlagValue } from './state.js';
 import type { Registry } from './registry.js';
 import { getStat, getAsset, setStatClamped } from './accessors.js';

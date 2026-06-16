@@ -1,5 +1,5 @@
 import { argv, exit, stdout } from 'node:process';
-import { validateModuleAt } from './validateCommand.js';
+import { validateModAt } from './validateCommand.js';
 
 /**
  * Entry point for:
@@ -18,10 +18,10 @@ async function main(): Promise<void> {
     exit(2);
   }
 
-  const report = await validateModuleAt(dir, {
+  const report = await validateModAt(dir, {
     lives: numFlag(args, '--lives'),
     maxYears: numFlag(args, '--max-years'),
-    withModules: multiFlag(args, '--with'),
+    withMods: multiFlag(args, '--with'),
   });
 
   stdout.write(report.lines.join('\n') + '\n');

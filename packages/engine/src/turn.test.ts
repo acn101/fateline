@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import fc from 'fast-check';
-import { validateModule, type FatelineModule } from '@fateline/module-schema';
+import { validateMod, type FatelineMod } from '@fateline/mod-schema';
 import { compileRegistry } from './registry.js';
 import { createGame, ageUp, applyChoice } from './turn.js';
 
 /**
  * A minimal but complete module used as a test fixture — mirrors what
- * `modules/core/` will provide. Validated through the real schema so the test
+ * `mods/core/` will provide. Validated through the real schema so the test
  * exercises the same path a community module would.
  */
 function buildRegistry() {
@@ -55,9 +55,9 @@ function buildRegistry() {
       ],
     },
   };
-  const result = validateModule(raw);
+  const result = validateMod(raw);
   if (!result.ok) throw new Error('fixture invalid: ' + JSON.stringify(result.errors));
-  return compileRegistry([result.value as FatelineModule]);
+  return compileRegistry([result.value as FatelineMod]);
 }
 
 describe('createGame', () => {

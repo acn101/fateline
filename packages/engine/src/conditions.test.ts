@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Condition } from '@fateline/module-schema';
+import type { Condition } from '@fateline/mod-schema';
 import { evaluateCondition, evaluateAll } from './conditions.js';
 import { createRng } from './rng.js';
 import type { GameState } from './state.js';
@@ -13,7 +13,7 @@ function stateWith(overrides: Partial<GameState> = {}): GameState {
     history: [],
     rng: createRng(1),
     eventMemory: {},
-    installedModules: {},
+    installedMods: {},
     ...overrides,
   };
 }
