@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.*
+
+# pnpm
+.pnpm-store/
+.pnpm-debug.log*
+
+# Build output / caches
+dist/
+build/
+.turbo/
+*.tsbuildinfo
+coverage/
+.vitest/
+
+# Expo / React Native
+.expo/
+.expo-shared/
+web-build/
+ios/
+android/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+.haste_cache/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*~
+
+# Local module install cache (downloaded community modules)
+/.module-cache/
+
+# Claude project guidance (local, not committed)
+CLAUDE.md
