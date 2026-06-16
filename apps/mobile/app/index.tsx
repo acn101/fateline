@@ -1,13 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { gameStore } from '../src/gameSession';
+import { gameStore, restoreAutosave } from '../src/gameSession';
 
 /** Home / New Life screen (README §7). */
 export default function NewLifeScreen() {
   const router = useRouter();
   const [name, setName] = useState('');
+  const [hasSave, setHasSave] = useState(false);
+
+  useEffect(() => {
+    void restoreAutosave().then((loaded) => setHasSave(loaded));
+  }, []);
+
+  const resume = () => router.push('/play');
 
   const start = () => {
     gameStore.getState().startGame({
@@ -37,6 +44,11 @@ export default function NewLifeScreen() {
         <Pressable style={styles.button} accessibilityRole="button" onPress={start}>
           <Text style={styles.buttonText}>Begin a New Life</Text>
         </Pressable>
+        {hasSave ? (
+          <Pressable style={styles.secondary} accessibilityRole="button" onPress={resume}>
+            <Text style={styles.secondaryText}>Continue</Text>
+          </Pressable>
+        ) : null}
         <Pressable
           style={styles.secondary}
           accessibilityRole="button"

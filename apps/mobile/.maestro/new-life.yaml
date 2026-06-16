@@ -1,0 +1,22 @@
+# Maestro E2E smoke flow (README §9 Phase 7, §11.1).
+# Run against a running app (web or device):  maestro test .maestro/new-life.yaml
+appId: host.exp.exponent
+---
+- launchApp
+- assertVisible: 'Fateline'
+- tapOn:
+    id: 'Character name'
+- inputText: 'Casey'
+- tapOn: 'Begin a New Life'
+- assertVisible: 'Casey'
+- assertVisible: 'Age Up ▸'
+# Age up a few years; an event modal may appear and require a choice.
+- repeat:
+    times: 3
+    commands:
+      - tapOn: 'Age Up ▸'
+      - runFlow:
+          when:
+            visible: 'Accept'
+          commands:
+            - tapOn: 'Accept'

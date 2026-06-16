@@ -315,18 +315,27 @@ Components live in `packages/ui`, are platform-agnostic (NativeWind), and render
 
 ---
 
-## 9. Recommended Build Phases (after this spec is approved)
+## 9. Build Phases — ✅ all complete
 
-> This task delivers the spec only. The phases below are the proposed roadmap for the subsequent implementation tasks — not part of this deliverable.
+All phases below are implemented, committed, and verified green (format, lint,
+typecheck, tests with coverage gates, and a web build smoke check).
 
-1. **Phase 0 — Scaffold:** monorepo (pnpm + Turbo), Expo app shell, TS strict, lint/format, **CI with Vitest + coverage gates wired from day one** (§11.3).
-2. **Phase 1 — Schema + Engine core:** `module-schema` (Zod) and `engine` (turn loop, conditions, outcomes, seeded RNG) **with golden-life, unit, property-based, and adversarial tests** (§11.1) — _headless, no UI_. Test-heavy by design; this is the trust-critical core.
-3. **Phase 2 — Core content module:** author `modules/core/` to make a complete minimal life playable through the engine in tests; `core` + `sample-expansion` become test fixtures.
-4. **Phase 3 — Module test harness:** `packages/cli` `fateline-validate` (validation + headless seeded smoke test, §11.2). Built early so it guards module quality from here on.
-5. **Phase 4 — App UI:** wire engine to screens (§7) with Zustand + persistence; component tests incl. dynamic stat rendering; playable on web + simulator.
-6. **Phase 5 — Module loader:** the four import sources + validation pipeline + Modules screen.
-7. **Phase 6 — Registry + docs:** manifest repo **with CI that runs `fateline-validate` as a merge gate** (§11.2), authoring docs, JSON Schema, sample module.
-8. **Phase 7 — Hardening:** save migrations, E2E (Maestro), real-device testing, store-compliance review.
+1. ✅ **Phase 0 — Scaffold:** monorepo (pnpm + Turbo), TS strict, lint/format, CI with Vitest + coverage gates from day one (§11.3).
+2. ✅ **Phase 1 — Schema + Engine core:** `module-schema` (Zod) and `engine` (turn loop, conditions, outcomes, seeded RNG) with golden-life, unit, property-based, and adversarial tests (§11.1) — headless.
+3. ✅ **Phase 2 — Core content module:** `modules/core/` plays a full deterministic life to a natural death; `@fateline/module-io` loads the on-disk YAML layout.
+4. ✅ **Phase 3 — Module test harness:** `packages/cli` `fateline-validate` (validation + headless seeded smoke test, §11.2), esbuild-bundled binary.
+5. ✅ **Phase 4 — App UI:** `@fateline/store` (Zustand) + `@fateline/persistence` + `@fateline/ui`, wired into the `apps/mobile` Expo app (New Life / Play / Modules screens) with dynamic stat rendering; verified via `expo export --platform web`.
+6. ✅ **Phase 5 — Module loader:** `@fateline/module-loader` — the four import sources + one install pipeline + Modules screen.
+7. ✅ **Phase 6 — Registry + docs:** `registry/index.json` with a CI merge gate running `fateline-validate` (§11.2), `docs/MODULE_AUTHORING.md`, `docs/ARCHITECTURE.md`, generated `docs/module-schema.json`, `modules/sample-expansion/`, MIT `LICENSE`.
+8. ✅ **Phase 7 — Hardening:** save migrations + autosave wired into the app, E2E smoke flow (`.maestro/new-life.yaml`), `docs/STORE_COMPLIANCE.md`.
+
+### As-built notes (deviations from the original plan)
+
+- **One Expo app, not separate `apps/web` + `apps/mobile`.** Expo's web target covers the web build from the single `apps/mobile` codebase, so a second app would have been redundant.
+- **The CLI harness was built in its own phase (3)** ahead of the UI, because module quality gating is more foundational than screens.
+- **`fateline-validate --with <dir>`** composes a base module (core) before smoke-testing an expansion, since an expansion has no terminal condition on its own.
+- **`modules/core` ships a generated `core.json`** (committed) so the app imports the base game as a bundlable object — React Native can't read YAML from disk at runtime. A test asserts it stays in sync with the YAML source.
+- **NativeWind/Tailwind:** styling currently uses React Native `StyleSheet`; NativeWind can be layered on without changing component APIs.
 
 ---
 

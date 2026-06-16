@@ -3,6 +3,11 @@ import { useStore } from 'zustand';
 import { createGameStore, type GameStore } from '@fateline/store';
 import { coreModule } from '@fateline/module-core';
 import { createMemoryModuleStore, loadInstalled } from '@fateline/module-loader';
+import { SaveManager } from '@fateline/persistence';
+import { createWebStorageBackend } from './storageBackend';
+
+const AUTOSAVE_SLOT = 'autosave';
+const saveManager = new SaveManager(createWebStorageBackend());
 
 /**
  * App-wide game session and module registry.
@@ -32,6 +37,19 @@ export async function refreshSession(): Promise<void> {
 }
 
 void refreshSession();
+
+// Autosave: persist the current game whenever it changes.
+gameStore.subscribe((state) => {
+  if (state.game) void saveManager.save(AUTOSAVE_SLOT, state.game);
+});
+
+/** Restore the autosaved game, if any. Returns true if a save was loaded. */
+export async function restoreAutosave(): Promise<boolean> {
+  const game = await saveManager.load(AUTOSAVE_SLOT);
+  if (!game) return false;
+  gameStore.getState().hydrate(game);
+  return true;
+}
 
 /** React binding for the vanilla game store. */
 export function useGame<T>(selector: (state: GameStore) => T): T {
