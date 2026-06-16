@@ -5,6 +5,7 @@
     { "path": "packages/engine" },
     { "path": "packages/module-io" },
     { "path": "packages/cli" },
+    { "path": "packages/store" },
     { "path": "modules/core" }
   ]
 }
