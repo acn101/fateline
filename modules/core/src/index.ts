@@ -1,12 +1,9 @@
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
-import { loadModuleFromDir } from '@fateline/module-io';
-import type { FatelineModule, ValidationResult } from '@fateline/module-schema';
+import type { FatelineModule } from '@fateline/module-schema';
+import coreJson from '../generated/core.json' with { type: 'json' };
 
-/** Absolute path to this module's on-disk root (where `module.yaml` lives). */
-export const coreModuleDir = join(dirname(fileURLToPath(import.meta.url)), '..');
-
-/** Load and validate the core module from disk (README §8 — base game IS a module). */
-export function loadCoreModule(): Promise<ValidationResult<FatelineModule>> {
-  return loadModuleFromDir(coreModuleDir);
-}
+/**
+ * The core module as a pre-validated, bundlable object (README §8 — base game
+ * IS a module). Generated from the YAML by `generate.mjs`; the app imports this
+ * directly so no filesystem/YAML parsing happens at runtime (works in RN).
+ */
+export const coreModule = coreJson as FatelineModule;

@@ -1,0 +1,785 @@
+{
+  "manifest": {
+    "id": "com.fateline.core",
+    "name": "Fateline Core",
+    "version": "0.1.0",
+    "engineVersion": ">=0.0.0 <1.0.0",
+    "author": "Fateline",
+    "description": "The base game, shipped as a module. Defines the core stats and a starter set of life events across childhood, adolescence, and adulthood. Everything here uses the same public schema any community module uses (README §8).",
+    "dependencies": []
+  },
+  "content": {
+    "stats": [
+      {
+        "id": "health",
+        "label": "Health",
+        "min": 0,
+        "max": 100,
+        "default": 100,
+        "showInUI": true,
+        "yearlyDelta": 0,
+        "exposeAs": "health"
+      },
+      {
+        "id": "happiness",
+        "label": "Happiness",
+        "min": 0,
+        "max": 100,
+        "default": 60,
+        "showInUI": true,
+        "yearlyDelta": 0,
+        "exposeAs": "happiness"
+      },
+      {
+        "id": "smarts",
+        "label": "Smarts",
+        "min": 0,
+        "max": 100,
+        "default": 50,
+        "showInUI": true,
+        "yearlyDelta": 0,
+        "exposeAs": "smarts"
+      },
+      {
+        "id": "looks",
+        "label": "Looks",
+        "min": 0,
+        "max": 100,
+        "default": 50,
+        "showInUI": true,
+        "yearlyDelta": 0,
+        "exposeAs": "looks"
+      }
+    ],
+    "events": [
+      {
+        "id": "evt.job-offer",
+        "category": "adult",
+        "weight": 12,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 20
+          },
+          {
+            "stat": "age",
+            "op": "<=",
+            "value": 64
+          }
+        ],
+        "cooldownYears": 3,
+        "once": false,
+        "title": "You receive a job offer.",
+        "choices": [
+          {
+            "text": "Accept the demanding, high-paying role",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "asset": "money",
+                    "op": "+",
+                    "value": 40000
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "-",
+                    "value": 6
+                  },
+                  {
+                    "stat": "health",
+                    "op": "-",
+                    "value": 4
+                  }
+                ],
+                "resultText": "The money is great, but the hours are brutal."
+              }
+            ]
+          },
+          {
+            "text": "Take the relaxed, modest role",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "asset": "money",
+                    "op": "+",
+                    "value": 18000
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 5
+                  }
+                ],
+                "resultText": "A comfortable balance of work and life."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.gym",
+        "category": "adult",
+        "weight": 9,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 20
+          },
+          {
+            "stat": "age",
+            "op": "<=",
+            "value": 70
+          }
+        ],
+        "cooldownYears": 1,
+        "once": false,
+        "title": "You consider joining a gym.",
+        "choices": [
+          {
+            "text": "Commit to a fitness routine",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 75,
+                "effects": [
+                  {
+                    "stat": "health",
+                    "op": "+",
+                    "value": 8
+                  },
+                  {
+                    "stat": "looks",
+                    "op": "+",
+                    "value": 4
+                  },
+                  {
+                    "asset": "money",
+                    "op": "-",
+                    "value": 600
+                  }
+                ],
+                "resultText": "You feel stronger and healthier."
+              },
+              {
+                "weight": 25,
+                "effects": [
+                  {
+                    "stat": "health",
+                    "op": "-",
+                    "value": 3
+                  },
+                  {
+                    "asset": "money",
+                    "op": "-",
+                    "value": 600
+                  }
+                ],
+                "resultText": "You pulled a muscle on day one and gave up."
+              }
+            ]
+          },
+          {
+            "text": "Stay on the couch",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "health",
+                    "op": "-",
+                    "value": 2
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 2
+                  }
+                ],
+                "resultText": "Relaxing, if not exactly healthy."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.windfall",
+        "category": "adult",
+        "weight": 4,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 25
+          },
+          {
+            "random": true,
+            "op": "<",
+            "value": 0.5
+          }
+        ],
+        "cooldownYears": 0,
+        "once": false,
+        "title": "You find an unexpected opportunity to invest.",
+        "choices": [
+          {
+            "text": "Invest your savings",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 50,
+                "effects": [
+                  {
+                    "asset": "money",
+                    "op": "+",
+                    "value": 25000
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 6
+                  }
+                ],
+                "resultText": "The investment paid off handsomely."
+              },
+              {
+                "weight": 50,
+                "effects": [
+                  {
+                    "asset": "money",
+                    "op": "-",
+                    "value": 10000
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "-",
+                    "value": 8
+                  }
+                ],
+                "resultText": "It was a scam. Your savings took a hit."
+              }
+            ]
+          },
+          {
+            "text": "Play it safe",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 1
+                  }
+                ],
+                "resultText": "You kept your money where it was."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.first-steps",
+        "category": "childhood",
+        "weight": 5,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": "==",
+            "value": 1
+          }
+        ],
+        "cooldownYears": 0,
+        "once": true,
+        "title": "You took your first steps!",
+        "choices": [
+          {
+            "text": "Toddle proudly across the room",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 5
+                  }
+                ],
+                "resultText": "Your family cheered. A good start to life."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.playground",
+        "category": "childhood",
+        "weight": 10,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 4
+          },
+          {
+            "stat": "age",
+            "op": "<=",
+            "value": 12
+          }
+        ],
+        "cooldownYears": 2,
+        "once": false,
+        "title": "There is a new playground in the neighborhood.",
+        "choices": [
+          {
+            "text": "Climb the tallest structure",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 70,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 6
+                  }
+                ],
+                "resultText": "You conquered the jungle gym. Exhilarating!"
+              },
+              {
+                "weight": 30,
+                "effects": [
+                  {
+                    "stat": "health",
+                    "op": "-",
+                    "value": 8
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "-",
+                    "value": 3
+                  }
+                ],
+                "resultText": "You fell and scraped your knee badly."
+              }
+            ]
+          },
+          {
+            "text": "Stay on the swings",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 3
+                  }
+                ],
+                "resultText": "Gentle fun. You enjoyed the breeze."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.read-books",
+        "category": "childhood",
+        "weight": 8,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 5
+          },
+          {
+            "stat": "age",
+            "op": "<=",
+            "value": 12
+          }
+        ],
+        "cooldownYears": 1,
+        "once": false,
+        "title": "The school library is having a reading challenge.",
+        "choices": [
+          {
+            "text": "Read every book you can",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "smarts",
+                    "op": "+",
+                    "value": 5
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "-",
+                    "value": 1
+                  }
+                ],
+                "resultText": "You devoured the books and got smarter."
+              }
+            ]
+          },
+          {
+            "text": "Skip it and play instead",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 3
+                  }
+                ],
+                "resultText": "Recess was more your speed."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.aging",
+        "category": "elderly",
+        "weight": 60,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 65
+          }
+        ],
+        "cooldownYears": 0,
+        "once": false,
+        "title": "The years are catching up with you.",
+        "choices": [
+          {
+            "text": "Take it one day at a time",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 70,
+                "effects": [
+                  {
+                    "stat": "health",
+                    "op": "-",
+                    "value": 6
+                  }
+                ],
+                "resultText": "You feel a little frailer than last year."
+              },
+              {
+                "weight": 30,
+                "effects": [
+                  {
+                    "stat": "health",
+                    "op": "-",
+                    "value": 12
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "-",
+                    "value": 4
+                  }
+                ],
+                "resultText": "A rough year for your health."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.serious-illness",
+        "category": "elderly",
+        "weight": 30,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 75
+          }
+        ],
+        "cooldownYears": 0,
+        "once": false,
+        "title": "You fall seriously ill.",
+        "choices": [
+          {
+            "text": "Fight it with everything you have",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 55,
+                "effects": [
+                  {
+                    "stat": "health",
+                    "op": "-",
+                    "value": 10
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 3
+                  }
+                ],
+                "resultText": "You pulled through, weaker but unbowed."
+              },
+              {
+                "weight": 45,
+                "effects": [
+                  {
+                    "stat": "health",
+                    "op": "-",
+                    "value": 25
+                  }
+                ],
+                "resultText": "The illness took a heavy toll."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.exam",
+        "category": "teen",
+        "weight": 12,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 13
+          },
+          {
+            "stat": "age",
+            "op": "<=",
+            "value": 18
+          }
+        ],
+        "cooldownYears": 1,
+        "once": false,
+        "title": "Final exams are coming up.",
+        "choices": [
+          {
+            "text": "Study hard",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 80,
+                "effects": [
+                  {
+                    "stat": "smarts",
+                    "op": "+",
+                    "value": 7
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "-",
+                    "value": 4
+                  }
+                ],
+                "resultText": "You aced your exams."
+              },
+              {
+                "weight": 20,
+                "effects": [
+                  {
+                    "stat": "smarts",
+                    "op": "+",
+                    "value": 2
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "-",
+                    "value": 6
+                  }
+                ],
+                "resultText": "You studied hard but burned out a little."
+              }
+            ]
+          },
+          {
+            "text": "Wing it",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 50,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 4
+                  }
+                ],
+                "resultText": "Somehow you scraped by."
+              },
+              {
+                "weight": 50,
+                "effects": [
+                  {
+                    "stat": "smarts",
+                    "op": "-",
+                    "value": 3
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "-",
+                    "value": 5
+                  }
+                ],
+                "resultText": "It went about as well as you would expect."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.first-crush",
+        "category": "teen",
+        "weight": 10,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 14
+          },
+          {
+            "stat": "age",
+            "op": "<=",
+            "value": 19
+          }
+        ],
+        "cooldownYears": 0,
+        "once": true,
+        "title": "You have a crush on someone at school.",
+        "choices": [
+          {
+            "text": "Ask them out",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 55,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 12
+                  },
+                  {
+                    "flag": "core/has_dated",
+                    "op": "set",
+                    "value": true
+                  }
+                ],
+                "resultText": "They said yes! Your heart soared."
+              },
+              {
+                "weight": 45,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "-",
+                    "value": 8
+                  }
+                ],
+                "resultText": "They turned you down. Ouch."
+              }
+            ]
+          },
+          {
+            "text": "Admire from afar",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "-",
+                    "value": 2
+                  }
+                ],
+                "resultText": "You never said anything. The moment passed."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.part-time-job",
+        "category": "teen",
+        "weight": 8,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 16
+          },
+          {
+            "stat": "age",
+            "op": "<=",
+            "value": 19
+          }
+        ],
+        "cooldownYears": 2,
+        "once": false,
+        "title": "A local shop is hiring part-time.",
+        "choices": [
+          {
+            "text": "Take the job",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "asset": "money",
+                    "op": "+",
+                    "value": 1500
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "-",
+                    "value": 3
+                  }
+                ],
+                "resultText": "You earned some money and a little independence."
+              }
+            ]
+          },
+          {
+            "text": "Enjoy your free time",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 4
+                  }
+                ],
+                "resultText": "You spent the summer relaxing."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

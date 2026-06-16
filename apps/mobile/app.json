@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "Fateline",
+    "slug": "fateline",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "fateline",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

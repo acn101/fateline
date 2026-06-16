@@ -33,3 +33,6 @@ jobs:
 
       - name: Test (with coverage gates)
         run: pnpm test
+
+      - name: Web build smoke check
+        run: pnpm --filter @fateline/app exec expo export --platform web

@@ -1,10 +1,16 @@
 import { describe, expect, it } from 'vitest';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import { compileRegistry, createGame, ageUp, applyChoice } from '@fateline/engine';
+import { loadModuleFromDir } from '@fateline/module-io';
 import type { FatelineModule } from '@fateline/module-schema';
-import { loadCoreModule } from './index.js';
+import { coreModule } from './index.js';
 
+const coreDir = join(dirname(fileURLToPath(import.meta.url)), '..');
+
+/** Validate the YAML source of truth from disk (catches un-regenerated edits). */
 async function loadValidCore(): Promise<FatelineModule> {
-  const result = await loadCoreModule();
+  const result = await loadModuleFromDir(coreDir);
   if (!result.ok) {
     throw new Error('core module failed validation:\n' + JSON.stringify(result.errors, null, 2));
   }
@@ -25,6 +31,11 @@ describe('core module (README §8 — base game is a module)', () => {
     const reg = compileRegistry([await loadValidCore()]);
     expect(reg.vitalityStatId).toBe('health');
     expect(reg.stats.get('happiness')).toBeDefined();
+  });
+
+  it('exports a generated coreModule kept in sync with the YAML source', async () => {
+    // Guards against editing YAML without re-running `generate`.
+    expect(coreModule).toEqual(await loadValidCore());
   });
 
   it('plays a full, deterministic life to its natural end', async () => {

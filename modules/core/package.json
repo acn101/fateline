@@ -9,6 +9,8 @@
     ".": "./src/index.ts"
   },
   "scripts": {
+    "generate": "node generate.mjs",
+    "build": "node generate.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint .",
     "test": "vitest run"
@@ -19,6 +21,7 @@
   },
   "devDependencies": {
     "@fateline/engine": "workspace:*",
+    "esbuild": "^0.28.1",
     "vitest": "^4.1.9"
   }
 }

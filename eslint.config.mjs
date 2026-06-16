@@ -12,6 +12,11 @@ export default tseslint.config(
       '**/.expo/**',
       '**/web-build/**',
       '**/node_modules/**',
+      '**/generated/**',
+      // Bundler/build config files are CommonJS and run outside the TS program.
+      '**/metro.config.js',
+      '**/babel.config.js',
+      '**/*.mjs',
     ],
   },
   eslint.configs.recommended,
