@@ -1,0 +1,41 @@
+# Late-life events (65+). Health decline here drives mortality through content
+# rather than a hardcoded rule — when `health` reaches its minimum (0), the
+# engine's vitality check ends the life (README §4.4).
+
+- id: evt.aging
+  category: elderly
+  weight: 60
+  conditions:
+    - { stat: age, op: '>=', value: 65 }
+  title: 'The years are catching up with you.'
+  choices:
+    - text: 'Take it one day at a time'
+      outcomes:
+        - weight: 70
+          effects:
+            - { stat: health, op: '-', value: 6 }
+          resultText: 'You feel a little frailer than last year.'
+        - weight: 30
+          effects:
+            - { stat: health, op: '-', value: 12 }
+            - { stat: happiness, op: '-', value: 4 }
+          resultText: 'A rough year for your health.'
+
+- id: evt.serious-illness
+  category: elderly
+  weight: 30
+  conditions:
+    - { stat: age, op: '>=', value: 75 }
+  title: 'You fall seriously ill.'
+  choices:
+    - text: 'Fight it with everything you have'
+      outcomes:
+        - weight: 55
+          effects:
+            - { stat: health, op: '-', value: 10 }
+            - { stat: happiness, op: '+', value: 3 }
+          resultText: 'You pulled through, weaker but unbowed.'
+        - weight: 45
+          effects:
+            - { stat: health, op: '-', value: 25 }
+          resultText: 'The illness took a heavy toll.'

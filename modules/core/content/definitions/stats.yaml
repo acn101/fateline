@@ -1,0 +1,36 @@
+# Core stats — README §4.4. These are declared exactly like any module's
+# stats; the engine has no hardcoded stat list. `health` is exposed globally
+# and acts as the vitality stat (death when it hits its minimum).
+stats:
+  - id: health
+    label: 'Health'
+    min: 0
+    max: 100
+    default: 100
+    showInUI: true
+    yearlyDelta: 0
+    exposeAs: health
+
+  - id: happiness
+    label: 'Happiness'
+    min: 0
+    max: 100
+    default: 60
+    showInUI: true
+    exposeAs: happiness
+
+  - id: smarts
+    label: 'Smarts'
+    min: 0
+    max: 100
+    default: 50
+    showInUI: true
+    exposeAs: smarts
+
+  - id: looks
+    label: 'Looks'
+    min: 0
+    max: 100
+    default: 50
+    showInUI: true
+    exposeAs: looks

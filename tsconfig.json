@@ -1,4 +1,9 @@
 {
   "files": [],
-  "references": [{ "path": "packages/module-schema" }, { "path": "packages/engine" }]
+  "references": [
+    { "path": "packages/module-schema" },
+    { "path": "packages/engine" },
+    { "path": "packages/module-io" },
+    { "path": "modules/core" }
+  ]
 }

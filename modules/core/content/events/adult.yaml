@@ -1,0 +1,83 @@
+# Adulthood events (roughly ages 20–64).
+
+- id: evt.job-offer
+  category: adult
+  weight: 12
+  cooldownYears: 3
+  conditions:
+    - { stat: age, op: '>=', value: 20 }
+    - { stat: age, op: '<=', value: 64 }
+  title: 'You receive a job offer.'
+  choices:
+    - text: 'Accept the demanding, high-paying role'
+      outcomes:
+        - weight: 100
+          effects:
+            - { asset: money, op: '+', value: 40000 }
+            - { stat: happiness, op: '-', value: 6 }
+            - { stat: health, op: '-', value: 4 }
+          resultText: 'The money is great, but the hours are brutal.'
+    - text: 'Take the relaxed, modest role'
+      outcomes:
+        - weight: 100
+          effects:
+            - { asset: money, op: '+', value: 18000 }
+            - { stat: happiness, op: '+', value: 5 }
+          resultText: 'A comfortable balance of work and life.'
+
+- id: evt.gym
+  category: adult
+  weight: 9
+  cooldownYears: 1
+  conditions:
+    - { stat: age, op: '>=', value: 20 }
+    - { stat: age, op: '<=', value: 70 }
+  title: 'You consider joining a gym.'
+  choices:
+    - text: 'Commit to a fitness routine'
+      outcomes:
+        - weight: 75
+          effects:
+            - { stat: health, op: '+', value: 8 }
+            - { stat: looks, op: '+', value: 4 }
+            - { asset: money, op: '-', value: 600 }
+          resultText: 'You feel stronger and healthier.'
+        - weight: 25
+          effects:
+            - { stat: health, op: '-', value: 3 }
+            - { asset: money, op: '-', value: 600 }
+          resultText: 'You pulled a muscle on day one and gave up.'
+    - text: 'Stay on the couch'
+      outcomes:
+        - weight: 100
+          effects:
+            - { stat: health, op: '-', value: 2 }
+            - { stat: happiness, op: '+', value: 2 }
+          resultText: 'Relaxing, if not exactly healthy.'
+
+- id: evt.windfall
+  category: adult
+  weight: 4
+  conditions:
+    - { stat: age, op: '>=', value: 25 }
+    - { random: true, op: '<', value: 0.5 }
+  title: 'You find an unexpected opportunity to invest.'
+  choices:
+    - text: 'Invest your savings'
+      outcomes:
+        - weight: 50
+          effects:
+            - { asset: money, op: '+', value: 25000 }
+            - { stat: happiness, op: '+', value: 6 }
+          resultText: 'The investment paid off handsomely.'
+        - weight: 50
+          effects:
+            - { asset: money, op: '-', value: 10000 }
+            - { stat: happiness, op: '-', value: 8 }
+          resultText: 'It was a scam. Your savings took a hit.'
+    - text: 'Play it safe'
+      outcomes:
+        - weight: 100
+          effects:
+            - { stat: happiness, op: '+', value: 1 }
+          resultText: 'You kept your money where it was.'

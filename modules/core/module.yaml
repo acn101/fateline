@@ -1,0 +1,10 @@
+id: com.fateline.core
+name: Fateline Core
+version: 0.1.0
+engineVersion: '>=0.0.0 <1.0.0'
+author: Fateline
+description: >-
+  The base game, shipped as a module. Defines the core stats and a starter set
+  of life events across childhood, adolescence, and adulthood. Everything here
+  uses the same public schema any community module uses (README §8).
+dependencies: []

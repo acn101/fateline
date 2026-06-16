@@ -1,0 +1,84 @@
+# Adolescence events (roughly ages 13–19).
+
+- id: evt.exam
+  category: teen
+  weight: 12
+  cooldownYears: 1
+  conditions:
+    - { stat: age, op: '>=', value: 13 }
+    - { stat: age, op: '<=', value: 18 }
+  title: 'Final exams are coming up.'
+  choices:
+    - text: 'Study hard'
+      outcomes:
+        - weight: 80
+          effects:
+            - { stat: smarts, op: '+', value: 7 }
+            - { stat: happiness, op: '-', value: 4 }
+          resultText: 'You aced your exams.'
+        - weight: 20
+          effects:
+            - { stat: smarts, op: '+', value: 2 }
+            - { stat: happiness, op: '-', value: 6 }
+          resultText: 'You studied hard but burned out a little.'
+    - text: 'Wing it'
+      outcomes:
+        - weight: 50
+          effects:
+            - { stat: happiness, op: '+', value: 4 }
+          resultText: 'Somehow you scraped by.'
+        - weight: 50
+          effects:
+            - { stat: smarts, op: '-', value: 3 }
+            - { stat: happiness, op: '-', value: 5 }
+          resultText: 'It went about as well as you would expect.'
+
+- id: evt.first-crush
+  category: teen
+  weight: 10
+  once: true
+  conditions:
+    - { stat: age, op: '>=', value: 14 }
+    - { stat: age, op: '<=', value: 19 }
+  title: 'You have a crush on someone at school.'
+  choices:
+    - text: 'Ask them out'
+      outcomes:
+        - weight: 55
+          effects:
+            - { stat: happiness, op: '+', value: 12 }
+            - { flag: 'core/has_dated', op: 'set', value: true }
+          resultText: 'They said yes! Your heart soared.'
+        - weight: 45
+          effects:
+            - { stat: happiness, op: '-', value: 8 }
+          resultText: 'They turned you down. Ouch.'
+    - text: 'Admire from afar'
+      outcomes:
+        - weight: 100
+          effects:
+            - { stat: happiness, op: '-', value: 2 }
+          resultText: 'You never said anything. The moment passed.'
+
+- id: evt.part-time-job
+  category: teen
+  weight: 8
+  cooldownYears: 2
+  conditions:
+    - { stat: age, op: '>=', value: 16 }
+    - { stat: age, op: '<=', value: 19 }
+  title: 'A local shop is hiring part-time.'
+  choices:
+    - text: 'Take the job'
+      outcomes:
+        - weight: 100
+          effects:
+            - { asset: money, op: '+', value: 1500 }
+            - { stat: happiness, op: '-', value: 3 }
+          resultText: 'You earned some money and a little independence.'
+    - text: 'Enjoy your free time'
+      outcomes:
+        - weight: 100
+          effects:
+            - { stat: happiness, op: '+', value: 4 }
+          resultText: 'You spent the summer relaxing.'

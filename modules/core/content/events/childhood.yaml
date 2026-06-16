@@ -1,0 +1,66 @@
+# Childhood events (roughly ages 1–12). Use the `stat: age` reserved target.
+
+- id: evt.first-steps
+  category: childhood
+  weight: 5
+  once: true
+  conditions:
+    - { stat: age, op: '==', value: 1 }
+  title: 'You took your first steps!'
+  choices:
+    - text: 'Toddle proudly across the room'
+      outcomes:
+        - weight: 100
+          effects:
+            - { stat: happiness, op: '+', value: 5 }
+          resultText: 'Your family cheered. A good start to life.'
+
+- id: evt.playground
+  category: childhood
+  weight: 10
+  cooldownYears: 2
+  conditions:
+    - { stat: age, op: '>=', value: 4 }
+    - { stat: age, op: '<=', value: 12 }
+  title: 'There is a new playground in the neighborhood.'
+  choices:
+    - text: 'Climb the tallest structure'
+      outcomes:
+        - weight: 70
+          effects:
+            - { stat: happiness, op: '+', value: 6 }
+          resultText: 'You conquered the jungle gym. Exhilarating!'
+        - weight: 30
+          effects:
+            - { stat: health, op: '-', value: 8 }
+            - { stat: happiness, op: '-', value: 3 }
+          resultText: 'You fell and scraped your knee badly.'
+    - text: 'Stay on the swings'
+      outcomes:
+        - weight: 100
+          effects:
+            - { stat: happiness, op: '+', value: 3 }
+          resultText: 'Gentle fun. You enjoyed the breeze.'
+
+- id: evt.read-books
+  category: childhood
+  weight: 8
+  cooldownYears: 1
+  conditions:
+    - { stat: age, op: '>=', value: 5 }
+    - { stat: age, op: '<=', value: 12 }
+  title: 'The school library is having a reading challenge.'
+  choices:
+    - text: 'Read every book you can'
+      outcomes:
+        - weight: 100
+          effects:
+            - { stat: smarts, op: '+', value: 5 }
+            - { stat: happiness, op: '-', value: 1 }
+          resultText: 'You devoured the books and got smarter.'
+    - text: 'Skip it and play instead'
+      outcomes:
+        - weight: 100
+          effects:
+            - { stat: happiness, op: '+', value: 3 }
+          resultText: 'Recess was more your speed.'
