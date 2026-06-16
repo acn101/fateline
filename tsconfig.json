@@ -4,6 +4,7 @@
     { "path": "packages/module-schema" },
     { "path": "packages/engine" },
     { "path": "packages/module-io" },
+    { "path": "packages/cli" },
     { "path": "modules/core" }
   ]
 }

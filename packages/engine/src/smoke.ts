@@ -1,0 +1,81 @@
+import type { Registry } from './registry.js';
+import { createGame, ageUp, applyChoice } from './turn.js';
+
+/**
+ * Headless smoke test — README §11.2. Runs N seeded lives against a compiled
+ * registry and asserts the engine never crashes, lives always terminate, and
+ * declared stats never escape their bounds. This is the gameplay-level check
+ * the `fateline-validate` CLI and the registry CI gate run on every module.
+ */
+
+export interface SmokeOptions {
+  /** Number of distinct seeded lives to simulate. */
+  lives?: number;
+  /** Hard cap on age-ups per life; exceeding it means the life got stuck. */
+  maxYears?: number;
+}
+
+export interface SmokeProblem {
+  seed: number;
+  kind: 'did-not-terminate' | 'stat-out-of-bounds' | 'threw';
+  detail: string;
+}
+
+export interface SmokeReport {
+  ok: boolean;
+  livesRun: number;
+  problems: SmokeProblem[];
+}
+
+export function smokeTest(registry: Registry, options: SmokeOptions = {}): SmokeReport {
+  const lives = options.lives ?? 100;
+  const maxYears = options.maxYears ?? 200;
+  const problems: SmokeProblem[] = [];
+
+  for (let seed = 0; seed < lives; seed++) {
+    try {
+      const game = createGame(registry, {
+        seed,
+        character: { name: 'Smoke', gender: 'x', birthYear: 2000 },
+        assets: { money: 0 },
+      });
+
+      let years = 0;
+      while (game.character.alive && years < maxYears) {
+        const pending = ageUp(game, registry);
+        if (pending) {
+          // Exercise a deterministic-but-varied choice across the run.
+          applyChoice(game, registry, pending, seed % pending.event.choices.length);
+        }
+        years += 1;
+      }
+
+      if (game.character.alive) {
+        problems.push({
+          seed,
+          kind: 'did-not-terminate',
+          detail: `life still alive after ${maxYears} years`,
+        });
+      }
+
+      for (const [statId, value] of Object.entries(game.stats)) {
+        const def = registry.stats.get(statId);
+        if (def && (value < def.min || value > def.max)) {
+          problems.push({
+            seed,
+            kind: 'stat-out-of-bounds',
+            detail: `stat "${statId}" = ${value}, outside [${def.min}, ${def.max}]`,
+          });
+        }
+      }
+    } catch (err) {
+      problems.push({
+        seed,
+        kind: 'threw',
+        detail: err instanceof Error ? err.message : String(err),
+      });
+    }
+  }
+
+  return { ok: problems.length === 0, livesRun: lives, problems };
+}
