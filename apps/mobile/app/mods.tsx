@@ -3,6 +3,7 @@ import { Text, TextInput, Pressable, ScrollView, StyleSheet } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { fromPaste, fromGithub, installMod } from '@fateline/mod-loader';
+import { useTheme } from '@fateline/ui';
 import { modStore, refreshSession, useInstalledIds } from '../src/gameSession';
 
 /**
@@ -12,6 +13,7 @@ import { modStore, refreshSession, useInstalledIds } from '../src/gameSession';
  */
 export default function ModsScreen() {
   const router = useRouter();
+  const t = useTheme();
   const installed = useInstalledIds();
   const [paste, setPaste] = useState('');
   const [github, setGithub] = useState('');
@@ -43,51 +45,68 @@ export default function ModsScreen() {
     });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: t.bg }]}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.heading}>Mods</Text>
+        <Text style={[styles.heading, { color: t.text }]}>Mods</Text>
 
-        <Text style={styles.section}>Installed</Text>
+        <Text style={[styles.section, { color: t.muted }]}>Installed</Text>
         {installed.length === 0 ? (
-          <Text style={styles.muted}>No mods installed yet.</Text>
+          <Text style={[styles.muted, { color: t.faint }]}>No mods installed yet.</Text>
         ) : (
           installed.map((id) => (
-            <Text key={id} style={styles.item}>
+            <Text key={id} style={[styles.item, { color: t.text }]}>
               • {id}
             </Text>
           ))
         )}
 
-        <Text style={styles.section}>Add from GitHub</Text>
+        <Text style={[styles.section, { color: t.muted }]}>Add from GitHub</Text>
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            { backgroundColor: t.surface, color: t.text, borderColor: t.border },
+          ]}
           placeholder="https://github.com/owner/repo"
+          placeholderTextColor={t.faint}
           autoCapitalize="none"
           value={github}
           onChangeText={setGithub}
           accessibilityLabel="GitHub URL"
         />
-        <Pressable style={styles.button} accessibilityRole="button" onPress={installGithub}>
-          <Text style={styles.buttonText}>Install from GitHub</Text>
+        <Pressable
+          style={[styles.button, { backgroundColor: t.accent }]}
+          accessibilityRole="button"
+          onPress={installGithub}
+        >
+          <Text style={[styles.buttonText, { color: t.onAccent }]}>Install from GitHub</Text>
         </Pressable>
 
-        <Text style={styles.section}>Paste YAML</Text>
+        <Text style={[styles.section, { color: t.muted }]}>Paste YAML</Text>
         <TextInput
-          style={[styles.input, styles.multiline]}
+          style={[
+            styles.input,
+            styles.multiline,
+            { backgroundColor: t.surface, color: t.text, borderColor: t.border },
+          ]}
           placeholder="Paste a mod's YAML here"
+          placeholderTextColor={t.faint}
           multiline
           value={paste}
           onChangeText={setPaste}
           accessibilityLabel="Mod YAML"
         />
-        <Pressable style={styles.button} accessibilityRole="button" onPress={installPaste}>
-          <Text style={styles.buttonText}>Install from paste</Text>
+        <Pressable
+          style={[styles.button, { backgroundColor: t.accent }]}
+          accessibilityRole="button"
+          onPress={installPaste}
+        >
+          <Text style={[styles.buttonText, { color: t.onAccent }]}>Install from paste</Text>
         </Pressable>
 
-        {status ? <Text style={styles.status}>{status}</Text> : null}
+        {status ? <Text style={[styles.status, { color: t.muted }]}>{status}</Text> : null}
 
         <Pressable style={styles.link} accessibilityRole="button" onPress={() => router.back()}>
-          <Text style={styles.linkText}>Done</Text>
+          <Text style={[styles.linkText, { color: t.accent }]}>Done</Text>
         </Pressable>
       </ScrollView>
     </SafeAreaView>
@@ -95,17 +114,23 @@ export default function ModsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f3f4f6' },
+  container: { flex: 1 },
   content: { padding: 20, gap: 8 },
-  heading: { fontSize: 28, fontWeight: '800', color: '#111827' },
-  section: { fontSize: 15, fontWeight: '700', color: '#374151', marginTop: 16 },
-  muted: { color: '#9ca3af', fontStyle: 'italic' },
-  item: { color: '#111827', fontSize: 14 },
-  input: { backgroundColor: '#fff', borderRadius: 10, padding: 12, fontSize: 14 },
+  heading: { fontSize: 28, fontWeight: '800' },
+  section: {
+    fontSize: 12,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    marginTop: 16,
+  },
+  muted: { fontStyle: 'italic' },
+  item: { fontSize: 14 },
+  input: { borderRadius: 10, borderWidth: StyleSheet.hairlineWidth, padding: 12, fontSize: 14 },
   multiline: { minHeight: 100, textAlignVertical: 'top' },
-  button: { backgroundColor: '#4f46e5', borderRadius: 10, padding: 12, alignItems: 'center' },
-  buttonText: { color: '#fff', fontWeight: '600' },
-  status: { marginTop: 12, color: '#374151' },
+  button: { borderRadius: 10, padding: 14, alignItems: 'center' },
+  buttonText: { fontWeight: '700' },
+  status: { marginTop: 12 },
   link: { marginTop: 24, alignItems: 'center' },
-  linkText: { color: '#4f46e5', fontWeight: '600' },
+  linkText: { fontWeight: '600' },
 });

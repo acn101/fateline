@@ -3,6 +3,7 @@ import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { BirthCandidate, Gender } from '@fateline/engine';
+import { useTheme } from '@fateline/ui';
 import { gameStore, restoreAutosave } from '../src/gameSession';
 
 type GenderChoice = Gender | 'any';
@@ -19,6 +20,7 @@ const GENDER_LABEL: Record<Gender, string> = { female: 'Female', male: 'Male', x
 /** Home / New Life screen — character creation with a 3-candidate birth chooser. */
 export default function NewLifeScreen() {
   const router = useRouter();
+  const t = useTheme();
   const [hasSave, setHasSave] = useState(false);
   const [gender, setGender] = useState<GenderChoice>('any');
   const [candidates, setCandidates] = useState<BirthCandidate[]>([]);
@@ -55,48 +57,57 @@ export default function NewLifeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: t.bg }]}>
       <ScrollView contentContainerStyle={styles.inner}>
-        <Text style={styles.title}>Fateline</Text>
-        <Text style={styles.subtitle}>Choose a life to be born into.</Text>
+        <Text style={[styles.title, { color: t.accent }]}>Fateline</Text>
+        <Text style={[styles.subtitle, { color: t.muted }]}>Choose a life to be born into.</Text>
 
         <View style={styles.genderRow}>
-          {GENDER_OPTIONS.map((opt) => (
-            <Pressable
-              key={opt.id}
-              style={[styles.genderChip, gender === opt.id && styles.genderChipActive]}
-              accessibilityRole="button"
-              accessibilityState={{ selected: gender === opt.id }}
-              onPress={() => chooseGender(opt.id)}
-            >
-              <Text style={[styles.genderText, gender === opt.id && styles.genderTextActive]}>
-                {opt.label}
-              </Text>
-            </Pressable>
-          ))}
+          {GENDER_OPTIONS.map((opt) => {
+            const active = gender === opt.id;
+            return (
+              <Pressable
+                key={opt.id}
+                style={[
+                  styles.genderChip,
+                  { backgroundColor: active ? t.accent : t.surface, borderColor: t.border },
+                ]}
+                accessibilityRole="button"
+                accessibilityState={{ selected: active }}
+                onPress={() => chooseGender(opt.id)}
+              >
+                <Text style={[styles.genderText, { color: active ? t.onAccent : t.muted }]}>
+                  {opt.label}
+                </Text>
+              </Pressable>
+            );
+          })}
         </View>
 
         {candidates.map((c, i) => (
           <Pressable
             key={i}
-            style={styles.card}
+            style={({ pressed }) => [
+              styles.card,
+              { backgroundColor: t.surface, borderColor: t.border, opacity: pressed ? 0.85 : 1 },
+            ]}
             accessibilityRole="button"
             accessibilityLabel={`Be born as ${c.name}`}
             onPress={() => beBorn(c)}
           >
-            <Text style={styles.name}>{c.name}</Text>
-            <Text style={styles.meta}>
+            <Text style={[styles.name, { color: t.text }]}>{c.name}</Text>
+            <Text style={[styles.meta, { color: t.muted }]}>
               {GENDER_LABEL[c.gender]}
               {c.ethnicityLabel ? ` · ${c.ethnicityLabel}` : ''}
             </Text>
-            <Text style={styles.origin}>
+            <Text style={[styles.origin, { color: t.faint }]}>
               Born in {c.birthplace || 'parts unknown'}, {c.countryLabel}
             </Text>
           </Pressable>
         ))}
 
         <Pressable style={styles.reroll} accessibilityRole="button" onPress={() => roll(gender)}>
-          <Text style={styles.rerollText}>↻ Reroll</Text>
+          <Text style={[styles.rerollText, { color: t.accent }]}>↻ Reroll</Text>
         </Pressable>
 
         {hasSave ? (
@@ -105,7 +116,7 @@ export default function NewLifeScreen() {
             accessibilityRole="button"
             onPress={() => router.push('/play')}
           >
-            <Text style={styles.secondaryText}>Continue current life</Text>
+            <Text style={[styles.secondaryText, { color: t.accent }]}>Continue current life</Text>
           </Pressable>
         ) : null}
         <Pressable
@@ -113,7 +124,7 @@ export default function NewLifeScreen() {
           accessibilityRole="button"
           onPress={() => router.push('/mods')}
         >
-          <Text style={styles.secondaryText}>Manage Mods</Text>
+          <Text style={[styles.secondaryText, { color: t.muted }]}>Manage Mods</Text>
         </Pressable>
       </ScrollView>
     </SafeAreaView>
@@ -121,26 +132,34 @@ export default function NewLifeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f3f4f6' },
+  container: { flex: 1 },
   inner: { padding: 24, gap: 12 },
-  title: { fontSize: 40, fontWeight: '800', color: '#312e81', textAlign: 'center', marginTop: 12 },
-  subtitle: { fontSize: 15, color: '#6b7280', textAlign: 'center', marginBottom: 8 },
+  title: { fontSize: 42, fontWeight: '900', textAlign: 'center', marginTop: 12, letterSpacing: -1 },
+  subtitle: { fontSize: 15, textAlign: 'center', marginBottom: 8 },
   genderRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, justifyContent: 'center' },
   genderChip: {
-    backgroundColor: '#fff',
     borderRadius: 999,
+    borderWidth: StyleSheet.hairlineWidth,
     paddingVertical: 8,
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
   },
-  genderChipActive: { backgroundColor: '#4f46e5' },
-  genderText: { color: '#4f46e5', fontWeight: '600', fontSize: 13 },
-  genderTextActive: { color: '#fff' },
-  card: { backgroundColor: '#fff', borderRadius: 14, padding: 16, gap: 2 },
-  name: { fontSize: 20, fontWeight: '700', color: '#111827' },
-  meta: { fontSize: 13, color: '#6b7280' },
-  origin: { fontSize: 13, color: '#9ca3af' },
+  genderText: { fontWeight: '600', fontSize: 13 },
+  card: {
+    borderRadius: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: 16,
+    gap: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  name: { fontSize: 20, fontWeight: '700' },
+  meta: { fontSize: 13 },
+  origin: { fontSize: 13 },
   reroll: { alignItems: 'center', padding: 8 },
-  rerollText: { color: '#4f46e5', fontWeight: '600' },
+  rerollText: { fontWeight: '600' },
   secondary: { padding: 12, alignItems: 'center' },
-  secondaryText: { color: '#4f46e5', fontSize: 15, fontWeight: '600' },
+  secondaryText: { fontSize: 15, fontWeight: '600' },
 });

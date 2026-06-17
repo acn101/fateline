@@ -9,7 +9,9 @@ export default defineConfig({
       provider: 'v8',
       thresholds: { lines: 90, functions: 90, branches: 90, statements: 90 },
       include: ['src/**/*.ts'],
-      exclude: ['src/**/*.tsx', 'src/index.ts', '**/*.test.ts'],
+      // .tsx components + the RN-coupled useTheme hook are covered by E2E, not
+      // unit tests (they require a native render env). Pure logic stays gated.
+      exclude: ['src/**/*.tsx', 'src/useTheme.ts', 'src/index.ts', '**/*.test.ts'],
     },
   },
 });

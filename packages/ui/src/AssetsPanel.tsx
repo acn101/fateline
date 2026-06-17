@@ -1,6 +1,7 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import type { AssetsView } from '@fateline/store';
 import { formatMoney } from './format.js';
+import { useTheme } from './useTheme.js';
 
 /**
  * Assets panel (README §7, §4.5.4): owned assets (sellable at current value)
@@ -15,14 +16,13 @@ export function AssetsPanel({
   onBuy: (assetTypeId: string) => void;
   onSell: (ownedId: string) => void;
 }) {
+  const t = useTheme();
   return (
     <View style={styles.wrap}>
-      <Text style={styles.heading}>Assets</Text>
-
       {view.owned.length > 0 ? (
         view.owned.map(({ owned, label }) => (
           <View key={owned.id} style={styles.ownedRow}>
-            <Text style={styles.ownedLabel}>
+            <Text style={[styles.ownedLabel, { color: t.text }]}>
               {label} · {formatMoney(owned.value)}
             </Text>
             <Pressable
@@ -30,27 +30,30 @@ export function AssetsPanel({
               accessibilityLabel={`Sell ${label}`}
               onPress={() => onSell(owned.id)}
             >
-              <Text style={styles.sell}>Sell</Text>
+              <Text style={[styles.sell, { color: t.danger }]}>Sell</Text>
             </Pressable>
           </View>
         ))
       ) : (
-        <Text style={styles.muted}>You own nothing of value.</Text>
+        <Text style={[styles.muted, { color: t.faint }]}>You own nothing of value.</Text>
       )}
 
       {view.buyable.length > 0 ? (
         <>
-          <Text style={styles.label}>Buy</Text>
+          <Text style={[styles.label, { color: t.faint }]}>Buy</Text>
           <View style={styles.chips}>
             {view.buyable.map((a) => (
               <Pressable
                 key={a.id}
-                style={styles.chip}
+                style={({ pressed }) => [
+                  styles.chip,
+                  { backgroundColor: t.surfaceAlt, opacity: pressed ? 0.8 : 1 },
+                ]}
                 accessibilityRole="button"
                 onPress={() => onBuy(a.id)}
               >
-                <Text style={styles.chipText}>{a.label}</Text>
-                <Text style={styles.price}>{formatMoney(a.price)}</Text>
+                <Text style={[styles.chipText, { color: t.text }]}>{a.label}</Text>
+                <Text style={[styles.price, { color: t.muted }]}>{formatMoney(a.price)}</Text>
               </Pressable>
             ))}
           </View>
@@ -61,23 +64,27 @@ export function AssetsPanel({
 }
 
 const styles = StyleSheet.create({
-  wrap: { gap: 6 },
-  heading: { fontSize: 12, fontWeight: '700', color: '#6b7280' },
+  wrap: { gap: 8 },
   ownedRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  ownedLabel: { fontSize: 14, color: '#111827' },
-  sell: { fontSize: 13, color: '#dc2626', fontWeight: '600' },
-  muted: { fontSize: 14, color: '#9ca3af', fontStyle: 'italic' },
-  label: { fontSize: 12, fontWeight: '600', color: '#9ca3af', marginTop: 4 },
+  ownedLabel: { fontSize: 14, fontWeight: '500' },
+  sell: { fontSize: 13, fontWeight: '600' },
+  muted: { fontSize: 14, fontStyle: 'italic' },
+  label: {
+    fontSize: 11,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    marginTop: 4,
+  },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#fffbeb',
     borderRadius: 999,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
   },
-  chipText: { color: '#92400e', fontWeight: '600', fontSize: 12 },
-  price: { color: '#b45309', fontSize: 11 },
+  chipText: { fontWeight: '600', fontSize: 13 },
+  price: { fontSize: 11 },
 });

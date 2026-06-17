@@ -1,3 +1,5 @@
+export * from './theme.js';
+export * from './useTheme.js';
 export * from './format.js';
 export * from './StatBar.js';
 export * from './StatsHeader.js';

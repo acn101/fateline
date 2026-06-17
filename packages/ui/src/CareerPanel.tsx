@@ -1,6 +1,7 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import type { CareerView } from '@fateline/store';
 import { formatMoney } from './format.js';
+import { useTheme } from './useTheme.js';
 
 /**
  * Career & School panel (README §7, §4.5.3): current job/schooling status plus
@@ -17,25 +18,24 @@ export function CareerPanel({
   onQuit: () => void;
   onEnroll: (programId: string) => void;
 }) {
+  const t = useTheme();
   return (
     <View style={styles.wrap}>
-      <Text style={styles.heading}>Career & School</Text>
-
       {view.current ? (
         <View style={styles.statusRow}>
-          <Text style={styles.status}>
+          <Text style={[styles.status, { color: t.text }]}>
             {view.current.title} · {formatMoney(view.current.salary)}/yr
           </Text>
           <Pressable accessibilityRole="button" accessibilityLabel="Quit job" onPress={onQuit}>
-            <Text style={styles.quit}>Quit</Text>
+            <Text style={[styles.quit, { color: t.danger }]}>Quit</Text>
           </Pressable>
         </View>
       ) : (
-        <Text style={styles.muted}>Unemployed</Text>
+        <Text style={[styles.muted, { color: t.faint }]}>Unemployed</Text>
       )}
 
       {view.enrolledIn ? (
-        <Text style={styles.status}>
+        <Text style={[styles.status, { color: t.text }]}>
           Studying {view.enrolledIn.title} ({view.enrolledIn.yearsCompleted}/{view.enrolledIn.years}{' '}
           yrs)
         </Text>
@@ -43,16 +43,19 @@ export function CareerPanel({
 
       {view.openPrograms.length > 0 ? (
         <>
-          <Text style={styles.label}>Enroll</Text>
+          <Text style={[styles.label, { color: t.faint }]}>Enroll</Text>
           <View style={styles.chips}>
             {view.openPrograms.map((p) => (
               <Pressable
                 key={p.id}
-                style={styles.eduChip}
+                style={({ pressed }) => [
+                  styles.chip,
+                  { backgroundColor: t.successSoft, opacity: pressed ? 0.8 : 1 },
+                ]}
                 accessibilityRole="button"
                 onPress={() => onEnroll(p.id)}
               >
-                <Text style={styles.eduChipText}>{p.title}</Text>
+                <Text style={[styles.chipText, { color: t.onSuccessSoft }]}>{p.title}</Text>
               </Pressable>
             ))}
           </View>
@@ -61,16 +64,19 @@ export function CareerPanel({
 
       {view.openJobs.length > 0 ? (
         <>
-          <Text style={styles.label}>Apply for a job</Text>
+          <Text style={[styles.label, { color: t.faint }]}>Apply for a job</Text>
           <View style={styles.chips}>
             {view.openJobs.map((c) => (
               <Pressable
                 key={c.id}
-                style={styles.jobChip}
+                style={({ pressed }) => [
+                  styles.chip,
+                  { backgroundColor: t.accentSoft, opacity: pressed ? 0.8 : 1 },
+                ]}
                 accessibilityRole="button"
                 onPress={() => onApply(c.id)}
               >
-                <Text style={styles.jobChipText}>{c.title}</Text>
+                <Text style={[styles.chipText, { color: t.onAccentSoft }]}>{c.title}</Text>
               </Pressable>
             ))}
           </View>
@@ -81,26 +87,19 @@ export function CareerPanel({
 }
 
 const styles = StyleSheet.create({
-  wrap: { gap: 6 },
-  heading: { fontSize: 12, fontWeight: '700', color: '#6b7280' },
+  wrap: { gap: 8 },
   statusRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  status: { fontSize: 14, color: '#111827', fontWeight: '600' },
-  quit: { fontSize: 13, color: '#dc2626', fontWeight: '600' },
-  muted: { fontSize: 14, color: '#9ca3af', fontStyle: 'italic' },
-  label: { fontSize: 12, fontWeight: '600', color: '#9ca3af', marginTop: 4 },
+  status: { fontSize: 15, fontWeight: '600' },
+  quit: { fontSize: 13, fontWeight: '600' },
+  muted: { fontSize: 14, fontStyle: 'italic' },
+  label: {
+    fontSize: 11,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    marginTop: 4,
+  },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  eduChip: {
-    backgroundColor: '#ecfdf5',
-    borderRadius: 999,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-  },
-  eduChipText: { color: '#047857', fontWeight: '600', fontSize: 12 },
-  jobChip: {
-    backgroundColor: '#eff6ff',
-    borderRadius: 999,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-  },
-  jobChipText: { color: '#1d4ed8', fontWeight: '600', fontSize: 12 },
+  chip: { borderRadius: 999, paddingVertical: 10, paddingHorizontal: 16 },
+  chipText: { fontWeight: '600', fontSize: 13 },
 });

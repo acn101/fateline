@@ -1,4 +1,5 @@
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import {
@@ -18,83 +19,132 @@ import {
   RelationshipsPanel,
   CareerPanel,
   AssetsPanel,
+  useTheme,
 } from '@fateline/ui';
-import { useGame } from '../src/gameSession';
-import { gameStore } from '../src/gameSession';
+import { useGame, gameStore } from '../src/gameSession';
 
-/** Main game screen (README §7): stats header, history feed, actions, Age Up. */
+type TabId = 'activities' | 'career' | 'assets' | 'people';
+const TABS: { id: TabId; label: string }[] = [
+  { id: 'activities', label: 'Activities' },
+  { id: 'career', label: 'Career' },
+  { id: 'assets', label: 'Assets' },
+  { id: 'people', label: 'People' },
+];
+
+/** Main game screen (README §7): header, life feed, tabbed panel, Age Up. */
 export default function PlayScreen() {
   const router = useRouter();
+  const t = useTheme();
   const registry = useGame((s) => s.registry);
   const game = useGame((s) => s.game);
   const pending = useGame((s) => s.pending);
+  const [tab, setTab] = useState<TabId>('activities');
 
   if (!registry || !game) {
-    // No session in progress (e.g. deep-linked); go start one.
     router.replace('/');
     return null;
   }
 
   const stats = visibleStats(registry, game);
   const alive = game.character.alive;
-  const groups = alive ? actionMenu(registry, game) : [];
-  const relationships = alive ? relationshipViews(registry, game) : [];
-  const career = careerView(registry, game);
-  const assets = assetsView(registry, game);
+  const store = gameStore.getState();
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: t.bg }]} edges={['top']}>
       <View style={styles.header}>
         <StatsHeader game={game} stats={stats} subtitle={identityLine(registry, game)} />
       </View>
 
       <HistoryFeed history={game.history} />
 
-      <ScrollView style={styles.actions} contentContainerStyle={styles.actionsContent}>
-        <ActionsMenu groups={groups} onAct={(id) => gameStore.getState().act(id)} />
-        {alive ? (
-          <CareerPanel
-            view={career}
-            onApply={(id) => gameStore.getState().applyJob(id)}
-            onQuit={() => gameStore.getState().quitJob()}
-            onEnroll={(id) => gameStore.getState().enroll(id)}
-          />
-        ) : null}
-        {alive ? (
-          <AssetsPanel
-            view={assets}
-            onBuy={(id) => gameStore.getState().buy(id)}
-            onSell={(id) => gameStore.getState().sell(id)}
-          />
-        ) : null}
-        <RelationshipsPanel
-          views={relationships}
-          onInteract={(npcId, actionId) => gameStore.getState().interact(npcId, actionId)}
-        />
-      </ScrollView>
+      {alive ? (
+        <View style={[styles.panel, { backgroundColor: t.surface, borderColor: t.border }]}>
+          <ScrollView contentContainerStyle={styles.panelContent}>
+            {tab === 'activities' ? (
+              <ActionsMenu groups={actionMenu(registry, game)} onAct={(id) => store.act(id)} />
+            ) : null}
+            {tab === 'career' ? (
+              <CareerPanel
+                view={careerView(registry, game)}
+                onApply={(id) => store.applyJob(id)}
+                onQuit={() => store.quitJob()}
+                onEnroll={(id) => store.enroll(id)}
+              />
+            ) : null}
+            {tab === 'assets' ? (
+              <AssetsPanel
+                view={assetsView(registry, game)}
+                onBuy={(id) => store.buy(id)}
+                onSell={(id) => store.sell(id)}
+              />
+            ) : null}
+            {tab === 'people' ? (
+              <RelationshipsPanel
+                views={relationshipViews(registry, game)}
+                onInteract={(npcId, actionId) => store.interact(npcId, actionId)}
+              />
+            ) : null}
+          </ScrollView>
+
+          <View style={[styles.tabBar, { borderTopColor: t.border }]}>
+            {TABS.map((tabItem) => {
+              const active = tab === tabItem.id;
+              return (
+                <Pressable
+                  key={tabItem.id}
+                  style={styles.tab}
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected: active }}
+                  onPress={() => setTab(tabItem.id)}
+                >
+                  <Text
+                    style={[
+                      styles.tabText,
+                      { color: active ? t.accent : t.faint, fontWeight: active ? '800' : '600' },
+                    ]}
+                  >
+                    {tabItem.label}
+                  </Text>
+                  {active ? <View style={[styles.tabDot, { backgroundColor: t.accent }]} /> : null}
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+      ) : (
+        <Text style={[styles.epitaph, { color: t.muted }]}>
+          Your story has ended.{game.ribbon ? `  🎗 ${game.ribbon.label}` : ''}
+        </Text>
+      )}
 
       <View style={styles.footer}>
-        {game.character.alive ? null : (
-          <Text style={styles.epitaph}>
-            Your story has ended.{game.ribbon ? ` 🎗 ${game.ribbon.label}` : ''}
-          </Text>
+        {alive ? (
+          <AgeUpButton onPress={() => store.advance()} />
+        ) : (
+          <AgeUpButton disabled onPress={() => router.replace('/')} />
         )}
-        <AgeUpButton
-          disabled={!game.character.alive}
-          onPress={() => gameStore.getState().advance()}
-        />
       </View>
 
-      <EventModal pending={pending} onChoose={(i) => gameStore.getState().choose(i)} />
+      <EventModal pending={pending} onChoose={(i) => store.choose(i)} />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f3f4f6' },
-  header: { padding: 12 },
-  actions: { maxHeight: 280 },
-  actionsContent: { padding: 12, gap: 16 },
-  footer: { padding: 12, gap: 8 },
-  epitaph: { textAlign: 'center', color: '#6b7280', fontStyle: 'italic' },
+  container: { flex: 1 },
+  header: { padding: 12, paddingBottom: 0 },
+  panel: {
+    maxHeight: 260,
+    margin: 12,
+    borderRadius: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
+  },
+  panelContent: { padding: 14 },
+  tabBar: { flexDirection: 'row', borderTopWidth: StyleSheet.hairlineWidth },
+  tab: { flex: 1, alignItems: 'center', paddingVertical: 10, gap: 4 },
+  tabText: { fontSize: 12 },
+  tabDot: { width: 4, height: 4, borderRadius: 2 },
+  epitaph: { textAlign: 'center', fontStyle: 'italic', padding: 20 },
+  footer: { paddingHorizontal: 12, paddingBottom: 12 },
 });

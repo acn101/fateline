@@ -1,4 +1,5 @@
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
+import { useTheme } from './useTheme.js';
 import type { HistoryEntry, Delta } from '@fateline/engine';
 
 function formatDelta(d: Delta): string {
@@ -13,26 +14,41 @@ function formatDelta(d: Delta): string {
 
 /** The scrollable life-story feed (README §7). Newest entries at the bottom. */
 export function HistoryFeed({ history }: { history: HistoryEntry[] }) {
+  const t = useTheme();
   return (
     <ScrollView style={styles.feed} contentContainerStyle={styles.content}>
       {history.length === 0 ? (
-        <Text style={styles.empty}>Your story begins…</Text>
+        <Text style={[styles.empty, { color: t.faint }]}>Your story begins…</Text>
       ) : (
         history.map((entry, i) => (
-          <View key={i} style={styles.entry}>
-            <Text style={styles.age}>Age {entry.age}</Text>
-            <Text style={styles.text}>{entry.text}</Text>
-            {entry.resultText ? <Text style={styles.result}>{entry.resultText}</Text> : null}
+          <View
+            key={i}
+            style={[styles.entry, { backgroundColor: t.surface, borderColor: t.border }]}
+          >
+            <Text style={[styles.age, { color: t.faint }]}>AGE {entry.age}</Text>
+            <Text style={[styles.text, { color: t.text }]}>{entry.text}</Text>
+            {entry.resultText ? (
+              <Text style={[styles.result, { color: t.muted }]}>{entry.resultText}</Text>
+            ) : null}
             {entry.deltas && entry.deltas.length > 0 ? (
               <View style={styles.deltas}>
-                {entry.deltas.map((d, di) => (
-                  <Text
-                    key={di}
-                    style={[styles.delta, d.amount > 0 ? styles.deltaUp : styles.deltaDown]}
-                  >
-                    {formatDelta(d)}
-                  </Text>
-                ))}
+                {entry.deltas.map((d, di) => {
+                  const up = d.amount > 0;
+                  return (
+                    <Text
+                      key={di}
+                      style={[
+                        styles.delta,
+                        {
+                          color: up ? t.onSuccessSoft : t.onDangerSoft,
+                          backgroundColor: up ? t.successSoft : t.dangerSoft,
+                        },
+                      ]}
+                    >
+                      {formatDelta(d)}
+                    </Text>
+                  );
+                })}
               </View>
             ) : null}
           </View>
@@ -44,12 +60,12 @@ export function HistoryFeed({ history }: { history: HistoryEntry[] }) {
 
 const styles = StyleSheet.create({
   feed: { flex: 1 },
-  content: { padding: 12, gap: 10 },
-  empty: { color: '#9ca3af', fontStyle: 'italic', textAlign: 'center', marginTop: 24 },
-  entry: { backgroundColor: '#ffffff', borderRadius: 10, padding: 12, gap: 2 },
-  age: { fontSize: 11, color: '#9ca3af', fontWeight: '600' },
-  text: { fontSize: 14, color: '#111827' },
-  result: { fontSize: 13, color: '#4b5563' },
+  content: { padding: 12, gap: 8 },
+  empty: { fontStyle: 'italic', textAlign: 'center', marginTop: 24 },
+  entry: { borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, padding: 12, gap: 3 },
+  age: { fontSize: 10, fontWeight: '700', letterSpacing: 1 },
+  text: { fontSize: 14, fontWeight: '500' },
+  result: { fontSize: 13 },
   deltas: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 4 },
   delta: {
     fontSize: 12,
@@ -59,6 +75,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     overflow: 'hidden',
   },
-  deltaUp: { color: '#047857', backgroundColor: '#ecfdf5' },
-  deltaDown: { color: '#b91c1c', backgroundColor: '#fef2f2' },
 });

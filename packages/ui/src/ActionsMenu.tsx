@@ -1,6 +1,7 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import type { ActionGroup } from '@fateline/store';
 import { formatMoney } from './format.js';
+import { useTheme } from './useTheme.js';
 
 /**
  * The Activities menu (README §7, §4.5.1): available actions grouped by
@@ -13,27 +14,35 @@ export function ActionsMenu({
   groups: ActionGroup[];
   onAct: (actionId: string) => void;
 }) {
+  const t = useTheme();
   if (groups.length === 0) {
-    return <Text style={styles.empty}>No activities available right now.</Text>;
+    return (
+      <Text style={[styles.empty, { color: t.faint }]}>No activities available right now.</Text>
+    );
   }
   return (
     <View style={styles.wrap}>
       {groups.map((group) => (
         <View key={group.category} style={styles.group}>
-          <Text style={styles.category}>{group.category}</Text>
+          <Text style={[styles.category, { color: t.faint }]}>{group.category}</Text>
           <View style={styles.chips}>
             {group.actions.map((action) => {
               const moneyCost = action.cost?.['money'];
               return (
                 <Pressable
                   key={action.id}
-                  style={styles.chip}
+                  style={({ pressed }) => [
+                    styles.chip,
+                    { backgroundColor: t.accentSoft, opacity: pressed ? 0.8 : 1 },
+                  ]}
                   accessibilityRole="button"
                   accessibilityLabel={action.label}
                   onPress={() => onAct(action.id)}
                 >
-                  <Text style={styles.chipText}>{action.label}</Text>
-                  {moneyCost ? <Text style={styles.cost}>{formatMoney(moneyCost)}</Text> : null}
+                  <Text style={[styles.chipText, { color: t.onAccentSoft }]}>{action.label}</Text>
+                  {moneyCost ? (
+                    <Text style={[styles.cost, { color: t.muted }]}>{formatMoney(moneyCost)}</Text>
+                  ) : null}
                 </Pressable>
               );
             })}
@@ -45,20 +54,19 @@ export function ActionsMenu({
 }
 
 const styles = StyleSheet.create({
-  wrap: { gap: 12 },
-  group: { gap: 6 },
-  category: { fontSize: 12, fontWeight: '700', color: '#6b7280', textTransform: 'capitalize' },
+  wrap: { gap: 14 },
+  group: { gap: 8 },
+  category: { fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.8 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#eef2ff',
     borderRadius: 999,
-    paddingVertical: 8,
-    paddingHorizontal: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
   },
-  chipText: { color: '#3730a3', fontWeight: '600', fontSize: 13 },
-  cost: { color: '#9ca3af', fontSize: 11 },
-  empty: { color: '#9ca3af', fontStyle: 'italic', textAlign: 'center' },
+  chipText: { fontWeight: '600', fontSize: 13 },
+  cost: { fontSize: 11 },
+  empty: { fontStyle: 'italic', textAlign: 'center', marginTop: 12 },
 });
