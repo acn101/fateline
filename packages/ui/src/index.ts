@@ -5,3 +5,4 @@ export * from './HistoryFeed.js';
 export * from './EventModal.js';
 export * from './AgeUpButton.js';
 export * from './ActionsMenu.js';
+export * from './RelationshipsPanel.js';

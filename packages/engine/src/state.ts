@@ -26,6 +26,19 @@ export interface HistoryEntry {
   resultText?: string;
 }
 
+/** A persistent NPC the player has a relationship with (README §4.5.2). */
+export interface Relationship {
+  /** Unique instance id within this save. */
+  id: string;
+  name: string;
+  /** Relationship category, e.g. `friend`, `partner`, `parent`. */
+  type: string;
+  alive: boolean;
+  /** Per-relationship stats, e.g. { relationship: 0-100 }. */
+  stats: Record<string, number>;
+  flags: Record<string, FlagValue>;
+}
+
 export interface GameState {
   character: Character;
   /** Stat values keyed by resolved (namespaced/exposed) stat id. */
@@ -34,6 +47,10 @@ export interface GameState {
   flags: Record<string, FlagValue>;
   /** Asset balances keyed by id (e.g. `money`). */
   assets: Record<string, number>;
+  /** Persistent NPCs (README §4.5.2). */
+  relationships: Relationship[];
+  /** Monotonic counter for generating unique relationship instance ids. */
+  nextRelationshipId: number;
   history: HistoryEntry[];
   rng: RngState;
   /** Per-event bookkeeping for cooldowns / once-only selection. */

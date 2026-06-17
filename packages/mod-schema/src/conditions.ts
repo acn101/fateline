@@ -27,12 +27,18 @@ const baseLeaf = { op: comparisonOpSchema, value: conditionValueSchema };
  * - `flag`: a flag key.
  * - `asset`: an asset id (e.g. `money`).
  * - `random: true`: gates on a fresh RNG draw in [0, 1).
+ *
+ * Within a relationship-action (§4.5.2), three more targets resolve against the
+ * NPC the action is aimed at: `rel.stat`, `rel.flag`, and `rel.type`.
  */
 export const leafConditionSchema = z.union([
   z.object({ stat: z.string(), ...baseLeaf }).strict(),
   z.object({ flag: z.string(), ...baseLeaf }).strict(),
   z.object({ asset: z.string(), ...baseLeaf }).strict(),
   z.object({ random: z.literal(true), ...baseLeaf }).strict(),
+  z.object({ 'rel.stat': z.string(), ...baseLeaf }).strict(),
+  z.object({ 'rel.flag': z.string(), ...baseLeaf }).strict(),
+  z.object({ 'rel.type': z.literal(true), ...baseLeaf }).strict(),
 ]);
 
 export type LeafCondition = z.infer<typeof leafConditionSchema>;

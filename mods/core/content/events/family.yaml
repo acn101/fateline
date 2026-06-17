@@ -1,0 +1,37 @@
+# Family & social events that introduce NPCs via addRelationship (§4.5.2).
+
+- id: evt.born
+  category: childhood
+  weight: 100
+  once: true
+  conditions: [{ stat: age, op: '==', value: 1 }]
+  title: 'You were born into a loving family.'
+  choices:
+    - text: 'Begin your life'
+      outcomes:
+        - weight: 100
+          effects:
+            - { addRelationship: arch.parent, name: 'Mom' }
+            - { addRelationship: arch.parent, name: 'Dad' }
+            - { stat: happiness, op: '+', value: 2 }
+          resultText: 'Your parents welcomed you to the world.'
+
+- id: evt.make-friend
+  category: social
+  weight: 8
+  cooldownYears: 3
+  conditions: [{ stat: age, op: '>=', value: 6 }]
+  title: 'You hit it off with someone new.'
+  choices:
+    - text: 'Become friends'
+      outcomes:
+        - weight: 100
+          effects:
+            - { addRelationship: arch.friend }
+            - { stat: happiness, op: '+', value: 4 }
+          resultText: 'You made a new friend.'
+    - text: 'Keep to yourself'
+      outcomes:
+        - weight: 100
+          effects: []
+          resultText: 'You stayed in your own lane.'

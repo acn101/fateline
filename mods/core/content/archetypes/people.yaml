@@ -1,0 +1,17 @@
+# NPC archetypes (README §4.5.2). Templates that `addRelationship` instantiates.
+# `relationship` is the per-NPC closeness stat (0–100) the interactions move.
+
+- id: arch.parent
+  type: parent
+  defaultName: 'Parent'
+  stats: { relationship: 75 }
+
+- id: arch.friend
+  type: friend
+  defaultName: 'Friend'
+  stats: { relationship: 50 }
+
+- id: arch.partner
+  type: partner
+  defaultName: 'Partner'
+  stats: { relationship: 60 }

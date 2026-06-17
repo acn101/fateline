@@ -1,4 +1,11 @@
-import type { FatelineMod, GameEvent, GameAction, StatDefinition } from '@fateline/mod-schema';
+import type {
+  FatelineMod,
+  GameEvent,
+  GameAction,
+  StatDefinition,
+  Archetype,
+  RelationshipAction,
+} from '@fateline/mod-schema';
 
 /**
  * Compiled content registry — the engine's read-only view of all enabled
@@ -19,6 +26,10 @@ export interface Registry {
   events: Map<string, GameEvent>;
   /** All actions keyed by their id, in load order (§4.5.1). */
   actions: Map<string, GameAction>;
+  /** NPC archetypes keyed by id (§4.5.2). */
+  archetypes: Map<string, Archetype>;
+  /** Relationship-actions keyed by id (§4.5.2). */
+  relationshipActions: Map<string, RelationshipAction>;
   /**
    * Resolved id of the "vitality" stat: when it reaches its minimum, the
    * character dies. Set from compile options so death is configurable rather
@@ -51,6 +62,8 @@ export function compileRegistry(
   const stats = new Map<string, ResolvedStat>();
   const events = new Map<string, GameEvent>();
   const actions = new Map<string, GameAction>();
+  const archetypes = new Map<string, Archetype>();
+  const relationshipActions = new Map<string, RelationshipAction>();
 
   for (const mod of modules) {
     const moduleId = mod.manifest.id;
@@ -66,13 +79,19 @@ export function compileRegistry(
     for (const action of mod.content.actions ?? []) {
       actions.set(action.id, action);
     }
+    for (const archetype of mod.content.archetypes ?? []) {
+      archetypes.set(archetype.id, archetype);
+    }
+    for (const relAction of mod.content.relationshipActions ?? []) {
+      relationshipActions.set(relAction.id, relAction);
+    }
   }
 
   const vitalityStatId =
     options.vitalityStatId ??
     [...stats.values()].find((s) => s.exposeAs === 'health' || s.id === 'health')?.resolvedId;
 
-  return { stats, events, actions, vitalityStatId };
+  return { stats, events, actions, archetypes, relationshipActions, vitalityStatId };
 }
 
 /** Initial stat values from declared defaults, keyed by resolvedId. */

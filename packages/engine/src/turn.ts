@@ -33,6 +33,8 @@ export function createGame(registry: Registry, options: NewGameOptions): GameSta
     stats: initialStats(registry),
     flags: {},
     assets: { ...options.assets },
+    relationships: [],
+    nextRelationshipId: 0,
     history: [],
     rng: createRng(options.seed),
     eventMemory: {},

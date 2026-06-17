@@ -1,0 +1,55 @@
+# Actions the player aims at a specific person (README §4.5.2). `rel.*` targets
+# resolve against the chosen NPC.
+
+- id: rel.compliment
+  label: 'Compliment'
+  appliesTo: [] # any relationship type
+  conditions: [{ 'rel.stat': relationship, op: '<', value: 100 }]
+  outcomes:
+    - weight: 70
+      effects: [{ 'rel.stat': relationship, op: '+', value: 8 }]
+      resultText: 'They appreciated the kind words.'
+    - weight: 30
+      effects: [{ 'rel.stat': relationship, op: '+', value: 2 }]
+      resultText: 'It landed a little flat, but they smiled.'
+
+- id: rel.spend-time
+  label: 'Spend time together'
+  appliesTo: []
+  conditions: []
+  outcomes:
+    - weight: 100
+      effects:
+        - { 'rel.stat': relationship, op: '+', value: 6 }
+        - { stat: happiness, op: '+', value: 3 }
+      resultText: 'A pleasant time together. You both feel closer.'
+
+- id: rel.argue
+  label: 'Pick a fight'
+  appliesTo: []
+  conditions: []
+  outcomes:
+    - weight: 60
+      effects: [{ 'rel.stat': relationship, op: '-', value: 15 }]
+      resultText: 'The argument left things tense.'
+    - weight: 40
+      effects:
+        - { 'rel.stat': relationship, op: '-', value: 5 }
+        - { stat: happiness, op: '-', value: 2 }
+      resultText: 'You bickered, then let it go.'
+
+- id: rel.ask-out
+  label: 'Ask them out'
+  appliesTo: [friend]
+  conditions: [{ 'rel.stat': relationship, op: '>=', value: 60 }]
+  outcomes:
+    - weight: 55
+      effects:
+        - { 'rel.stat': relationship, op: '+', value: 12 }
+        - { stat: happiness, op: '+', value: 10 }
+      resultText: 'They said yes! A new chapter begins.'
+    - weight: 45
+      effects:
+        - { 'rel.stat': relationship, op: '-', value: 10 }
+        - { stat: happiness, op: '-', value: 6 }
+      resultText: 'They turned you down. Awkward.'

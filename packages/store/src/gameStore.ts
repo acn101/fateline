@@ -6,6 +6,7 @@ import {
   ageUp,
   applyChoice,
   takeAction,
+  takeRelationshipAction,
   type GameState,
   type Registry,
   type PendingEvent,
@@ -31,6 +32,8 @@ export interface GameStore {
   choose: (choiceIndex: number) => void;
   /** Take an Activities-menu action by id (§4.5.1). */
   act: (actionId: string) => void;
+  /** Take a relationship-action against an NPC (§4.5.2). */
+  interact: (npcId: string, actionId: string) => void;
   /** Replace the whole session (e.g. after loading a save). */
   hydrate: (game: GameState) => void;
 }
@@ -70,6 +73,13 @@ export function createGameStore() {
       const { registry, game } = get();
       if (!registry || !game) throw new Error('No game in progress.');
       takeAction(game, registry, actionId);
+      set({ game: { ...game } });
+    },
+
+    interact: (npcId, actionId) => {
+      const { registry, game } = get();
+      if (!registry || !game) throw new Error('No game in progress.');
+      takeRelationshipAction(game, registry, npcId, actionId);
       set({ game: { ...game } });
     },
 

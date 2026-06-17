@@ -1,5 +1,11 @@
-import { availableActions, type Registry, type GameState } from '@fateline/engine';
-import type { GameAction } from '@fateline/mod-schema';
+import {
+  availableActions,
+  relationshipActions,
+  type Registry,
+  type GameState,
+  type Relationship,
+} from '@fateline/engine';
+import type { GameAction, RelationshipAction } from '@fateline/mod-schema';
 
 /** A stat ready for display: declared metadata joined with its current value. */
 export interface DisplayStat {
@@ -49,4 +55,17 @@ export function actionMenu(registry: Registry, game: GameState): ActionGroup[] {
     byCategory.set(action.category, list);
   }
   return [...byCategory.entries()].map(([category, actions]) => ({ category, actions }));
+}
+
+/** A living NPC together with the interactions currently available on them. */
+export interface RelationshipView {
+  npc: Relationship;
+  actions: RelationshipAction[];
+}
+
+/** Living relationships and their available interactions (README §7). */
+export function relationshipViews(registry: Registry, game: GameState): RelationshipView[] {
+  return game.relationships
+    .filter((npc) => npc.alive)
+    .map((npc) => ({ npc, actions: relationshipActions(game, registry, npc.id) }));
 }

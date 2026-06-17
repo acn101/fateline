@@ -9,6 +9,8 @@ function sampleState(name = 'Alex', age = 25): GameState {
     stats: { health: 80 },
     flags: {},
     assets: { money: 100 },
+    relationships: [],
+    nextRelationshipId: 0,
     history: [{ age, text: 'Born' }],
     rng: { seed: 12345 },
     eventMemory: {},

@@ -44,6 +44,72 @@ describe('smokeTest', () => {
     expect(report.livesRun).toBe(10);
   });
 
+  it('exercises events, actions, and relationships across lives', () => {
+    const reg = compile({
+      manifest,
+      content: {
+        stats: [
+          {
+            id: 'health',
+            label: 'H',
+            min: 0,
+            max: 100,
+            default: 8,
+            yearlyDelta: -2,
+            exposeAs: 'health',
+          },
+        ],
+        events: [
+          {
+            id: 'evt.meet',
+            weight: 1,
+            conditions: [{ stat: 'age', op: '>=', value: 1 }],
+            once: true,
+            title: 'Meet',
+            choices: [
+              {
+                text: 'ok',
+                outcomes: [
+                  { weight: 1, effects: [{ addRelationship: 'arch.friend' }], resultText: 'met' },
+                ],
+              },
+            ],
+          },
+        ],
+        actions: [
+          {
+            id: 'act.rest',
+            label: 'Rest',
+            conditions: [],
+            outcomes: [
+              { weight: 1, effects: [{ stat: 'health', op: '+', value: 1 }], resultText: 'r' },
+            ],
+          },
+        ],
+        archetypes: [
+          { id: 'arch.friend', type: 'friend', defaultName: 'Sam', stats: { relationship: 50 } },
+        ],
+        relationshipActions: [
+          {
+            id: 'rel.compliment',
+            label: 'Compliment',
+            appliesTo: [],
+            conditions: [],
+            outcomes: [
+              {
+                weight: 1,
+                effects: [{ 'rel.stat': 'relationship', op: '+', value: 1 }],
+                resultText: 'nice',
+              },
+            ],
+          },
+        ],
+      },
+    });
+    const report = smokeTest(reg, { lives: 5, maxYears: 40 });
+    expect(report.ok).toBe(true);
+  });
+
   it('flags a module with no terminal condition as non-terminating', () => {
     const reg = compile({
       manifest,

@@ -40,6 +40,8 @@ function freshState(): GameState {
     stats: { 'com.t.core.happiness': 50 },
     flags: {},
     assets: { money: 100 },
+    relationships: [],
+    nextRelationshipId: 0,
     history: [],
     rng: createRng(1),
     eventMemory: {},

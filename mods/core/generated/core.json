@@ -555,6 +555,96 @@
         ]
       },
       {
+        "id": "evt.born",
+        "category": "childhood",
+        "weight": 100,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": "==",
+            "value": 1
+          }
+        ],
+        "cooldownYears": 0,
+        "once": true,
+        "title": "You were born into a loving family.",
+        "choices": [
+          {
+            "text": "Begin your life",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "addRelationship": "arch.parent",
+                    "name": "Mom"
+                  },
+                  {
+                    "addRelationship": "arch.parent",
+                    "name": "Dad"
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 2
+                  }
+                ],
+                "resultText": "Your parents welcomed you to the world."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.make-friend",
+        "category": "social",
+        "weight": 8,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 6
+          }
+        ],
+        "cooldownYears": 3,
+        "once": false,
+        "title": "You hit it off with someone new.",
+        "choices": [
+          {
+            "text": "Become friends",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "addRelationship": "arch.friend"
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 4
+                  }
+                ],
+                "resultText": "You made a new friend."
+              }
+            ]
+          },
+          {
+            "text": "Keep to yourself",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [],
+                "resultText": "You stayed in your own lane."
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "evt.exam",
         "category": "teen",
         "weight": 12,
@@ -1095,6 +1185,177 @@
               }
             ],
             "resultText": "Helping out left you fulfilled."
+          }
+        ]
+      }
+    ],
+    "archetypes": [
+      {
+        "id": "arch.parent",
+        "type": "parent",
+        "defaultName": "Parent",
+        "stats": {
+          "relationship": 75
+        }
+      },
+      {
+        "id": "arch.friend",
+        "type": "friend",
+        "defaultName": "Friend",
+        "stats": {
+          "relationship": 50
+        }
+      },
+      {
+        "id": "arch.partner",
+        "type": "partner",
+        "defaultName": "Partner",
+        "stats": {
+          "relationship": 60
+        }
+      }
+    ],
+    "relationshipActions": [
+      {
+        "id": "rel.compliment",
+        "label": "Compliment",
+        "appliesTo": [],
+        "conditions": [
+          {
+            "rel.stat": "relationship",
+            "op": "<",
+            "value": 100
+          }
+        ],
+        "outcomes": [
+          {
+            "weight": 70,
+            "effects": [
+              {
+                "rel.stat": "relationship",
+                "op": "+",
+                "value": 8
+              }
+            ],
+            "resultText": "They appreciated the kind words."
+          },
+          {
+            "weight": 30,
+            "effects": [
+              {
+                "rel.stat": "relationship",
+                "op": "+",
+                "value": 2
+              }
+            ],
+            "resultText": "It landed a little flat, but they smiled."
+          }
+        ]
+      },
+      {
+        "id": "rel.spend-time",
+        "label": "Spend time together",
+        "appliesTo": [],
+        "conditions": [],
+        "outcomes": [
+          {
+            "weight": 100,
+            "effects": [
+              {
+                "rel.stat": "relationship",
+                "op": "+",
+                "value": 6
+              },
+              {
+                "stat": "happiness",
+                "op": "+",
+                "value": 3
+              }
+            ],
+            "resultText": "A pleasant time together. You both feel closer."
+          }
+        ]
+      },
+      {
+        "id": "rel.argue",
+        "label": "Pick a fight",
+        "appliesTo": [],
+        "conditions": [],
+        "outcomes": [
+          {
+            "weight": 60,
+            "effects": [
+              {
+                "rel.stat": "relationship",
+                "op": "-",
+                "value": 15
+              }
+            ],
+            "resultText": "The argument left things tense."
+          },
+          {
+            "weight": 40,
+            "effects": [
+              {
+                "rel.stat": "relationship",
+                "op": "-",
+                "value": 5
+              },
+              {
+                "stat": "happiness",
+                "op": "-",
+                "value": 2
+              }
+            ],
+            "resultText": "You bickered, then let it go."
+          }
+        ]
+      },
+      {
+        "id": "rel.ask-out",
+        "label": "Ask them out",
+        "appliesTo": [
+          "friend"
+        ],
+        "conditions": [
+          {
+            "rel.stat": "relationship",
+            "op": ">=",
+            "value": 60
+          }
+        ],
+        "outcomes": [
+          {
+            "weight": 55,
+            "effects": [
+              {
+                "rel.stat": "relationship",
+                "op": "+",
+                "value": 12
+              },
+              {
+                "stat": "happiness",
+                "op": "+",
+                "value": 10
+              }
+            ],
+            "resultText": "They said yes! A new chapter begins."
+          },
+          {
+            "weight": 45,
+            "effects": [
+              {
+                "rel.stat": "relationship",
+                "op": "-",
+                "value": 10
+              },
+              {
+                "stat": "happiness",
+                "op": "-",
+                "value": 6
+              }
+            ],
+            "resultText": "They turned you down. Awkward."
           }
         ]
       }

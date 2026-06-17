@@ -22,6 +22,21 @@ export const effectSchema = z.union([
   // List-valued flag mutation.
   z.object({ flag: z.string(), op: z.enum(['push', 'remove']), value: effectValueSchema }).strict(),
 
+  // Relationship-scoped effects (§4.5.2): mutate the targeted NPC.
+  z
+    .object({ 'rel.stat': z.string(), op: z.enum(['+', '-', '*', 'set']), value: z.number() })
+    .strict(),
+  z.object({ 'rel.flag': z.string(), op: z.literal('set'), value: effectValueSchema }).strict(),
+
+  // Add or remove an NPC. `addRelationship` instantiates a declared archetype.
+  z
+    .object({
+      addRelationship: z.string().min(1), // archetype id
+      name: z.string().min(1).optional(),
+    })
+    .strict(),
+  z.object({ removeRelationship: z.literal(true) }).strict(),
+
   // Chain a follow-up event by id.
   z.object({ triggerEvent: z.string().min(1) }).strict(),
 ]);

@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { validateMod, type FatelineMod } from '@fateline/mod-schema';
+import { addRelationship } from '@fateline/engine';
 import { createGameStore } from './gameStore.js';
-import { visibleStats, actionMenu } from './selectors.js';
+import { visibleStats, actionMenu, relationshipViews } from './selectors.js';
 
 function coreLikeMod(): FatelineMod {
   const raw = {
@@ -52,6 +53,24 @@ function coreLikeMod(): FatelineMod {
           conditions: [{ stat: 'age', op: '>=', value: 1 }],
           outcomes: [
             { weight: 1, effects: [{ stat: 'health', op: '+', value: 2 }], resultText: 'Rested.' },
+          ],
+        },
+      ],
+      archetypes: [
+        { id: 'arch.friend', type: 'friend', defaultName: 'Sam', stats: { relationship: 50 } },
+      ],
+      relationshipActions: [
+        {
+          id: 'rel.compliment',
+          label: 'Compliment',
+          appliesTo: [],
+          conditions: [],
+          outcomes: [
+            {
+              weight: 1,
+              effects: [{ 'rel.stat': 'relationship', op: '+', value: 5 }],
+              resultText: 'Nice.',
+            },
           ],
         },
       ],
@@ -161,5 +180,38 @@ describe('actions: act() + actionMenu selector', () => {
     const store = createGameStore();
     store.getState().loadMods([coreLikeMod()]);
     expect(() => store.getState().act('act.rest')).toThrow();
+  });
+});
+
+describe('relationships: interact() + relationshipViews', () => {
+  function withNpc() {
+    const store = createGameStore();
+    store.getState().loadMods([coreLikeMod()]);
+    store.getState().startGame({ seed: 1, character: { name: 'A', gender: 'x', birthYear: 2000 } });
+    const { registry, game } = store.getState();
+    addRelationship(game!, registry!, 'arch.friend', 'Sam');
+    store.getState().hydrate(game!);
+    return store;
+  }
+
+  it('relationshipViews lists living NPCs with their interactions', () => {
+    const store = withNpc();
+    const views = relationshipViews(store.getState().registry!, store.getState().game!);
+    expect(views).toHaveLength(1);
+    expect(views[0]!.npc.name).toBe('Sam');
+    expect(views[0]!.actions.map((a) => a.id)).toContain('rel.compliment');
+  });
+
+  it('interact() applies the relationship-action to the NPC', () => {
+    const store = withNpc();
+    const npcId = store.getState().game!.relationships[0]!.id;
+    store.getState().interact(npcId, 'rel.compliment');
+    expect(store.getState().game!.relationships[0]!.stats['relationship']).toBe(55);
+  });
+
+  it('interact() throws when no game is in progress', () => {
+    const store = createGameStore();
+    store.getState().loadMods([coreLikeMod()]);
+    expect(() => store.getState().interact('rel.x', 'rel.compliment')).toThrow();
   });
 });

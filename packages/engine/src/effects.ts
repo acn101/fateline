@@ -1,11 +1,13 @@
 import type { Effect } from '@fateline/mod-schema';
-import type { GameState, FlagValue } from './state.js';
+import type { GameState, FlagValue, Relationship } from './state.js';
 import type { Registry } from './registry.js';
 import { getStat, getAsset, setStatClamped } from './accessors.js';
 
 /**
- * Effect resolver — README §5.3. Mutates `state` in place. Returns the list of
- * follow-up event ids requested via `triggerEvent`, for the turn loop to queue.
+ * Effect resolver — README §5.3 / §4.5.2. Mutates `state` in place. Returns the
+ * list of follow-up event ids requested via `triggerEvent`. An optional
+ * `relTarget` is the NPC that `rel.*`, `addRelationship`, and
+ * `removeRelationship` effects operate on.
  */
 
 function applyNumeric(current: number, op: '+' | '-' | '*' | 'set', value: number): number {
@@ -21,11 +23,41 @@ function applyNumeric(current: number, op: '+' | '-' | '*' | 'set', value: numbe
   }
 }
 
+/** Instantiate an NPC from a declared archetype and append it to the save. */
+export function addRelationship(
+  state: GameState,
+  registry: Registry,
+  archetypeId: string,
+  name?: string,
+): Relationship | undefined {
+  const archetype = registry.archetypes.get(archetypeId);
+  if (!archetype) return undefined;
+  const npc: Relationship = {
+    id: `rel.${state.nextRelationshipId++}`,
+    name: name ?? archetype.defaultName,
+    type: archetype.type,
+    alive: true,
+    stats: { ...archetype.stats },
+    flags: {},
+  };
+  state.relationships.push(npc);
+  return npc;
+}
+
 /** Apply one effect; returns a triggered event id if the effect is a trigger. */
-function applyEffect(effect: Effect, state: GameState, registry: Registry): string | undefined {
+function applyEffect(
+  effect: Effect,
+  state: GameState,
+  registry: Registry,
+  relTarget: Relationship | undefined,
+): string | undefined {
   if ('stat' in effect) {
-    const next = applyNumeric(getStat(state, effect.stat), effect.op, effect.value);
-    setStatClamped(state, registry, effect.stat, next);
+    setStatClamped(
+      state,
+      registry,
+      effect.stat,
+      applyNumeric(getStat(state, effect.stat), effect.op, effect.value),
+    );
     return undefined;
   }
   if ('asset' in effect) {
@@ -38,6 +70,25 @@ function applyEffect(effect: Effect, state: GameState, registry: Registry): stri
   }
   if ('flag' in effect) {
     applyFlagEffect(effect, state);
+    return undefined;
+  }
+  if ('rel.stat' in effect) {
+    if (relTarget) {
+      const id = effect['rel.stat'];
+      relTarget.stats[id] = applyNumeric(relTarget.stats[id] ?? 0, effect.op, effect.value);
+    }
+    return undefined;
+  }
+  if ('rel.flag' in effect) {
+    if (relTarget) relTarget.flags[effect['rel.flag']] = effect.value;
+    return undefined;
+  }
+  if ('addRelationship' in effect) {
+    addRelationship(state, registry, effect.addRelationship, effect.name);
+    return undefined;
+  }
+  if ('removeRelationship' in effect) {
+    if (relTarget) state.relationships = state.relationships.filter((r) => r.id !== relTarget.id);
     return undefined;
   }
   return effect.triggerEvent;
@@ -62,16 +113,17 @@ function applyFlagEffect(effect: Extract<Effect, { flag: string }>, state: GameS
 
 /**
  * Apply a list of effects in order. Returns triggered follow-up event ids in
- * the order they were requested.
+ * the order they were requested. `relTarget` scopes rel.* effects to one NPC.
  */
 export function applyEffects(
   effects: readonly Effect[],
   state: GameState,
   registry: Registry,
+  relTarget?: Relationship,
 ): string[] {
   const triggered: string[] = [];
   for (const effect of effects) {
-    const id = applyEffect(effect, state, registry);
+    const id = applyEffect(effect, state, registry, relTarget);
     if (id !== undefined) triggered.push(id);
   }
   return triggered;

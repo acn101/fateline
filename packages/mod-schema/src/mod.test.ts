@@ -177,3 +177,105 @@ describe('validateMod — actions (§4.5.1)', () => {
       expect(result.errors.some((e) => e.message.includes('unknown event'))).toBe(true);
   });
 });
+
+const friendArch = {
+  id: 'arch.friend',
+  type: 'friend',
+  defaultName: 'Sam',
+  stats: { relationship: 50 },
+};
+const compliment = {
+  id: 'rel.compliment',
+  label: 'Compliment',
+  appliesTo: ['friend'],
+  conditions: [{ 'rel.stat': 'relationship', op: '<', value: 100 }],
+  outcomes: [
+    {
+      weight: 1,
+      effects: [{ 'rel.stat': 'relationship', op: '+', value: 8 }],
+      resultText: 'Nice.',
+    },
+  ],
+};
+
+describe('validateMod — relationships (§4.5.2)', () => {
+  it('accepts archetypes and relationship-actions with rel.* targets', () => {
+    const result = validateMod({
+      manifest,
+      content: {
+        stats: [],
+        events: [],
+        actions: [],
+        archetypes: [friendArch],
+        relationshipActions: [compliment],
+      },
+    });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.value.content.archetypes[0]!.type).toBe('friend');
+      expect(result.value.content.relationshipActions[0]!.appliesTo).toEqual(['friend']);
+    }
+  });
+
+  it('accepts addRelationship referencing a declared archetype', () => {
+    const result = validateMod({
+      manifest,
+      content: {
+        stats: [],
+        archetypes: [friendArch],
+        events: [
+          {
+            id: 'evt.meet',
+            conditions: [],
+            title: 'Meet',
+            choices: [
+              {
+                text: 'ok',
+                outcomes: [
+                  { weight: 1, effects: [{ addRelationship: 'arch.friend' }], resultText: 'met' },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    });
+    expect(result.ok).toBe(true);
+  });
+
+  it('rejects addRelationship referencing an unknown archetype', () => {
+    const result = validateMod({
+      manifest,
+      content: {
+        archetypes: [friendArch],
+        relationshipActions: [
+          {
+            id: 'rel.adopt',
+            label: 'Adopt',
+            appliesTo: [],
+            conditions: [],
+            outcomes: [
+              { weight: 1, effects: [{ addRelationship: 'arch.ghost' }], resultText: 'x' },
+            ],
+          },
+        ],
+      },
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok)
+      expect(result.errors.some((e) => e.message.includes('unknown archetype'))).toBe(true);
+  });
+
+  it('rejects duplicate archetype and relationship-action ids', () => {
+    expect(
+      validateMod({ manifest, content: { archetypes: [friendArch, structuredClone(friendArch)] } })
+        .ok,
+    ).toBe(false);
+    expect(
+      validateMod({
+        manifest,
+        content: { relationshipActions: [compliment, structuredClone(compliment)] },
+      }).ok,
+    ).toBe(false);
+  });
+});

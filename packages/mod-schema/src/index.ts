@@ -4,5 +4,6 @@ export * from './conditions.js';
 export * from './effects.js';
 export * from './events.js';
 export * from './actions.js';
+export * from './relationships.js';
 export * from './mod.js';
 export * from './validate.js';

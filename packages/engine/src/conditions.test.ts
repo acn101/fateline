@@ -10,6 +10,8 @@ function stateWith(overrides: Partial<GameState> = {}): GameState {
     stats: { 'core.happiness': 50 },
     flags: { in_jail: false },
     assets: { money: 100 },
+    relationships: [],
+    nextRelationshipId: 0,
     history: [],
     rng: createRng(1),
     eventMemory: {},
@@ -85,5 +87,45 @@ describe('random leaf', () => {
   it('an unreachable threshold is always false', () => {
     const cond: Condition = { random: true, op: '<', value: 0 };
     expect(evaluateCondition(cond, stateWith(), createRng(7))).toBe(false);
+  });
+});
+
+describe('rel.* leaves (§4.5.2)', () => {
+  const npc = {
+    id: 'rel.0',
+    name: 'Sam',
+    type: 'friend',
+    alive: true,
+    stats: { relationship: 70 },
+    flags: { engaged: true },
+  };
+
+  it('resolve against the target NPC when provided', () => {
+    const s = stateWith();
+    expect(
+      evaluateCondition({ 'rel.stat': 'relationship', op: '>=', value: 50 }, s, createRng(1), npc),
+    ).toBe(true);
+    expect(
+      evaluateCondition({ 'rel.flag': 'engaged', op: '==', value: true }, s, createRng(1), npc),
+    ).toBe(true);
+    expect(
+      evaluateCondition({ 'rel.type': true, op: '==', value: 'friend' }, s, createRng(1), npc),
+    ).toBe(true);
+    expect(
+      evaluateCondition({ 'rel.type': true, op: '==', value: 'partner' }, s, createRng(1), npc),
+    ).toBe(false);
+  });
+
+  it('are vacuously false with no target NPC', () => {
+    const s = stateWith();
+    expect(
+      evaluateCondition({ 'rel.stat': 'relationship', op: '>=', value: 0 }, s, createRng(1)),
+    ).toBe(false);
+    expect(
+      evaluateCondition({ 'rel.flag': 'engaged', op: '==', value: true }, s, createRng(1)),
+    ).toBe(false);
+    expect(
+      evaluateCondition({ 'rel.type': true, op: '==', value: 'friend' }, s, createRng(1)),
+    ).toBe(false);
   });
 });

@@ -1,6 +1,7 @@
 import type { ZodType } from 'zod';
 import { manifestSchema, type Manifest } from './manifest.js';
 import { modSchema, type FatelineMod } from './mod.js';
+import type { Effect } from './effects.js';
 
 /** Result of a safe-parse over untrusted module data. */
 export type ValidationResult<T> = { ok: true; value: T } | { ok: false; errors: ValidationIssue[] };
@@ -97,6 +98,41 @@ export function validateMod(input: unknown): ValidationResult<FatelineMod> {
       });
     });
   });
+
+  // Relationships (§4.5.2): unique archetype + relationship-action ids, and
+  // every `addRelationship` must reference a declared archetype.
+  const archetypeIds = new Set(mod.content.archetypes.map((a) => a.id));
+  for (const id of findDuplicates(mod.content.archetypes.map((a) => a.id))) {
+    issues.push({ path: 'content.archetypes', message: `Duplicate archetype id "${id}".` });
+  }
+  for (const id of findDuplicates(mod.content.relationshipActions.map((a) => a.id))) {
+    issues.push({
+      path: 'content.relationshipActions',
+      message: `Duplicate relationship-action id "${id}".`,
+    });
+  }
+  const checkAddRel = (effects: readonly Effect[], path: string) => {
+    effects.forEach((effect, ei) => {
+      if ('addRelationship' in effect && !archetypeIds.has(effect.addRelationship)) {
+        issues.push({
+          path: `${path}.${ei}.addRelationship`,
+          message: `addRelationship references unknown archetype "${effect.addRelationship}".`,
+        });
+      }
+    });
+  };
+  mod.content.events.forEach((e) =>
+    e.choices.forEach((c, ci) =>
+      c.outcomes.forEach((o, oi) =>
+        checkAddRel(o.effects, `content.events.${e.id}.choices.${ci}.outcomes.${oi}.effects`),
+      ),
+    ),
+  );
+  mod.content.relationshipActions.forEach((a) =>
+    a.outcomes.forEach((o, oi) =>
+      checkAddRel(o.effects, `content.relationshipActions.${a.id}.outcomes.${oi}.effects`),
+    ),
+  );
 
   if (issues.length > 0) return { ok: false, errors: issues };
   return { ok: true, value: mod };

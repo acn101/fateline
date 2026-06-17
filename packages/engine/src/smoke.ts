@@ -1,6 +1,7 @@
 import type { Registry } from './registry.js';
 import { createGame, ageUp, applyChoice } from './turn.js';
 import { availableActions, takeAction } from './actions.js';
+import { relationshipActions, takeRelationshipAction } from './relationships.js';
 
 /**
  * Headless smoke test — README §11.2. Runs N seeded lives against a compiled
@@ -52,6 +53,19 @@ export function smokeTest(registry: Registry, options: SmokeOptions = {}): Smoke
         const actions = availableActions(game, registry);
         if (actions.length > 0) {
           takeAction(game, registry, actions[(seed + years) % actions.length]!.id);
+        }
+        // And exercise a relationship interaction with the first living NPC.
+        const npc = game.relationships.find((r) => r.alive);
+        if (npc) {
+          const relActions = relationshipActions(game, registry, npc.id);
+          if (relActions.length > 0) {
+            takeRelationshipAction(
+              game,
+              registry,
+              npc.id,
+              relActions[(seed + years) % relActions.length]!.id,
+            );
+          }
         }
         years += 1;
       }
