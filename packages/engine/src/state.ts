@@ -38,6 +38,8 @@ export interface GameState {
   rng: RngState;
   /** Per-event bookkeeping for cooldowns / once-only selection. */
   eventMemory: Record<string, { lastFiredAge: number; fireCount: number }>;
+  /** Per-year action usage counts (action id -> times taken this year). Reset each age-up (§4.5.1). */
+  actionMemory: Record<string, number>;
   /** Modules this save depends on, id -> version. */
   installedMods: Record<string, string>;
 }

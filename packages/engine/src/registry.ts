@@ -1,4 +1,4 @@
-import type { FatelineMod, GameEvent, StatDefinition } from '@fateline/mod-schema';
+import type { FatelineMod, GameEvent, GameAction, StatDefinition } from '@fateline/mod-schema';
 
 /**
  * Compiled content registry — the engine's read-only view of all enabled
@@ -17,6 +17,8 @@ export interface Registry {
   stats: Map<string, ResolvedStat>;
   /** All events keyed by their (module-namespaced) id. */
   events: Map<string, GameEvent>;
+  /** All actions keyed by their id, in load order (§4.5.1). */
+  actions: Map<string, GameAction>;
   /**
    * Resolved id of the "vitality" stat: when it reaches its minimum, the
    * character dies. Set from compile options so death is configurable rather
@@ -48,15 +50,21 @@ export function compileRegistry(
 ): Registry {
   const stats = new Map<string, ResolvedStat>();
   const events = new Map<string, GameEvent>();
+  const actions = new Map<string, GameAction>();
 
   for (const mod of modules) {
     const moduleId = mod.manifest.id;
-    for (const stat of mod.content.stats) {
+    // Defensive `?? []`: validated mods always have these arrays, but engine
+    // callers sometimes hand-build registries from partial fixtures.
+    for (const stat of mod.content.stats ?? []) {
       const resolvedId = stat.exposeAs ?? namespaceId(moduleId, stat.id);
       stats.set(resolvedId, { ...stat, resolvedId });
     }
-    for (const event of mod.content.events) {
+    for (const event of mod.content.events ?? []) {
       events.set(event.id, event);
+    }
+    for (const action of mod.content.actions ?? []) {
+      actions.set(action.id, action);
     }
   }
 
@@ -64,7 +72,7 @@ export function compileRegistry(
     options.vitalityStatId ??
     [...stats.values()].find((s) => s.exposeAs === 'health' || s.id === 'health')?.resolvedId;
 
-  return { stats, events, vitalityStatId };
+  return { stats, events, actions, vitalityStatId };
 }
 
 /** Initial stat values from declared defaults, keyed by resolvedId. */

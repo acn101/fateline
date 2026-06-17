@@ -12,6 +12,7 @@ function sampleState(name = 'Alex', age = 25): GameState {
     history: [{ age, text: 'Born' }],
     rng: { seed: 12345 },
     eventMemory: {},
+    actionMemory: {},
     installedMods: { 'com.fateline.core': '0.1.0' },
   };
 }

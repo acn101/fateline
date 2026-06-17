@@ -177,6 +177,7 @@ describe('edge paths', () => {
       history: [],
       rng: createRng(1),
       eventMemory: {},
+      actionMemory: {},
       installedMods: {},
     };
     setStatClamped(state, reg, 'undeclared', 9999);
@@ -218,6 +219,7 @@ describe('edge paths', () => {
       history: [],
       rng: createRng(1),
       eventMemory: {},
+      actionMemory: {},
       installedMods: {},
     };
     // applyEffects just returns the id; resolveTriggers (via applyChoice) would skip it.

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { validateMod, type FatelineMod } from '@fateline/mod-schema';
 import { createGameStore } from './gameStore.js';
-import { visibleStats } from './selectors.js';
+import { visibleStats, actionMenu } from './selectors.js';
 
 function coreLikeMod(): FatelineMod {
   const raw = {
@@ -41,6 +41,17 @@ function coreLikeMod(): FatelineMod {
               ],
             },
             { text: 'B', outcomes: [{ weight: 1, effects: [], resultText: 'b' }] },
+          ],
+        },
+      ],
+      actions: [
+        {
+          id: 'act.rest',
+          label: 'Rest',
+          category: 'mind-body',
+          conditions: [{ stat: 'age', op: '>=', value: 1 }],
+          outcomes: [
+            { weight: 1, effects: [{ stat: 'health', op: '+', value: 2 }], resultText: 'Rested.' },
           ],
         },
       ],
@@ -116,5 +127,39 @@ describe('visibleStats selector', () => {
     delete game.stats['health'];
     const stats = visibleStats(store.getState().registry!, game);
     expect(stats[0]!.value).toBe(5); // def.default
+  });
+});
+
+describe('actions: act() + actionMenu selector', () => {
+  function started() {
+    const store = createGameStore();
+    store.getState().loadMods([coreLikeMod()]);
+    store.getState().startGame({ seed: 1, character: { name: 'A', gender: 'x', birthYear: 2000 } });
+    store.getState().advance(); // reach age 1 so age>=1 conditions hold
+    return store;
+  }
+
+  it('actionMenu groups available actions by category', () => {
+    const store = started();
+    // Resolve any pending event first so state is settled.
+    if (store.getState().pending) store.getState().choose(0);
+    const groups = actionMenu(store.getState().registry!, store.getState().game!);
+    expect(groups.map((g) => g.category)).toContain('mind-body');
+    expect(groups[0]!.actions.some((a) => a.id === 'act.rest')).toBe(true);
+  });
+
+  it('act() applies the action and records history', () => {
+    const store = started();
+    if (store.getState().pending) store.getState().choose(0);
+    const before = store.getState().game!.stats['health']!;
+    store.getState().act('act.rest');
+    expect(store.getState().game!.stats['health']).toBe(before + 2);
+    expect(store.getState().game!.history.at(-1)?.text).toBe('Rest');
+  });
+
+  it('act() throws when no game is in progress', () => {
+    const store = createGameStore();
+    store.getState().loadMods([coreLikeMod()]);
+    expect(() => store.getState().act('act.rest')).toThrow();
   });
 });

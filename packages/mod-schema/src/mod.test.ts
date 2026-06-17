@@ -117,3 +117,63 @@ describe('validateMod — adversarial (README §5.4)', () => {
     expect(validateMod('module').ok).toBe(false);
   });
 });
+
+const gym = {
+  id: 'act.gym',
+  label: 'Go to the gym',
+  category: 'mind-body',
+  conditions: [{ stat: 'age', op: '>=', value: 12 }],
+  cost: { money: 50 },
+  perYearLimit: 3,
+  outcomes: [
+    {
+      weight: 80,
+      effects: [{ stat: 'health', op: '+', value: 5 }],
+      resultText: 'A solid workout.',
+    },
+    {
+      weight: 20,
+      effects: [{ stat: 'health', op: '-', value: 3 }],
+      resultText: 'You pulled a muscle.',
+    },
+  ],
+};
+
+function modWithActions(actions: unknown[]) {
+  return { manifest, content: { stats: [], events: [], actions } };
+}
+
+describe('validateMod — actions (§4.5.1)', () => {
+  it('accepts a well-formed action and applies defaults', () => {
+    const { category: _c, cost: _co, perYearLimit: _p, ...minimal } = gym;
+    const result = validateMod(modWithActions([minimal]));
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.value.content.actions[0]!.category).toBe('general');
+      expect(result.value.content.actions[0]!.cost).toBeUndefined();
+    }
+  });
+
+  it('accepts cost, perYearLimit, and multiple outcomes', () => {
+    const result = validateMod(modWithActions([gym]));
+    expect(result.ok).toBe(true);
+  });
+
+  it('rejects duplicate action ids', () => {
+    expect(validateMod(modWithActions([gym, structuredClone(gym)])).ok).toBe(false);
+  });
+
+  it('rejects a non-positive perYearLimit and negative cost', () => {
+    expect(validateMod(modWithActions([{ ...gym, perYearLimit: 0 }])).ok).toBe(false);
+    expect(validateMod(modWithActions([{ ...gym, cost: { money: -5 } }])).ok).toBe(false);
+  });
+
+  it('rejects an action triggerEvent pointing at an unknown event', () => {
+    const bad = structuredClone(gym);
+    bad.outcomes[0]!.effects.push({ triggerEvent: 'evt.nope' } as never);
+    const result = validateMod(modWithActions([bad]));
+    expect(result.ok).toBe(false);
+    if (!result.ok)
+      expect(result.errors.some((e) => e.message.includes('unknown event'))).toBe(true);
+  });
+});

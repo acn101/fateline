@@ -13,6 +13,7 @@ function stateWith(overrides: Partial<GameState> = {}): GameState {
     history: [],
     rng: createRng(1),
     eventMemory: {},
+    actionMemory: {},
     installedMods: {},
     ...overrides,
   };

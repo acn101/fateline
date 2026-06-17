@@ -81,6 +81,23 @@ export function validateMod(input: unknown): ValidationResult<FatelineMod> {
     });
   }
 
+  // Actions: unique ids, and any triggerEvent in an outcome must resolve.
+  for (const id of findDuplicates(mod.content.actions.map((a) => a.id))) {
+    issues.push({ path: 'content.actions', message: `Duplicate action id "${id}".` });
+  }
+  mod.content.actions.forEach((action) => {
+    action.outcomes.forEach((outcome, oi) => {
+      outcome.effects.forEach((effect, ei) => {
+        if ('triggerEvent' in effect && !eventIds.has(effect.triggerEvent)) {
+          issues.push({
+            path: `content.actions.${action.id}.outcomes.${oi}.effects.${ei}.triggerEvent`,
+            message: `triggerEvent references unknown event id "${effect.triggerEvent}".`,
+          });
+        }
+      });
+    });
+  });
+
   if (issues.length > 0) return { ok: false, errors: issues };
   return { ok: true, value: mod };
 }

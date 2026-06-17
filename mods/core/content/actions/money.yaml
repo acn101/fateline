@@ -1,0 +1,25 @@
+# Money-making activities (no career system yet — that's Phase 9).
+
+- id: act.odd-jobs
+  label: 'Pick up odd jobs'
+  category: money
+  conditions: [{ stat: age, op: '>=', value: 14 }]
+  perYearLimit: 3
+  outcomes:
+    - weight: 100
+      effects: [{ asset: money, op: '+', value: 800 }, { stat: happiness, op: '-', value: 2 }]
+      resultText: 'Honest work for honest pay.'
+
+- id: act.lottery
+  label: 'Buy a lottery ticket'
+  category: money
+  conditions: [{ stat: age, op: '>=', value: 18 }]
+  cost: { money: 20 }
+  perYearLimit: 5
+  outcomes:
+    - weight: 2
+      effects: [{ asset: money, op: '+', value: 50000 }, { stat: happiness, op: '+', value: 15 }]
+      resultText: 'You won big! Incredible luck.'
+    - weight: 98
+      effects: []
+      resultText: 'No luck this time.'

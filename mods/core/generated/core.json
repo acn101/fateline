@@ -780,6 +780,324 @@
           }
         ]
       }
+    ],
+    "actions": [
+      {
+        "id": "act.gym",
+        "label": "Go to the gym",
+        "category": "mind-body",
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 12
+          }
+        ],
+        "cost": {
+          "money": 50
+        },
+        "perYearLimit": 3,
+        "outcomes": [
+          {
+            "weight": 80,
+            "effects": [
+              {
+                "stat": "health",
+                "op": "+",
+                "value": 6
+              },
+              {
+                "stat": "looks",
+                "op": "+",
+                "value": 2
+              }
+            ],
+            "resultText": "A solid workout. You feel stronger."
+          },
+          {
+            "weight": 20,
+            "effects": [
+              {
+                "stat": "health",
+                "op": "-",
+                "value": 3
+              }
+            ],
+            "resultText": "You pulled a muscle."
+          }
+        ]
+      },
+      {
+        "id": "act.library",
+        "label": "Study at the library",
+        "category": "mind-body",
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 6
+          }
+        ],
+        "perYearLimit": 3,
+        "outcomes": [
+          {
+            "weight": 100,
+            "effects": [
+              {
+                "stat": "smarts",
+                "op": "+",
+                "value": 5
+              },
+              {
+                "stat": "happiness",
+                "op": "-",
+                "value": 1
+              }
+            ],
+            "resultText": "You hit the books and got a little smarter."
+          }
+        ]
+      },
+      {
+        "id": "act.meditate",
+        "label": "Meditate",
+        "category": "mind-body",
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 10
+          }
+        ],
+        "perYearLimit": 2,
+        "outcomes": [
+          {
+            "weight": 100,
+            "effects": [
+              {
+                "stat": "happiness",
+                "op": "+",
+                "value": 5
+              },
+              {
+                "stat": "health",
+                "op": "+",
+                "value": 1
+              }
+            ],
+            "resultText": "You found a moment of calm."
+          }
+        ]
+      },
+      {
+        "id": "act.doctor",
+        "label": "See a doctor",
+        "category": "mind-body",
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 1
+          }
+        ],
+        "cost": {
+          "money": 200
+        },
+        "perYearLimit": 1,
+        "outcomes": [
+          {
+            "weight": 100,
+            "effects": [
+              {
+                "stat": "health",
+                "op": "+",
+                "value": 12
+              }
+            ],
+            "resultText": "A checkup and some care. Your health improved."
+          }
+        ]
+      },
+      {
+        "id": "act.odd-jobs",
+        "label": "Pick up odd jobs",
+        "category": "money",
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 14
+          }
+        ],
+        "perYearLimit": 3,
+        "outcomes": [
+          {
+            "weight": 100,
+            "effects": [
+              {
+                "asset": "money",
+                "op": "+",
+                "value": 800
+              },
+              {
+                "stat": "happiness",
+                "op": "-",
+                "value": 2
+              }
+            ],
+            "resultText": "Honest work for honest pay."
+          }
+        ]
+      },
+      {
+        "id": "act.lottery",
+        "label": "Buy a lottery ticket",
+        "category": "money",
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 18
+          }
+        ],
+        "cost": {
+          "money": 20
+        },
+        "perYearLimit": 5,
+        "outcomes": [
+          {
+            "weight": 2,
+            "effects": [
+              {
+                "asset": "money",
+                "op": "+",
+                "value": 50000
+              },
+              {
+                "stat": "happiness",
+                "op": "+",
+                "value": 15
+              }
+            ],
+            "resultText": "You won big! Incredible luck."
+          },
+          {
+            "weight": 98,
+            "effects": [],
+            "resultText": "No luck this time."
+          }
+        ]
+      },
+      {
+        "id": "act.party",
+        "label": "Go to a party",
+        "category": "social",
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 15
+          }
+        ],
+        "cost": {
+          "money": 40
+        },
+        "perYearLimit": 2,
+        "outcomes": [
+          {
+            "weight": 70,
+            "effects": [
+              {
+                "stat": "happiness",
+                "op": "+",
+                "value": 8
+              }
+            ],
+            "resultText": "You had a great night out."
+          },
+          {
+            "weight": 30,
+            "effects": [
+              {
+                "stat": "happiness",
+                "op": "+",
+                "value": 3
+              },
+              {
+                "stat": "health",
+                "op": "-",
+                "value": 4
+              }
+            ],
+            "resultText": "Fun night, rough morning."
+          }
+        ]
+      },
+      {
+        "id": "act.salon",
+        "label": "Visit a salon",
+        "category": "social",
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 12
+          }
+        ],
+        "cost": {
+          "money": 120
+        },
+        "perYearLimit": 1,
+        "outcomes": [
+          {
+            "weight": 100,
+            "effects": [
+              {
+                "stat": "looks",
+                "op": "+",
+                "value": 6
+              },
+              {
+                "stat": "happiness",
+                "op": "+",
+                "value": 2
+              }
+            ],
+            "resultText": "A fresh look. You feel more confident."
+          }
+        ]
+      },
+      {
+        "id": "act.volunteer",
+        "label": "Volunteer",
+        "category": "social",
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 14
+          }
+        ],
+        "perYearLimit": 2,
+        "outcomes": [
+          {
+            "weight": 100,
+            "effects": [
+              {
+                "stat": "happiness",
+                "op": "+",
+                "value": 6
+              },
+              {
+                "stat": "smarts",
+                "op": "+",
+                "value": 1
+              }
+            ],
+            "resultText": "Helping out left you fulfilled."
+          }
+        ]
+      }
     ]
   }
 }

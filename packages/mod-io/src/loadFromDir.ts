@@ -11,6 +11,7 @@ import { validateMod, type FatelineMod, type ValidationResult } from '@fateline/
 const FOLDER_TO_CONTENT_KEY: Record<string, string> = {
   definitions: 'stats',
   events: 'events',
+  actions: 'actions',
 };
 
 /**

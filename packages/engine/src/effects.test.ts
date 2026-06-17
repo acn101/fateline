@@ -43,6 +43,7 @@ function freshState(): GameState {
     history: [],
     rng: createRng(1),
     eventMemory: {},
+    actionMemory: {},
     installedMods: {},
   };
 }

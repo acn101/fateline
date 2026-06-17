@@ -44,8 +44,9 @@ export async function validateModAt(
   }
 
   lines.push(`✓ Schema valid: ${loaded.value.manifest.id} v${loaded.value.manifest.version}`);
+  const c = loaded.value.content;
   lines.push(
-    `  ${loaded.value.content.stats.length} stat(s), ${loaded.value.content.events.length} event(s)`,
+    `  ${c.stats.length} stat(s), ${c.events.length} event(s), ${c.actions.length} action(s)`,
   );
 
   // Load any base modules (e.g. core) first, then the target, so expansions

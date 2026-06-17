@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { manifestSchema } from './manifest.js';
 import { statDefinitionSchema } from './stats.js';
 import { eventSchema } from './events.js';
+import { actionSchema } from './actions.js';
 
 /**
  * Full module schema — manifest (§5.2) + content (§5.1). This is the shape a
@@ -14,9 +15,10 @@ export const modSchema = z
       .object({
         stats: z.array(statDefinitionSchema).default([]),
         events: z.array(eventSchema).default([]),
+        actions: z.array(actionSchema).default([]),
       })
       .strict()
-      .default({ stats: [], events: [] }),
+      .default({ stats: [], events: [], actions: [] }),
   })
   .strict();
 

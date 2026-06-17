@@ -1,12 +1,12 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { visibleStats } from '@fateline/store';
-import { StatsHeader, HistoryFeed, EventModal, AgeUpButton } from '@fateline/ui';
+import { visibleStats, actionMenu } from '@fateline/store';
+import { StatsHeader, HistoryFeed, EventModal, AgeUpButton, ActionsMenu } from '@fateline/ui';
 import { useGame } from '../src/gameSession';
 import { gameStore } from '../src/gameSession';
 
-/** Main game screen (README §7): stats header, history feed, Age Up, events. */
+/** Main game screen (README §7): stats header, history feed, actions, Age Up. */
 export default function PlayScreen() {
   const router = useRouter();
   const registry = useGame((s) => s.registry);
@@ -20,6 +20,7 @@ export default function PlayScreen() {
   }
 
   const stats = visibleStats(registry, game);
+  const groups = game.character.alive ? actionMenu(registry, game) : [];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -28,6 +29,10 @@ export default function PlayScreen() {
       </View>
 
       <HistoryFeed history={game.history} />
+
+      <ScrollView style={styles.actions} contentContainerStyle={styles.actionsContent}>
+        <ActionsMenu groups={groups} onAct={(id) => gameStore.getState().act(id)} />
+      </ScrollView>
 
       <View style={styles.footer}>
         {game.character.alive ? null : <Text style={styles.epitaph}>Your story has ended.</Text>}
@@ -45,6 +50,8 @@ export default function PlayScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f3f4f6' },
   header: { padding: 12 },
+  actions: { maxHeight: 180 },
+  actionsContent: { padding: 12 },
   footer: { padding: 12, gap: 8 },
   epitaph: { textAlign: 'center', color: '#6b7280', fontStyle: 'italic' },
 });

@@ -1,4 +1,5 @@
-import type { Registry, GameState } from '@fateline/engine';
+import { availableActions, type Registry, type GameState } from '@fateline/engine';
+import type { GameAction } from '@fateline/mod-schema';
 
 /** A stat ready for display: declared metadata joined with its current value. */
 export interface DisplayStat {
@@ -27,4 +28,25 @@ export function visibleStats(registry: Registry, game: GameState): DisplayStat[]
     });
   }
   return out;
+}
+
+/** An action ready for display, grouped by category. */
+export interface ActionGroup {
+  category: string;
+  actions: GameAction[];
+}
+
+/**
+ * The Activities menu grouped by category (README §7). Driven by the engine's
+ * `availableActions` so eligibility (conditions, cost, per-year limit) is the
+ * single source of truth; the UI just renders what it returns.
+ */
+export function actionMenu(registry: Registry, game: GameState): ActionGroup[] {
+  const byCategory = new Map<string, GameAction[]>();
+  for (const action of availableActions(game, registry)) {
+    const list = byCategory.get(action.category) ?? [];
+    list.push(action);
+    byCategory.set(action.category, list);
+  }
+  return [...byCategory.entries()].map(([category, actions]) => ({ category, actions }));
 }

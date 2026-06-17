@@ -36,6 +36,7 @@ export function createGame(registry: Registry, options: NewGameOptions): GameSta
     history: [],
     rng: createRng(options.seed),
     eventMemory: {},
+    actionMemory: {},
     installedMods: {},
   };
 }
@@ -67,6 +68,8 @@ export function ageUp(state: GameState, registry: Registry): PendingEvent | null
   if (!state.character.alive) return null;
 
   state.character.age += 1;
+  // A new year resets per-year action allowances (§4.5.1).
+  state.actionMemory = {};
 
   // Passive yearly drift from declared stats (README §4.4).
   for (const def of registry.stats.values()) {
@@ -134,7 +137,7 @@ export function applyChoice(
 }
 
 /** Fire chained events with no further player choice (first choice auto-taken). */
-function resolveTriggers(state: GameState, registry: Registry, queue: string[]): void {
+export function resolveTriggers(state: GameState, registry: Registry, queue: string[]): void {
   while (queue.length > 0) {
     const id = queue.shift()!;
     const event = registry.events.get(id);
@@ -169,7 +172,7 @@ function recordFired(state: GameState, eventId: string): void {
  * the character dies. No stat id is hardcoded (README §4.4). Returns true if
  * the character died this call.
  */
-function checkDeath(state: GameState, registry: Registry): boolean {
+export function checkDeath(state: GameState, registry: Registry): boolean {
   if (!state.character.alive) return false;
   const vital = registry.vitalityStatId;
   if (vital === undefined) return false;

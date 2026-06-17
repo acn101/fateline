@@ -1,5 +1,6 @@
 import type { Registry } from './registry.js';
 import { createGame, ageUp, applyChoice } from './turn.js';
+import { availableActions, takeAction } from './actions.js';
 
 /**
  * Headless smoke test — README §11.2. Runs N seeded lives against a compiled
@@ -46,6 +47,11 @@ export function smokeTest(registry: Registry, options: SmokeOptions = {}): Smoke
         if (pending) {
           // Exercise a deterministic-but-varied choice across the run.
           applyChoice(game, registry, pending, seed % pending.event.choices.length);
+        }
+        // Also exercise the Activities menu so actions are smoke-tested too.
+        const actions = availableActions(game, registry);
+        if (actions.length > 0) {
+          takeAction(game, registry, actions[(seed + years) % actions.length]!.id);
         }
         years += 1;
       }

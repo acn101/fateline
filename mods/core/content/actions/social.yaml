@@ -1,0 +1,36 @@
+# Social & lifestyle activities.
+
+- id: act.party
+  label: 'Go to a party'
+  category: social
+  conditions: [{ stat: age, op: '>=', value: 15 }]
+  cost: { money: 40 }
+  perYearLimit: 2
+  outcomes:
+    - weight: 70
+      effects: [{ stat: happiness, op: '+', value: 8 }]
+      resultText: 'You had a great night out.'
+    - weight: 30
+      effects: [{ stat: happiness, op: '+', value: 3 }, { stat: health, op: '-', value: 4 }]
+      resultText: 'Fun night, rough morning.'
+
+- id: act.salon
+  label: 'Visit a salon'
+  category: social
+  conditions: [{ stat: age, op: '>=', value: 12 }]
+  cost: { money: 120 }
+  perYearLimit: 1
+  outcomes:
+    - weight: 100
+      effects: [{ stat: looks, op: '+', value: 6 }, { stat: happiness, op: '+', value: 2 }]
+      resultText: 'A fresh look. You feel more confident.'
+
+- id: act.volunteer
+  label: 'Volunteer'
+  category: social
+  conditions: [{ stat: age, op: '>=', value: 14 }]
+  perYearLimit: 2
+  outcomes:
+    - weight: 100
+      effects: [{ stat: happiness, op: '+', value: 6 }, { stat: smarts, op: '+', value: 1 }]
+      resultText: 'Helping out left you fulfilled.'
