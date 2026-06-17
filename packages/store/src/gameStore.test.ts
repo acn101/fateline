@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { validateMod, type FatelineMod } from '@fateline/mod-schema';
 import { addRelationship } from '@fateline/engine';
 import { createGameStore } from './gameStore.js';
-import { visibleStats, actionMenu, relationshipViews } from './selectors.js';
+import { visibleStats, actionMenu, relationshipViews, careerView } from './selectors.js';
 
 function coreLikeMod(): FatelineMod {
   const raw = {
@@ -72,6 +72,24 @@ function coreLikeMod(): FatelineMod {
               resultText: 'Nice.',
             },
           ],
+        },
+      ],
+      careers: [
+        {
+          id: 'career.clerk',
+          title: 'Clerk',
+          field: 'service',
+          requirements: [{ stat: 'age', op: '>=', value: 1 }],
+          levels: [{ title: 'Clerk', salary: 30000 }],
+        },
+      ],
+      education: [
+        {
+          id: 'edu.school',
+          title: 'School',
+          requirements: [{ stat: 'age', op: '>=', value: 1 }],
+          years: 1,
+          grantsFlags: ['diploma'],
         },
       ],
     },
@@ -213,5 +231,59 @@ describe('relationships: interact() + relationshipViews', () => {
     const store = createGameStore();
     store.getState().loadMods([coreLikeMod()]);
     expect(() => store.getState().interact('rel.x', 'rel.compliment')).toThrow();
+  });
+});
+
+describe('careers/education: applyJob/quitJob/enroll + careerView', () => {
+  function started() {
+    const store = createGameStore();
+    store.getState().loadMods([coreLikeMod()]);
+    store.getState().startGame({ seed: 1, character: { name: 'A', gender: 'x', birthYear: 2000 } });
+    store.getState().advance();
+    if (store.getState().pending) store.getState().choose(0);
+    return store;
+  }
+
+  it('careerView reports open jobs/programs and current status', () => {
+    const store = started();
+    const view = careerView(store.getState().registry!, store.getState().game!);
+    expect(view.current).toBeNull();
+    expect(view.openJobs.map((c) => c.id)).toContain('career.clerk');
+    expect(view.openPrograms.map((p) => p.id)).toContain('edu.school');
+  });
+
+  it('applyJob sets current job; quitJob clears it', () => {
+    const store = started();
+    store.getState().applyJob('career.clerk');
+    expect(careerView(store.getState().registry!, store.getState().game!).current?.title).toBe(
+      'Clerk',
+    );
+    store.getState().quitJob();
+    expect(store.getState().game!.career).toBeNull();
+  });
+
+  it('enroll sets current education and careerView reflects it', () => {
+    const store = started();
+    store.getState().enroll('edu.school');
+    expect(store.getState().game!.education?.programId).toBe('edu.school');
+    const view = careerView(store.getState().registry!, store.getState().game!);
+    expect(view.enrolledIn?.title).toBe('School');
+    expect(view.enrolledIn?.years).toBe(1);
+  });
+
+  it('careerView shows the current job after applying', () => {
+    const store = started();
+    store.getState().applyJob('career.clerk');
+    const view = careerView(store.getState().registry!, store.getState().game!);
+    expect(view.current?.title).toBe('Clerk');
+    expect(view.current?.salary).toBe(30000);
+  });
+
+  it('career methods throw with no game in progress', () => {
+    const store = createGameStore();
+    store.getState().loadMods([coreLikeMod()]);
+    expect(() => store.getState().applyJob('career.clerk')).toThrow();
+    expect(() => store.getState().quitJob()).toThrow();
+    expect(() => store.getState().enroll('edu.school')).toThrow();
   });
 });

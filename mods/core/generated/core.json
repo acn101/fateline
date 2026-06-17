@@ -1314,9 +1314,7 @@
       {
         "id": "rel.ask-out",
         "label": "Ask them out",
-        "appliesTo": [
-          "friend"
-        ],
+        "appliesTo": ["friend"],
         "conditions": [
           {
             "rel.stat": "relationship",
@@ -1358,6 +1356,206 @@
             "resultText": "They turned you down. Awkward."
           }
         ]
+      }
+    ],
+    "careers": [
+      {
+        "id": "career.retail",
+        "title": "Retail Associate",
+        "field": "service",
+        "requirements": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 16
+          }
+        ],
+        "levels": [
+          {
+            "title": "Cashier",
+            "salary": 22000,
+            "promoteAfterYears": 3,
+            "promoteChance": 0.4
+          },
+          {
+            "title": "Shift Lead",
+            "salary": 34000,
+            "promoteAfterYears": 4,
+            "promoteChance": 0.3
+          },
+          {
+            "title": "Store Manager",
+            "salary": 58000,
+            "promoteChance": 0.5
+          }
+        ]
+      },
+      {
+        "id": "career.office",
+        "title": "Office Worker",
+        "field": "business",
+        "requirements": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 18
+          },
+          {
+            "flag": "diploma",
+            "op": "==",
+            "value": true
+          }
+        ],
+        "levels": [
+          {
+            "title": "Junior Associate",
+            "salary": 40000,
+            "promoteAfterYears": 3,
+            "promoteChance": 0.4
+          },
+          {
+            "title": "Manager",
+            "salary": 75000,
+            "promoteAfterYears": 5,
+            "promoteChance": 0.25
+          },
+          {
+            "title": "Director",
+            "salary": 140000,
+            "promoteChance": 0.5
+          }
+        ]
+      },
+      {
+        "id": "career.software",
+        "title": "Software Engineer",
+        "field": "tech",
+        "requirements": [
+          {
+            "flag": "degree",
+            "op": "==",
+            "value": true
+          },
+          {
+            "stat": "smarts",
+            "op": ">=",
+            "value": 60
+          }
+        ],
+        "levels": [
+          {
+            "title": "Junior Engineer",
+            "salary": 85000,
+            "promoteAfterYears": 2,
+            "promoteChance": 0.5
+          },
+          {
+            "title": "Senior Engineer",
+            "salary": 150000,
+            "promoteAfterYears": 4,
+            "promoteChance": 0.3
+          },
+          {
+            "title": "Principal Engineer",
+            "salary": 250000,
+            "promoteChance": 0.5
+          }
+        ]
+      },
+      {
+        "id": "career.doctor",
+        "title": "Doctor",
+        "field": "medicine",
+        "requirements": [
+          {
+            "flag": "degree_medicine",
+            "op": "==",
+            "value": true
+          }
+        ],
+        "levels": [
+          {
+            "title": "Resident",
+            "salary": 65000,
+            "promoteAfterYears": 3,
+            "promoteChance": 0.6
+          },
+          {
+            "title": "Physician",
+            "salary": 220000,
+            "promoteAfterYears": 6,
+            "promoteChance": 0.3
+          },
+          {
+            "title": "Chief of Medicine",
+            "salary": 400000,
+            "promoteChance": 0.5
+          }
+        ]
+      }
+    ],
+    "education": [
+      {
+        "id": "edu.high-school",
+        "title": "High School",
+        "requirements": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 14
+          }
+        ],
+        "years": 4,
+        "yearlyTuition": 0,
+        "grantsFlags": ["diploma"]
+      },
+      {
+        "id": "edu.university",
+        "title": "University",
+        "requirements": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 18
+          },
+          {
+            "flag": "diploma",
+            "op": "==",
+            "value": true
+          },
+          {
+            "stat": "smarts",
+            "op": ">=",
+            "value": 50
+          }
+        ],
+        "years": 4,
+        "yearlyTuition": 8000,
+        "grantsFlags": ["degree"]
+      },
+      {
+        "id": "edu.med-school",
+        "title": "Medical School",
+        "requirements": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 22
+          },
+          {
+            "flag": "degree",
+            "op": "==",
+            "value": true
+          },
+          {
+            "stat": "smarts",
+            "op": ">=",
+            "value": 70
+          }
+        ],
+        "years": 4,
+        "yearlyTuition": 20000,
+        "grantsFlags": ["degree_medicine"]
       }
     ]
   }

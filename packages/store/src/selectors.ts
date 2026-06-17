@@ -1,11 +1,18 @@
 import {
   availableActions,
   relationshipActions,
+  availableCareers,
+  availablePrograms,
   type Registry,
   type GameState,
   type Relationship,
 } from '@fateline/engine';
-import type { GameAction, RelationshipAction } from '@fateline/mod-schema';
+import type {
+  GameAction,
+  RelationshipAction,
+  Career,
+  EducationProgram,
+} from '@fateline/mod-schema';
 
 /** A stat ready for display: declared metadata joined with its current value. */
 export interface DisplayStat {
@@ -68,4 +75,42 @@ export function relationshipViews(registry: Registry, game: GameState): Relation
   return game.relationships
     .filter((npc) => npc.alive)
     .map((npc) => ({ npc, actions: relationshipActions(game, registry, npc.id) }));
+}
+
+/** Everything the Career/School panel needs (README §7, §4.5.3). */
+export interface CareerView {
+  /** Current job title + salary, or null if unemployed. */
+  current: { title: string; salary: number } | null;
+  /** Current schooling title + progress, or null if not enrolled. */
+  enrolledIn: { title: string; yearsCompleted: number; years: number } | null;
+  /** Jobs the player can apply to right now. */
+  openJobs: Career[];
+  /** Programs the player can enroll in right now. */
+  openPrograms: EducationProgram[];
+}
+
+export function careerView(registry: Registry, game: GameState): CareerView {
+  let current: CareerView['current'] = null;
+  if (game.career) {
+    const career = registry.careers.get(game.career.careerId);
+    const level = career?.levels[game.career.level];
+    if (career && level) current = { title: level.title, salary: level.salary };
+  }
+  let enrolledIn: CareerView['enrolledIn'] = null;
+  if (game.education) {
+    const program = registry.education.get(game.education.programId);
+    if (program) {
+      enrolledIn = {
+        title: program.title,
+        yearsCompleted: game.education.yearsCompleted,
+        years: program.years,
+      };
+    }
+  }
+  return {
+    current,
+    enrolledIn,
+    openJobs: availableCareers(game, registry),
+    openPrograms: availablePrograms(game, registry),
+  };
 }

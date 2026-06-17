@@ -5,6 +5,8 @@ import type {
   StatDefinition,
   Archetype,
   RelationshipAction,
+  Career,
+  EducationProgram,
 } from '@fateline/mod-schema';
 
 /**
@@ -30,6 +32,10 @@ export interface Registry {
   archetypes: Map<string, Archetype>;
   /** Relationship-actions keyed by id (§4.5.2). */
   relationshipActions: Map<string, RelationshipAction>;
+  /** Careers keyed by id (§4.5.3). */
+  careers: Map<string, Career>;
+  /** Education programs keyed by id (§4.5.3). */
+  education: Map<string, EducationProgram>;
   /**
    * Resolved id of the "vitality" stat: when it reaches its minimum, the
    * character dies. Set from compile options so death is configurable rather
@@ -64,6 +70,8 @@ export function compileRegistry(
   const actions = new Map<string, GameAction>();
   const archetypes = new Map<string, Archetype>();
   const relationshipActions = new Map<string, RelationshipAction>();
+  const careers = new Map<string, Career>();
+  const education = new Map<string, EducationProgram>();
 
   for (const mod of modules) {
     const moduleId = mod.manifest.id;
@@ -85,13 +93,28 @@ export function compileRegistry(
     for (const relAction of mod.content.relationshipActions ?? []) {
       relationshipActions.set(relAction.id, relAction);
     }
+    for (const career of mod.content.careers ?? []) {
+      careers.set(career.id, career);
+    }
+    for (const program of mod.content.education ?? []) {
+      education.set(program.id, program);
+    }
   }
 
   const vitalityStatId =
     options.vitalityStatId ??
     [...stats.values()].find((s) => s.exposeAs === 'health' || s.id === 'health')?.resolvedId;
 
-  return { stats, events, actions, archetypes, relationshipActions, vitalityStatId };
+  return {
+    stats,
+    events,
+    actions,
+    archetypes,
+    relationshipActions,
+    careers,
+    education,
+    vitalityStatId,
+  };
 }
 
 /** Initial stat values from declared defaults, keyed by resolvedId. */

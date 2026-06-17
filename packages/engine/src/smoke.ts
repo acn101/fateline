@@ -2,6 +2,7 @@ import type { Registry } from './registry.js';
 import { createGame, ageUp, applyChoice } from './turn.js';
 import { availableActions, takeAction } from './actions.js';
 import { relationshipActions, takeRelationshipAction } from './relationships.js';
+import { availableCareers, applyToJob, availablePrograms, enroll } from './careers.js';
 
 /**
  * Headless smoke test — README §11.2. Runs N seeded lives against a compiled
@@ -66,6 +67,15 @@ export function smokeTest(registry: Registry, options: SmokeOptions = {}): Smoke
               relActions[(seed + years) % relActions.length]!.id,
             );
           }
+        }
+        // Exercise schooling, then a job (§4.5.3).
+        if (!game.education) {
+          const programs = availablePrograms(game, registry);
+          if (programs.length > 0) enroll(game, registry, programs[seed % programs.length]!.id);
+        }
+        if (!game.career) {
+          const careers = availableCareers(game, registry);
+          if (careers.length > 0) applyToJob(game, registry, careers[seed % careers.length]!.id);
         }
         years += 1;
       }

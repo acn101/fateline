@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { visibleStats, actionMenu, relationshipViews } from '@fateline/store';
+import { visibleStats, actionMenu, relationshipViews, careerView } from '@fateline/store';
 import {
   StatsHeader,
   HistoryFeed,
@@ -9,6 +9,7 @@ import {
   AgeUpButton,
   ActionsMenu,
   RelationshipsPanel,
+  CareerPanel,
 } from '@fateline/ui';
 import { useGame } from '../src/gameSession';
 import { gameStore } from '../src/gameSession';
@@ -30,6 +31,7 @@ export default function PlayScreen() {
   const alive = game.character.alive;
   const groups = alive ? actionMenu(registry, game) : [];
   const relationships = alive ? relationshipViews(registry, game) : [];
+  const career = careerView(registry, game);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -41,6 +43,14 @@ export default function PlayScreen() {
 
       <ScrollView style={styles.actions} contentContainerStyle={styles.actionsContent}>
         <ActionsMenu groups={groups} onAct={(id) => gameStore.getState().act(id)} />
+        {alive ? (
+          <CareerPanel
+            view={career}
+            onApply={(id) => gameStore.getState().applyJob(id)}
+            onQuit={() => gameStore.getState().quitJob()}
+            onEnroll={(id) => gameStore.getState().enroll(id)}
+          />
+        ) : null}
         <RelationshipsPanel
           views={relationships}
           onInteract={(npcId, actionId) => gameStore.getState().interact(npcId, actionId)}

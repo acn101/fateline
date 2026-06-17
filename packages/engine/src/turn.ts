@@ -6,6 +6,7 @@ import { initialStats } from './registry.js';
 import { evaluateAll } from './conditions.js';
 import { applyEffects } from './effects.js';
 import { setStatClamped } from './accessors.js';
+import { advanceCareerAndEducation } from './careers.js';
 
 /**
  * Turn loop — README §4.2. The engine is a pure state machine: `ageUp`
@@ -35,6 +36,8 @@ export function createGame(registry: Registry, options: NewGameOptions): GameSta
     assets: { ...options.assets },
     relationships: [],
     nextRelationshipId: 0,
+    career: null,
+    education: null,
     history: [],
     rng: createRng(options.seed),
     eventMemory: {},
@@ -86,6 +89,9 @@ export function ageUp(state: GameState, registry: Registry): PendingEvent | null
   }
 
   if (checkDeath(state, registry)) return null;
+
+  // Job income/promotion and schooling progress for the year (§4.5.3).
+  advanceCareerAndEducation(state, registry);
 
   const eligible: GameEvent[] = [];
   for (const event of registry.events.values()) {

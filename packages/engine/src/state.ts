@@ -26,6 +26,20 @@ export interface HistoryEntry {
   resultText?: string;
 }
 
+/** The player's current job (README §4.5.3). */
+export interface CareerState {
+  careerId: string;
+  /** Index into the career's `levels` ladder. */
+  level: number;
+  yearsInLevel: number;
+}
+
+/** The player's current education enrollment (README §4.5.3). */
+export interface EducationState {
+  programId: string;
+  yearsCompleted: number;
+}
+
 /** A persistent NPC the player has a relationship with (README §4.5.2). */
 export interface Relationship {
   /** Unique instance id within this save. */
@@ -51,6 +65,10 @@ export interface GameState {
   relationships: Relationship[];
   /** Monotonic counter for generating unique relationship instance ids. */
   nextRelationshipId: number;
+  /** Current job, or null if unemployed (README §4.5.3). */
+  career: CareerState | null;
+  /** Current education enrollment, or null (README §4.5.3). */
+  education: EducationState | null;
   history: HistoryEntry[];
   rng: RngState;
   /** Per-event bookkeeping for cooldowns / once-only selection. */

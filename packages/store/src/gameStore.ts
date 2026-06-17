@@ -7,6 +7,9 @@ import {
   applyChoice,
   takeAction,
   takeRelationshipAction,
+  applyToJob,
+  quitJob,
+  enroll,
   type GameState,
   type Registry,
   type PendingEvent,
@@ -34,6 +37,12 @@ export interface GameStore {
   act: (actionId: string) => void;
   /** Take a relationship-action against an NPC (§4.5.2). */
   interact: (npcId: string, actionId: string) => void;
+  /** Apply to a job by career id (§4.5.3). */
+  applyJob: (careerId: string) => void;
+  /** Quit the current job. */
+  quitJob: () => void;
+  /** Enroll in an education program (§4.5.3). */
+  enroll: (programId: string) => void;
   /** Replace the whole session (e.g. after loading a save). */
   hydrate: (game: GameState) => void;
 }
@@ -80,6 +89,27 @@ export function createGameStore() {
       const { registry, game } = get();
       if (!registry || !game) throw new Error('No game in progress.');
       takeRelationshipAction(game, registry, npcId, actionId);
+      set({ game: { ...game } });
+    },
+
+    applyJob: (careerId) => {
+      const { registry, game } = get();
+      if (!registry || !game) throw new Error('No game in progress.');
+      applyToJob(game, registry, careerId);
+      set({ game: { ...game } });
+    },
+
+    quitJob: () => {
+      const { game } = get();
+      if (!game) throw new Error('No game in progress.');
+      quitJob(game);
+      set({ game: { ...game } });
+    },
+
+    enroll: (programId) => {
+      const { registry, game } = get();
+      if (!registry || !game) throw new Error('No game in progress.');
+      enroll(game, registry, programId);
       set({ game: { ...game } });
     },
 

@@ -11,6 +11,8 @@ function sampleState(name = 'Alex', age = 25): GameState {
     assets: { money: 100 },
     relationships: [],
     nextRelationshipId: 0,
+    career: null,
+    education: null,
     history: [{ age, text: 'Born' }],
     rng: { seed: 12345 },
     eventMemory: {},

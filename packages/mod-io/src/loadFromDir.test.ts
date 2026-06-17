@@ -51,8 +51,8 @@ beforeAll(async () => {
     ].join('\n'),
   );
   // b uses the .yml extension and a future/unknown folder is ignored.
-  await mkdir(join(dir, 'content', 'careers'), { recursive: true });
-  await writeFile(join(dir, 'content', 'careers', 'ignored.yaml'), 'id: should-be-ignored');
+  await mkdir(join(dir, 'content', 'locations'), { recursive: true });
+  await writeFile(join(dir, 'content', 'locations', 'ignored.yaml'), 'id: should-be-ignored');
   await writeFile(
     join(dir, 'content', 'events', 'b.yml'),
     [

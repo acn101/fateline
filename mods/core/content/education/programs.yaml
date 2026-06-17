@@ -1,0 +1,29 @@
+# Education programs (README §4.5.3). Completing one grants degree flags that
+# gate careers. Tuition is debited yearly from `money`.
+
+- id: edu.high-school
+  title: 'High School'
+  requirements: [{ stat: age, op: '>=', value: 14 }]
+  years: 4
+  yearlyTuition: 0
+  grantsFlags: [diploma]
+
+- id: edu.university
+  title: 'University'
+  requirements:
+    - { stat: age, op: '>=', value: 18 }
+    - { flag: diploma, op: '==', value: true }
+    - { stat: smarts, op: '>=', value: 50 }
+  years: 4
+  yearlyTuition: 8000
+  grantsFlags: [degree]
+
+- id: edu.med-school
+  title: 'Medical School'
+  requirements:
+    - { stat: age, op: '>=', value: 22 }
+    - { flag: degree, op: '==', value: true }
+    - { stat: smarts, op: '>=', value: 70 }
+  years: 4
+  yearlyTuition: 20000
+  grantsFlags: [degree_medicine]

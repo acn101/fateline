@@ -83,7 +83,7 @@ describe('assembleMod', () => {
   it('ignores unknown content folders', () => {
     const result = assembleMod({
       'mod.yaml': MODULE_YAML,
-      'content/careers/x.yaml': 'id: c',
+      'content/locations/x.yaml': 'id: c',
     });
     expect(result.ok).toBe(true);
     if (result.ok) expect(result.value.content.events).toEqual([]);

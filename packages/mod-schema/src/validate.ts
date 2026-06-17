@@ -134,6 +134,14 @@ export function validateMod(input: unknown): ValidationResult<FatelineMod> {
     ),
   );
 
+  // Careers & education (§4.5.3): unique ids.
+  for (const id of findDuplicates(mod.content.careers.map((c) => c.id))) {
+    issues.push({ path: 'content.careers', message: `Duplicate career id "${id}".` });
+  }
+  for (const id of findDuplicates(mod.content.education.map((e) => e.id))) {
+    issues.push({ path: 'content.education', message: `Duplicate education id "${id}".` });
+  }
+
   if (issues.length > 0) return { ok: false, errors: issues };
   return { ok: true, value: mod };
 }

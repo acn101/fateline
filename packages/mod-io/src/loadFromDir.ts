@@ -14,6 +14,8 @@ const FOLDER_TO_CONTENT_KEY: Record<string, string> = {
   actions: 'actions',
   archetypes: 'archetypes',
   'relationship-actions': 'relationshipActions',
+  careers: 'careers',
+  education: 'education',
 };
 
 /**

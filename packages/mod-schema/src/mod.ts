@@ -4,6 +4,7 @@ import { statDefinitionSchema } from './stats.js';
 import { eventSchema } from './events.js';
 import { actionSchema } from './actions.js';
 import { archetypeSchema, relationshipActionSchema } from './relationships.js';
+import { careerSchema, educationProgramSchema } from './careers.js';
 
 /**
  * Full module schema — manifest (§5.2) + content (§5.1). This is the shape a
@@ -19,9 +20,19 @@ export const modSchema = z
         actions: z.array(actionSchema).default([]),
         archetypes: z.array(archetypeSchema).default([]),
         relationshipActions: z.array(relationshipActionSchema).default([]),
+        careers: z.array(careerSchema).default([]),
+        education: z.array(educationProgramSchema).default([]),
       })
       .strict()
-      .default({ stats: [], events: [], actions: [], archetypes: [], relationshipActions: [] }),
+      .default({
+        stats: [],
+        events: [],
+        actions: [],
+        archetypes: [],
+        relationshipActions: [],
+        careers: [],
+        education: [],
+      }),
   })
   .strict();
 

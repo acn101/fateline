@@ -104,6 +104,24 @@ describe('smokeTest', () => {
             ],
           },
         ],
+        careers: [
+          {
+            id: 'career.job',
+            title: 'Job',
+            requirements: [{ stat: 'age', op: '>=', value: 2 }],
+            levels: [{ title: 'Worker', salary: 1000 }],
+          },
+        ],
+        education: [
+          {
+            id: 'edu.school',
+            title: 'School',
+            requirements: [{ stat: 'age', op: '>=', value: 1 }],
+            years: 1,
+            yearlyTuition: 10,
+            grantsFlags: ['diploma'],
+          },
+        ],
       },
     });
     const report = smokeTest(reg, { lives: 5, maxYears: 40 });
