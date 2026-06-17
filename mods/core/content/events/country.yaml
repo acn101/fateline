@@ -1,14 +1,37 @@
 # Country-flavored events (goal item 5). Gated on the character's country via
 # the `char` condition target, so a life feels rooted in where it's lived.
 
-- id: evt.us-thanksgiving
+# Thanksgiving as a child: you simply attend (no hosting/spending).
+- id: evt.us-thanksgiving-child
   category: country
   weight: 6
   cooldownYears: 3
   conditions:
     - { char: country, op: '==', value: country.us }
-    - { stat: age, op: '>=', value: 5 }
-  title: 'It’s Thanksgiving, and the whole family is gathering.'
+    - { stat: age, op: '>=', value: 4 }
+    - { stat: age, op: '<=', value: 17 }
+  title: 'It’s Thanksgiving, and the family has gathered at your home.'
+  choices:
+    - text: 'Stuff yourself with pie'
+      outcomes:
+        - weight: 100
+          effects: [{ stat: happiness, op: '+', value: 5 }]
+          resultText: 'Second helpings of everything. A wonderful day.'
+    - text: 'Hide from the relatives'
+      outcomes:
+        - weight: 100
+          effects: [{ stat: happiness, op: '-', value: 2 }]
+          resultText: 'You dodged the awkward questions, mostly.'
+
+# Thanksgiving as an adult: now you can host.
+- id: evt.us-thanksgiving-adult
+  category: country
+  weight: 6
+  cooldownYears: 3
+  conditions:
+    - { char: country, op: '==', value: country.us }
+    - { stat: age, op: '>=', value: 18 }
+  title: 'It’s Thanksgiving, and everyone is looking to you to host.'
   choices:
     - text: 'Host the dinner'
       outcomes:

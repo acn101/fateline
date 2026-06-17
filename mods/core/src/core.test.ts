@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { compileRegistry, createGame, ageUp, applyChoice } from '@fateline/engine';
+import {
+  compileRegistry,
+  createGame,
+  ageUp,
+  applyChoice,
+  addRelationship,
+  availableActions,
+  relationshipActions,
+} from '@fateline/engine';
 import { loadModFromDir } from '@fateline/mod-io';
 import type { FatelineMod } from '@fateline/mod-schema';
 import { coreMod } from './index.js';
@@ -36,6 +44,38 @@ describe('core module (README §8 — base game is a module)', () => {
   it('exports a generated coreMod kept in sync with the YAML source', async () => {
     // Guards against editing YAML without re-running `generate`.
     expect(coreMod).toEqual(await loadValidCore());
+  });
+
+  it('does not offer age-inappropriate actions/interactions to a young child', async () => {
+    const reg = compileRegistry([await loadValidCore()]);
+    const game = createGame(reg, {
+      seed: 'child',
+      character: { name: 'Kid', gender: 'x', country: 'country.us', birthYear: 2000 },
+      assets: { money: 100000 }, // wealthy, so only AGE gates can exclude things
+    });
+    // Spawn a friend so relationship actions are evaluable.
+    addRelationship(game, reg, 'arch.friend');
+    ageUp(game, reg); // age 1
+    while (game.character.age < 5) ageUp(game, reg); // a 5-year-old
+
+    const ADULT_ACTIONS = ['act.party', 'act.rob-bank', 'act.odd-jobs', 'act.lottery'];
+    const offered = availableActions(game, reg).map((a) => a.id);
+    for (const id of ADULT_ACTIONS) expect(offered).not.toContain(id);
+
+    const npc = game.relationships[0]!;
+    const interactions = relationshipActions(game, reg, npc.id).map((a) => a.id);
+    expect(interactions).not.toContain('rel.ask-out'); // romance gated to 16+
+
+    // The adult-hosting Thanksgiving must never fire while still a minor.
+    for (let i = 0; i < 25; i++) {
+      const pending = ageUp(game, reg);
+      if (pending) {
+        if (game.character.age < 18) {
+          expect(pending.event.id).not.toBe('evt.us-thanksgiving-adult');
+        }
+        applyChoice(game, reg, pending, 0);
+      }
+    }
   });
 
   it('plays a full, deterministic life to its natural end', async () => {

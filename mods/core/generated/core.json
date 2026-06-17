@@ -455,7 +455,7 @@
         ]
       },
       {
-        "id": "evt.us-thanksgiving",
+        "id": "evt.us-thanksgiving-child",
         "category": "country",
         "weight": 6,
         "conditions": [
@@ -467,12 +467,73 @@
           {
             "stat": "age",
             "op": ">=",
-            "value": 5
+            "value": 4
+          },
+          {
+            "stat": "age",
+            "op": "<=",
+            "value": 17
           }
         ],
         "cooldownYears": 3,
         "once": false,
-        "title": "It’s Thanksgiving, and the whole family is gathering.",
+        "title": "It’s Thanksgiving, and the family has gathered at your home.",
+        "choices": [
+          {
+            "text": "Stuff yourself with pie",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 5
+                  }
+                ],
+                "resultText": "Second helpings of everything. A wonderful day."
+              }
+            ]
+          },
+          {
+            "text": "Hide from the relatives",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "-",
+                    "value": 2
+                  }
+                ],
+                "resultText": "You dodged the awkward questions, mostly."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.us-thanksgiving-adult",
+        "category": "country",
+        "weight": 6,
+        "conditions": [
+          {
+            "char": "country",
+            "op": "==",
+            "value": "country.us"
+          },
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 18
+          }
+        ],
+        "cooldownYears": 3,
+        "once": false,
+        "title": "It’s Thanksgiving, and everyone is looking to you to host.",
         "choices": [
           {
             "text": "Host the dinner",
@@ -1941,6 +2002,11 @@
         "appliesTo": [],
         "conditions": [
           {
+            "stat": "age",
+            "op": ">=",
+            "value": 4
+          },
+          {
             "rel.stat": "relationship",
             "op": "<",
             "value": 100
@@ -1975,7 +2041,13 @@
         "id": "rel.spend-time",
         "label": "Spend time together",
         "appliesTo": [],
-        "conditions": [],
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 3
+          }
+        ],
         "outcomes": [
           {
             "weight": 100,
@@ -1999,7 +2071,13 @@
         "id": "rel.argue",
         "label": "Pick a fight",
         "appliesTo": [],
-        "conditions": [],
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 6
+          }
+        ],
         "outcomes": [
           {
             "weight": 60,
@@ -2037,6 +2115,11 @@
           "friend"
         ],
         "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 16
+          },
           {
             "rel.stat": "relationship",
             "op": ">=",

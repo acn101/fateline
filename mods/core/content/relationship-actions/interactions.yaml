@@ -4,7 +4,9 @@
 - id: rel.compliment
   label: 'Compliment'
   appliesTo: [] # any relationship type
-  conditions: [{ 'rel.stat': relationship, op: '<', value: 100 }]
+  conditions:
+    - { stat: age, op: '>=', value: 4 } # old enough to talk
+    - { 'rel.stat': relationship, op: '<', value: 100 }
   outcomes:
     - weight: 70
       effects: [{ 'rel.stat': relationship, op: '+', value: 8 }]
@@ -16,7 +18,7 @@
 - id: rel.spend-time
   label: 'Spend time together'
   appliesTo: []
-  conditions: []
+  conditions: [{ stat: age, op: '>=', value: 3 }]
   outcomes:
     - weight: 100
       effects:
@@ -27,7 +29,7 @@
 - id: rel.argue
   label: 'Pick a fight'
   appliesTo: []
-  conditions: []
+  conditions: [{ stat: age, op: '>=', value: 6 }]
   outcomes:
     - weight: 60
       effects: [{ 'rel.stat': relationship, op: '-', value: 15 }]
@@ -41,7 +43,9 @@
 - id: rel.ask-out
   label: 'Ask them out'
   appliesTo: [friend]
-  conditions: [{ 'rel.stat': relationship, op: '>=', value: 60 }]
+  conditions:
+    - { stat: age, op: '>=', value: 16 }
+    - { 'rel.stat': relationship, op: '>=', value: 60 }
   outcomes:
     - weight: 55
       effects:
