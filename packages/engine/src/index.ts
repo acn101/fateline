@@ -9,4 +9,5 @@ export * from './actions.js';
 export * from './relationships.js';
 export * from './careers.js';
 export * from './assets.js';
+export * from './demographics.js';
 export * from './smoke.js';

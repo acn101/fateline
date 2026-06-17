@@ -1,0 +1,44 @@
+# Countries with birthplaces and the ethnicities common to each (goal items 4-5).
+# Weights bias random birth toward more populous countries.
+countries:
+  - id: country.us
+    label: 'United States'
+    code: US
+    weight: 5
+    cities: [New York, Los Angeles, Chicago, Houston, Phoenix, Atlanta]
+    ethnicities: [eth.white, eth.black, eth.hispanic, eth.east-asian, eth.south-asian]
+
+  - id: country.uk
+    label: 'United Kingdom'
+    code: UK
+    weight: 3
+    cities: [London, Manchester, Birmingham, Glasgow, Bristol]
+    ethnicities: [eth.white, eth.south-asian, eth.black]
+
+  - id: country.japan
+    label: 'Japan'
+    code: JP
+    weight: 3
+    cities: [Tokyo, Osaka, Kyoto, Nagoya, Sapporo]
+    ethnicities: [eth.east-asian]
+
+  - id: country.india
+    label: 'India'
+    code: IN
+    weight: 6
+    cities: [Mumbai, Delhi, Bangalore, Kolkata, Chennai]
+    ethnicities: [eth.south-asian]
+
+  - id: country.nigeria
+    label: 'Nigeria'
+    code: NG
+    weight: 4
+    cities: [Lagos, Abuja, Kano, Ibadan, Port Harcourt]
+    ethnicities: [eth.black]
+
+  - id: country.brazil
+    label: 'Brazil'
+    code: BR
+    weight: 4
+    cities: [São Paulo, Rio de Janeiro, Brasília, Salvador, Recife]
+    ethnicities: [eth.hispanic, eth.white, eth.black]

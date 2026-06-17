@@ -455,6 +455,374 @@
         ]
       },
       {
+        "id": "evt.us-thanksgiving",
+        "category": "country",
+        "weight": 6,
+        "conditions": [
+          {
+            "char": "country",
+            "op": "==",
+            "value": "country.us"
+          },
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 5
+          }
+        ],
+        "cooldownYears": 3,
+        "once": false,
+        "title": "It’s Thanksgiving, and the whole family is gathering.",
+        "choices": [
+          {
+            "text": "Host the dinner",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 7
+                  },
+                  {
+                    "asset": "money",
+                    "op": "-",
+                    "value": 300
+                  }
+                ],
+                "resultText": "A warm, chaotic, wonderful family dinner."
+              }
+            ]
+          },
+          {
+            "text": "Skip it this year",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "-",
+                    "value": 4
+                  }
+                ],
+                "resultText": "The house felt a little empty."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.uk-gap-year",
+        "category": "country",
+        "weight": 6,
+        "conditions": [
+          {
+            "char": "country",
+            "op": "==",
+            "value": "country.uk"
+          },
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 18
+          },
+          {
+            "stat": "age",
+            "op": "<=",
+            "value": 20
+          }
+        ],
+        "cooldownYears": 0,
+        "once": true,
+        "title": "Your mates are planning a gap year travelling Europe.",
+        "choices": [
+          {
+            "text": "Go for it",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 12
+                  },
+                  {
+                    "stat": "smarts",
+                    "op": "+",
+                    "value": 3
+                  },
+                  {
+                    "asset": "money",
+                    "op": "-",
+                    "value": 4000
+                  }
+                ],
+                "resultText": "You came back with stories and a broader mind."
+              }
+            ]
+          },
+          {
+            "text": "Stay and save money",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "asset": "money",
+                    "op": "+",
+                    "value": 2000
+                  }
+                ],
+                "resultText": "Sensible. A little dull, but sensible."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.japan-exams",
+        "category": "country",
+        "weight": 8,
+        "conditions": [
+          {
+            "char": "country",
+            "op": "==",
+            "value": "country.japan"
+          },
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 15
+          },
+          {
+            "stat": "age",
+            "op": "<=",
+            "value": 18
+          }
+        ],
+        "cooldownYears": 2,
+        "once": false,
+        "title": "Entrance-exam season has the whole country on edge.",
+        "choices": [
+          {
+            "text": "Study relentlessly",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "smarts",
+                    "op": "+",
+                    "value": 9
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "-",
+                    "value": 6
+                  }
+                ],
+                "resultText": "Grueling, but your scores soared."
+              }
+            ]
+          },
+          {
+            "text": "Keep a balance",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "smarts",
+                    "op": "+",
+                    "value": 4
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 2
+                  }
+                ],
+                "resultText": "You stayed sane and did respectably."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.india-festival",
+        "category": "country",
+        "weight": 7,
+        "conditions": [
+          {
+            "char": "country",
+            "op": "==",
+            "value": "country.india"
+          },
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 4
+          }
+        ],
+        "cooldownYears": 2,
+        "once": false,
+        "title": "The streets light up for a major festival.",
+        "choices": [
+          {
+            "text": "Celebrate with everyone",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 8
+                  }
+                ],
+                "resultText": "Colour, food, and family — pure joy."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.nigeria-entrepreneur",
+        "category": "country",
+        "weight": 6,
+        "conditions": [
+          {
+            "char": "country",
+            "op": "==",
+            "value": "country.nigeria"
+          },
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 20
+          }
+        ],
+        "cooldownYears": 4,
+        "once": false,
+        "title": "A friend pitches you a market stall partnership in Lagos.",
+        "choices": [
+          {
+            "text": "Invest and hustle",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 55,
+                "effects": [
+                  {
+                    "asset": "money",
+                    "op": "+",
+                    "value": 12000
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 5
+                  }
+                ],
+                "resultText": "The stall thrived. Hard work paid off."
+              },
+              {
+                "weight": 45,
+                "effects": [
+                  {
+                    "asset": "money",
+                    "op": "-",
+                    "value": 3000
+                  }
+                ],
+                "resultText": "It didn’t pan out, but you learned a lot."
+              }
+            ]
+          },
+          {
+            "text": "Pass on it",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [],
+                "resultText": "You kept your savings safe."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.brazil-carnival",
+        "category": "country",
+        "weight": 7,
+        "conditions": [
+          {
+            "char": "country",
+            "op": "==",
+            "value": "country.brazil"
+          },
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 16
+          }
+        ],
+        "cooldownYears": 2,
+        "once": false,
+        "title": "Carnival has taken over the city.",
+        "choices": [
+          {
+            "text": "Dance until dawn",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 80,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 10
+                  },
+                  {
+                    "stat": "health",
+                    "op": "-",
+                    "value": 3
+                  }
+                ],
+                "resultText": "Unforgettable. Your feet still ache."
+              },
+              {
+                "weight": 20,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 4
+                  },
+                  {
+                    "flag": "com.fateline.core/met_someone",
+                    "op": "set",
+                    "value": true
+                  }
+                ],
+                "resultText": "You danced — and caught someone’s eye."
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "evt.aging",
         "category": "elderly",
         "weight": 60,
@@ -577,12 +945,10 @@
                 "weight": 100,
                 "effects": [
                   {
-                    "addRelationship": "arch.parent",
-                    "name": "Mom"
+                    "addRelationship": "arch.mother"
                   },
                   {
-                    "addRelationship": "arch.parent",
-                    "name": "Dad"
+                    "addRelationship": "arch.father"
                   },
                   {
                     "stat": "happiness",
@@ -1530,9 +1896,21 @@
     ],
     "archetypes": [
       {
-        "id": "arch.parent",
+        "id": "arch.mother",
         "type": "parent",
-        "defaultName": "Parent",
+        "defaultName": "Mom",
+        "generateName": false,
+        "gender": "female",
+        "stats": {
+          "relationship": 75
+        }
+      },
+      {
+        "id": "arch.father",
+        "type": "parent",
+        "defaultName": "Dad",
+        "generateName": false,
+        "gender": "male",
         "stats": {
           "relationship": 75
         }
@@ -1540,7 +1918,8 @@
       {
         "id": "arch.friend",
         "type": "friend",
-        "defaultName": "Friend",
+        "defaultName": "Someone",
+        "generateName": true,
         "stats": {
           "relationship": 50
         }
@@ -1548,7 +1927,8 @@
       {
         "id": "arch.partner",
         "type": "partner",
-        "defaultName": "Partner",
+        "defaultName": "Someone",
+        "generateName": true,
         "stats": {
           "relationship": 60
         }
@@ -2057,6 +2437,297 @@
         "label": "An Ordinary Life",
         "priority": 1,
         "conditions": []
+      }
+    ],
+    "countries": [
+      {
+        "id": "country.us",
+        "label": "United States",
+        "code": "US",
+        "weight": 5,
+        "cities": [
+          "New York",
+          "Los Angeles",
+          "Chicago",
+          "Houston",
+          "Phoenix",
+          "Atlanta"
+        ],
+        "ethnicities": [
+          "eth.white",
+          "eth.black",
+          "eth.hispanic",
+          "eth.east-asian",
+          "eth.south-asian"
+        ]
+      },
+      {
+        "id": "country.uk",
+        "label": "United Kingdom",
+        "code": "UK",
+        "weight": 3,
+        "cities": [
+          "London",
+          "Manchester",
+          "Birmingham",
+          "Glasgow",
+          "Bristol"
+        ],
+        "ethnicities": [
+          "eth.white",
+          "eth.south-asian",
+          "eth.black"
+        ]
+      },
+      {
+        "id": "country.japan",
+        "label": "Japan",
+        "code": "JP",
+        "weight": 3,
+        "cities": [
+          "Tokyo",
+          "Osaka",
+          "Kyoto",
+          "Nagoya",
+          "Sapporo"
+        ],
+        "ethnicities": [
+          "eth.east-asian"
+        ]
+      },
+      {
+        "id": "country.india",
+        "label": "India",
+        "code": "IN",
+        "weight": 6,
+        "cities": [
+          "Mumbai",
+          "Delhi",
+          "Bangalore",
+          "Kolkata",
+          "Chennai"
+        ],
+        "ethnicities": [
+          "eth.south-asian"
+        ]
+      },
+      {
+        "id": "country.nigeria",
+        "label": "Nigeria",
+        "code": "NG",
+        "weight": 4,
+        "cities": [
+          "Lagos",
+          "Abuja",
+          "Kano",
+          "Ibadan",
+          "Port Harcourt"
+        ],
+        "ethnicities": [
+          "eth.black"
+        ]
+      },
+      {
+        "id": "country.brazil",
+        "label": "Brazil",
+        "code": "BR",
+        "weight": 4,
+        "cities": [
+          "São Paulo",
+          "Rio de Janeiro",
+          "Brasília",
+          "Salvador",
+          "Recife"
+        ],
+        "ethnicities": [
+          "eth.hispanic",
+          "eth.white",
+          "eth.black"
+        ]
+      }
+    ],
+    "ethnicities": [
+      {
+        "id": "eth.white",
+        "label": "White",
+        "weight": 5,
+        "names": {
+          "male": [
+            "James",
+            "William",
+            "Henry",
+            "Jack",
+            "Thomas",
+            "George"
+          ],
+          "female": [
+            "Emily",
+            "Charlotte",
+            "Grace",
+            "Olivia",
+            "Sophie",
+            "Alice"
+          ],
+          "neutral": [
+            "Alex",
+            "Charlie",
+            "Sam",
+            "Jordan"
+          ],
+          "surnames": [
+            "Smith",
+            "Johnson",
+            "Walker",
+            "Clarke",
+            "Taylor",
+            "Brooks"
+          ]
+        }
+      },
+      {
+        "id": "eth.black",
+        "label": "Black",
+        "weight": 4,
+        "names": {
+          "male": [
+            "Marcus",
+            "Andre",
+            "Malik",
+            "Jamal",
+            "Isaiah",
+            "Darnell"
+          ],
+          "female": [
+            "Ayanna",
+            "Imani",
+            "Aaliyah",
+            "Nia",
+            "Zuri",
+            "Tiana"
+          ],
+          "neutral": [
+            "Amari",
+            "Sage",
+            "Justice",
+            "Ari"
+          ],
+          "surnames": [
+            "Washington",
+            "Okafor",
+            "Mensah",
+            "Banks",
+            "Carter",
+            "Adebayo"
+          ]
+        }
+      },
+      {
+        "id": "eth.east-asian",
+        "label": "East Asian",
+        "weight": 3,
+        "names": {
+          "male": [
+            "Haruto",
+            "Wei",
+            "Min-jun",
+            "Ren",
+            "Jian",
+            "Kenji"
+          ],
+          "female": [
+            "Yuki",
+            "Mei",
+            "Soo-jin",
+            "Hana",
+            "Ling",
+            "Sakura"
+          ],
+          "neutral": [
+            "Aki",
+            "Yu",
+            "Jin"
+          ],
+          "surnames": [
+            "Tanaka",
+            "Chen",
+            "Kim",
+            "Sato",
+            "Wang",
+            "Park"
+          ]
+        }
+      },
+      {
+        "id": "eth.south-asian",
+        "label": "South Asian",
+        "weight": 3,
+        "names": {
+          "male": [
+            "Arjun",
+            "Rohan",
+            "Vikram",
+            "Aarav",
+            "Imran",
+            "Dev"
+          ],
+          "female": [
+            "Priya",
+            "Ananya",
+            "Meera",
+            "Aisha",
+            "Diya",
+            "Sana"
+          ],
+          "neutral": [
+            "Kiran",
+            "Noor",
+            "Sasha"
+          ],
+          "surnames": [
+            "Patel",
+            "Singh",
+            "Kumar",
+            "Khan",
+            "Sharma",
+            "Reddy"
+          ]
+        }
+      },
+      {
+        "id": "eth.hispanic",
+        "label": "Hispanic / Latino",
+        "weight": 4,
+        "names": {
+          "male": [
+            "Mateo",
+            "Diego",
+            "Santiago",
+            "Luis",
+            "Carlos",
+            "Javier"
+          ],
+          "female": [
+            "Sofia",
+            "Valentina",
+            "Camila",
+            "Lucia",
+            "Isabela",
+            "Elena"
+          ],
+          "neutral": [
+            "Andrea",
+            "Guadalupe",
+            "Cruz"
+          ],
+          "surnames": [
+            "Garcia",
+            "Rodriguez",
+            "Silva",
+            "Santos",
+            "Morales",
+            "Reyes"
+          ]
+        }
       }
     ]
   }

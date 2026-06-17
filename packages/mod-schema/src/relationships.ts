@@ -17,8 +17,15 @@ export const archetypeSchema = z
     id: contentIdSchema,
     /** Relationship category, e.g. `friend`, `partner`, `parent`, `child`. */
     type: z.string().min(1),
-    /** Default display name if none is supplied when the NPC is created. */
+    /** Default display name if name generation is off and none is supplied. */
     defaultName: z.string().min(1).default('Someone'),
+    /**
+     * If true, the engine generates a believable, gendered name from the
+     * demographics pools instead of using `defaultName` (goal item 7).
+     */
+    generateName: z.boolean().default(true),
+    /** Force a gender for generated NPCs; omit for a random one. */
+    gender: z.enum(['male', 'female', 'x']).optional(),
     /** Starting per-relationship stat values (e.g. { relationship: 50 }). */
     stats: z.record(z.string(), z.number()).default({}),
   })

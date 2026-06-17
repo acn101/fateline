@@ -11,8 +11,8 @@
       outcomes:
         - weight: 100
           effects:
-            - { addRelationship: arch.parent, name: 'Mom' }
-            - { addRelationship: arch.parent, name: 'Dad' }
+            - { addRelationship: arch.mother }
+            - { addRelationship: arch.father }
             - { stat: happiness, op: '+', value: 2 }
           resultText: 'Your parents welcomed you to the world.'
 

@@ -1,0 +1,48 @@
+# Ethnicities with gendered name pools (goal items 4, 7). Pools are small,
+# representative samples — a real mod can expand them. `neutral` names are used
+# for nonbinary characters.
+ethnicities:
+  - id: eth.white
+    label: 'White'
+    weight: 5
+    names:
+      male: [James, William, Henry, Jack, Thomas, George]
+      female: [Emily, Charlotte, Grace, Olivia, Sophie, Alice]
+      neutral: [Alex, Charlie, Sam, Jordan]
+      surnames: [Smith, Johnson, Walker, Clarke, Taylor, Brooks]
+
+  - id: eth.black
+    label: 'Black'
+    weight: 4
+    names:
+      male: [Marcus, Andre, Malik, Jamal, Isaiah, Darnell]
+      female: [Ayanna, Imani, Aaliyah, Nia, Zuri, Tiana]
+      neutral: [Amari, Sage, Justice, Ari]
+      surnames: [Washington, Okafor, Mensah, Banks, Carter, Adebayo]
+
+  - id: eth.east-asian
+    label: 'East Asian'
+    weight: 3
+    names:
+      male: [Haruto, Wei, Min-jun, Ren, Jian, Kenji]
+      female: [Yuki, Mei, Soo-jin, Hana, Ling, Sakura]
+      neutral: [Aki, Yu, Jin]
+      surnames: [Tanaka, Chen, Kim, Sato, Wang, Park]
+
+  - id: eth.south-asian
+    label: 'South Asian'
+    weight: 3
+    names:
+      male: [Arjun, Rohan, Vikram, Aarav, Imran, Dev]
+      female: [Priya, Ananya, Meera, Aisha, Diya, Sana]
+      neutral: [Kiran, Noor, Sasha]
+      surnames: [Patel, Singh, Kumar, Khan, Sharma, Reddy]
+
+  - id: eth.hispanic
+    label: 'Hispanic / Latino'
+    weight: 4
+    names:
+      male: [Mateo, Diego, Santiago, Luis, Carlos, Javier]
+      female: [Sofia, Valentina, Camila, Lucia, Isabela, Elena]
+      neutral: [Andrea, Guadalupe, Cruz]
+      surnames: [Garcia, Rodriguez, Silva, Santos, Morales, Reyes]

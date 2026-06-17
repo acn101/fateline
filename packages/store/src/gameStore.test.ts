@@ -8,6 +8,7 @@ import {
   relationshipViews,
   careerView,
   assetsView,
+  identityLine,
 } from './selectors.js';
 
 function coreLikeMod(): FatelineMod {
@@ -109,6 +110,12 @@ function coreLikeMod(): FatelineMod {
         },
       ],
       ribbons: [{ id: 'ribbon.any', label: 'A Life', priority: 1, conditions: [] }],
+      ethnicities: [
+        { id: 'eth.a', label: 'Ethnicity A', names: { neutral: ['Robin'], surnames: ['Lee'] } },
+      ],
+      countries: [
+        { id: 'country.x', label: 'Countryland', cities: ['Town'], ethnicities: ['eth.a'] },
+      ],
     },
   };
   const r = validateMod(raw);
@@ -346,5 +353,52 @@ describe('assets: buy/sell + assetsView', () => {
     store.getState().loadMods([coreLikeMod()]);
     expect(() => store.getState().buy('asset.car')).toThrow();
     expect(() => store.getState().sell('x')).toThrow();
+  });
+});
+
+describe('identity: rollCandidates + identityLine', () => {
+  it('rollCandidates returns N candidates with labels and respects gender', () => {
+    const store = createGameStore();
+    store.getState().loadMods([coreLikeMod()]);
+    const candidates = store.getState().rollCandidates('seed', 3, 'female');
+    expect(candidates).toHaveLength(3);
+    expect(candidates.every((c) => c.gender === 'female')).toBe(true);
+    expect(candidates[0]!.countryLabel).toBe('Countryland');
+  });
+
+  it('rollCandidates throws before mods are loaded', () => {
+    const store = createGameStore();
+    expect(() => store.getState().rollCandidates('s')).toThrow();
+  });
+
+  it('identityLine reads gender/ethnicity/country labels', () => {
+    const store = createGameStore();
+    store.getState().loadMods([coreLikeMod()]);
+    store.getState().startGame({
+      seed: 1,
+      character: {
+        name: 'A',
+        gender: 'female',
+        ethnicity: 'eth.a',
+        country: 'country.x',
+        birthplace: 'Town',
+        birthYear: 2000,
+      },
+    });
+    const line = identityLine(store.getState().registry!, store.getState().game!);
+    expect(line).toBe('Female · Ethnicity A · Town, Countryland');
+  });
+
+  it('identityLine handles missing ethnicity/birthplace and unknown gender', () => {
+    const store = createGameStore();
+    store.getState().loadMods([coreLikeMod()]);
+    store.getState().startGame({
+      seed: 1,
+      character: { name: 'A', gender: 'x', country: 'country.x', birthYear: 2000 },
+    });
+    // No ethnicity, no birthplace -> just gender + country label.
+    expect(identityLine(store.getState().registry!, store.getState().game!)).toBe(
+      'Nonbinary · Countryland',
+    );
   });
 });

@@ -19,6 +19,8 @@ const FOLDER_TO_CONTENT_KEY: Record<string, string> = {
   education: 'education',
   assets: 'assetTypes',
   ribbons: 'ribbons',
+  countries: 'countries',
+  ethnicities: 'ethnicities',
 };
 
 /**

@@ -7,6 +7,7 @@ import {
   relationshipViews,
   careerView,
   assetsView,
+  identityLine,
 } from '@fateline/store';
 import {
   StatsHeader,
@@ -44,7 +45,7 @@ export default function PlayScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <StatsHeader game={game} stats={stats} />
+        <StatsHeader game={game} stats={stats} subtitle={identityLine(registry, game)} />
       </View>
 
       <HistoryFeed history={game.history} />

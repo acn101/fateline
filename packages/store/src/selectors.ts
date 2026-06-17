@@ -118,6 +118,20 @@ export function careerView(registry: Registry, game: GameState): CareerView {
   };
 }
 
+const GENDER_LABEL: Record<string, string> = { female: 'Female', male: 'Male', x: 'Nonbinary' };
+
+/** A human-readable identity line: "Female · East Asian · Tokyo, Japan". */
+export function identityLine(registry: Registry, game: GameState): string {
+  const c = game.character;
+  const parts: string[] = [GENDER_LABEL[c.gender] ?? ''];
+  const eth = registry.ethnicities.get(c.ethnicity)?.label;
+  if (eth) parts.push(eth);
+  const country = registry.countries.get(c.country)?.label;
+  if (c.birthplace && country) parts.push(`${c.birthplace}, ${country}`);
+  else if (country) parts.push(country);
+  return parts.filter(Boolean).join(' · ');
+}
+
 /** An owned asset joined with its type's label, for display. */
 export interface OwnedAssetView {
   owned: OwnedAsset;

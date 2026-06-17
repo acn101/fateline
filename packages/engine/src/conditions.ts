@@ -39,6 +39,7 @@ function evalLeaf(
   if ('stat' in leaf) return compare(leaf.op, getStat(state, leaf.stat), leaf.value);
   if ('asset' in leaf) return compare(leaf.op, getAsset(state, leaf.asset), leaf.value);
   if ('flag' in leaf) return compare(leaf.op, state.flags[leaf.flag] ?? false, leaf.value);
+  if ('char' in leaf) return compare(leaf.op, state.character[leaf.char], leaf.value);
   // Relationship-scoped leaves resolve against the targeted NPC; with no
   // target they are vacuously false (the action simply isn't applicable).
   if ('rel.stat' in leaf) {

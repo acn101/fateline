@@ -9,7 +9,16 @@ import type { GameState } from '@fateline/engine';
  * Stats are passed in (computed by the store's visibleStats selector) so any
  * module's declared stat renders automatically — README §7 dynamic rendering.
  */
-export function StatsHeader({ game, stats }: { game: GameState; stats: DisplayStat[] }) {
+export function StatsHeader({
+  game,
+  stats,
+  subtitle,
+}: {
+  game: GameState;
+  stats: DisplayStat[];
+  /** Optional identity line, e.g. "Female · East Asian · Tokyo, Japan". */
+  subtitle?: string;
+}) {
   const money = game.assets['money'] ?? 0;
   return (
     <View style={styles.card}>
@@ -19,6 +28,7 @@ export function StatsHeader({ game, stats }: { game: GameState; stats: DisplaySt
           Age {game.character.age} · {lifeStage(game.character.age)}
         </Text>
       </View>
+      {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
       <Text style={styles.money}>{formatMoney(money)}</Text>
       <View style={styles.stats}>
         {stats.map((s) => (
@@ -34,6 +44,7 @@ const styles = StyleSheet.create({
   titleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
   name: { fontSize: 20, fontWeight: '700', color: '#111827' },
   meta: { fontSize: 13, color: '#6b7280' },
+  subtitle: { fontSize: 12, color: '#9ca3af' },
   money: { fontSize: 16, fontWeight: '600', color: '#059669' },
   stats: { marginTop: 4 },
 });

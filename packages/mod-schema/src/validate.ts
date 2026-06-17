@@ -150,6 +150,25 @@ export function validateMod(input: unknown): ValidationResult<FatelineMod> {
     issues.push({ path: 'content.ribbons', message: `Duplicate ribbon id "${id}".` });
   }
 
+  // Demographics: unique country + ethnicity ids; country ethnicity refs resolve.
+  const ethnicityIds = new Set(mod.content.ethnicities.map((e) => e.id));
+  for (const id of findDuplicates(mod.content.countries.map((c) => c.id))) {
+    issues.push({ path: 'content.countries', message: `Duplicate country id "${id}".` });
+  }
+  for (const id of findDuplicates(mod.content.ethnicities.map((e) => e.id))) {
+    issues.push({ path: 'content.ethnicities', message: `Duplicate ethnicity id "${id}".` });
+  }
+  for (const country of mod.content.countries) {
+    for (const ethId of country.ethnicities) {
+      if (!ethnicityIds.has(ethId)) {
+        issues.push({
+          path: `content.countries.${country.id}.ethnicities`,
+          message: `Country references unknown ethnicity "${ethId}".`,
+        });
+      }
+    }
+  }
+
   if (issues.length > 0) return { ok: false, errors: issues };
   return { ok: true, value: mod };
 }

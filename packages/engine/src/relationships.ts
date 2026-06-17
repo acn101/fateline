@@ -1,9 +1,9 @@
 import type { RelationshipAction } from '@fateline/mod-schema';
-import type { GameState, Relationship } from './state.js';
+import type { GameState, Relationship, HistoryEntry } from './state.js';
 import type { Registry } from './registry.js';
 import { weightedPick } from './rng.js';
 import { evaluateAll } from './conditions.js';
-import { applyEffects } from './effects.js';
+import { applyOutcomeWithDeltas } from './effects.js';
 import { resolveTriggers, checkDeath } from './turn.js';
 
 /**
@@ -56,13 +56,16 @@ export function takeRelationshipAction(
       )
     ]!;
 
-  state.history.push({
+  const entry: HistoryEntry = {
     age: state.character.age,
     text: `${action.label} — ${npc.name}`,
     resultText: outcome.resultText,
-  });
+  };
+  state.history.push(entry);
 
-  resolveTriggers(state, registry, applyEffects(outcome.effects, state, registry, npc));
+  const { triggered, deltas } = applyOutcomeWithDeltas(outcome.effects, state, registry, npc);
+  if (deltas.length > 0) entry.deltas = deltas;
+  resolveTriggers(state, registry, triggered);
   checkDeath(state, registry);
   return null;
 }

@@ -5,7 +5,17 @@ import { SaveManager, migrate, migrations, CURRENT_SAVE_VERSION } from './saves.
 
 function sampleState(name = 'Alex', age = 25): GameState {
   return {
-    character: { id: 'pc', name, gender: 'x', age, alive: true, birthYear: 2000 },
+    character: {
+      id: 'pc',
+      name,
+      gender: 'x',
+      ethnicity: '',
+      country: '',
+      birthplace: '',
+      age,
+      alive: true,
+      birthYear: 2000,
+    },
     stats: { health: 80 },
     flags: {},
     assets: { money: 100 },

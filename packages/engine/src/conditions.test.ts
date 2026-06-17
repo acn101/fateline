@@ -6,7 +6,17 @@ import type { GameState } from './state.js';
 
 function stateWith(overrides: Partial<GameState> = {}): GameState {
   return {
-    character: { id: 'pc', name: 'Test', gender: 'x', age: 18, alive: true, birthYear: 2000 },
+    character: {
+      id: 'pc',
+      name: 'Test',
+      gender: 'x',
+      ethnicity: '',
+      country: '',
+      birthplace: '',
+      age: 18,
+      alive: true,
+      birthYear: 2000,
+    },
     stats: { 'core.happiness': 50 },
     flags: { in_jail: false },
     assets: { money: 100 },
@@ -38,6 +48,9 @@ describe('comparison operators', () => {
     [{ flag: 'in_jail', op: '==', value: false }, true],
     [{ stat: 'age', op: 'in', value: [17, 18, 19] }, true],
     [{ stat: 'age', op: 'in', value: [1, 2] }, false],
+    [{ char: 'gender', op: '==', value: 'x' }, true],
+    [{ char: 'country', op: '==', value: '' }, true],
+    [{ char: 'gender', op: '==', value: 'female' }, false],
   ];
   it.each(cases)('evaluates %o => %s', (cond, expected) => {
     expect(evaluateCondition(cond, s, createRng(1))).toBe(expected);
@@ -99,6 +112,7 @@ describe('rel.* leaves (§4.5.2)', () => {
   const npc = {
     id: 'rel.0',
     name: 'Sam',
+    gender: 'x' as const,
     type: 'friend',
     alive: true,
     stats: { relationship: 70 },

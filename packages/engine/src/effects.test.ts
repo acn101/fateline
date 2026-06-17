@@ -36,7 +36,17 @@ function registryWith(): Registry {
 
 function freshState(): GameState {
   return {
-    character: { id: 'pc', name: 'T', gender: 'x', age: 10, alive: true, birthYear: 2000 },
+    character: {
+      id: 'pc',
+      name: 'T',
+      gender: 'x',
+      ethnicity: '',
+      country: '',
+      birthplace: '',
+      age: 10,
+      alive: true,
+      birthYear: 2000,
+    },
     stats: { 'com.t.core.happiness': 50 },
     flags: {},
     assets: { money: 100 },

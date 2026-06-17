@@ -1,10 +1,10 @@
 import type { GameEvent } from '@fateline/mod-schema';
-import type { GameState, Character } from './state.js';
+import type { GameState, Character, HistoryEntry } from './state.js';
 import { createRng, weightedPick, type RngState } from './rng.js';
 import type { Registry } from './registry.js';
 import { initialStats } from './registry.js';
 import { evaluateAll } from './conditions.js';
-import { applyEffects } from './effects.js';
+import { applyEffects, applyOutcomeWithDeltas } from './effects.js';
 import { setStatClamped } from './accessors.js';
 import { advanceCareerAndEducation } from './careers.js';
 import { advanceAssets, selectRibbon } from './assets.js';
@@ -17,7 +17,9 @@ import { advanceAssets, selectRibbon } from './assets.js';
 
 export interface NewGameOptions {
   seed: number | string;
-  character: Pick<Character, 'name' | 'gender'> & { birthYear: number };
+  character: Pick<Character, 'name' | 'gender'> & {
+    birthYear: number;
+  } & Partial<Pick<Character, 'ethnicity' | 'country' | 'birthplace'>>;
   /** Asset starting balances, e.g. { money: 0 }. */
   assets?: Record<string, number>;
 }
@@ -28,6 +30,9 @@ export function createGame(registry: Registry, options: NewGameOptions): GameSta
       id: 'pc',
       name: options.character.name,
       gender: options.character.gender,
+      ethnicity: options.character.ethnicity ?? '',
+      country: options.character.country ?? '',
+      birthplace: options.character.birthplace ?? '',
       age: 0,
       alive: true,
       birthYear: options.character.birthYear,
@@ -138,14 +143,16 @@ export function applyChoice(
     ]!;
 
   recordFired(state, pending.event.id);
-  state.history.push({
+  const entry: HistoryEntry = {
     age: state.character.age,
     text: pending.event.title,
     resultText: outcome.resultText,
-  });
+  };
+  state.history.push(entry);
 
-  const queue = applyEffects(outcome.effects, state, registry);
-  resolveTriggers(state, registry, queue);
+  const { triggered, deltas } = applyOutcomeWithDeltas(outcome.effects, state, registry);
+  if (deltas.length > 0) entry.deltas = deltas;
+  resolveTriggers(state, registry, triggered);
 
   checkDeath(state, registry);
 }

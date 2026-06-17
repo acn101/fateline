@@ -9,6 +9,8 @@ import type {
   EducationProgram,
   AssetType,
   Ribbon,
+  Country,
+  Ethnicity,
 } from '@fateline/mod-schema';
 
 /**
@@ -42,6 +44,10 @@ export interface Registry {
   assetTypes: Map<string, AssetType>;
   /** End-of-life ribbons (§4.5.5), kept in load order. */
   ribbons: Ribbon[];
+  /** Countries keyed by id (demographics). */
+  countries: Map<string, Country>;
+  /** Ethnicities keyed by id (demographics). */
+  ethnicities: Map<string, Ethnicity>;
   /**
    * Resolved id of the "vitality" stat: when it reaches its minimum, the
    * character dies. Set from compile options so death is configurable rather
@@ -80,6 +86,8 @@ export function compileRegistry(
   const education = new Map<string, EducationProgram>();
   const assetTypes = new Map<string, AssetType>();
   const ribbons: Ribbon[] = [];
+  const countries = new Map<string, Country>();
+  const ethnicities = new Map<string, Ethnicity>();
 
   for (const mod of modules) {
     const moduleId = mod.manifest.id;
@@ -113,6 +121,12 @@ export function compileRegistry(
     for (const ribbon of mod.content.ribbons ?? []) {
       ribbons.push(ribbon);
     }
+    for (const country of mod.content.countries ?? []) {
+      countries.set(country.id, country);
+    }
+    for (const ethnicity of mod.content.ethnicities ?? []) {
+      ethnicities.set(ethnicity.id, ethnicity);
+    }
   }
 
   const vitalityStatId =
@@ -129,6 +143,8 @@ export function compileRegistry(
     education,
     assetTypes,
     ribbons,
+    countries,
+    ethnicities,
     vitalityStatId,
   };
 }

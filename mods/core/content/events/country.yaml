@@ -1,0 +1,129 @@
+# Country-flavored events (goal item 5). Gated on the character's country via
+# the `char` condition target, so a life feels rooted in where it's lived.
+
+- id: evt.us-thanksgiving
+  category: country
+  weight: 6
+  cooldownYears: 3
+  conditions:
+    - { char: country, op: '==', value: country.us }
+    - { stat: age, op: '>=', value: 5 }
+  title: 'It’s Thanksgiving, and the whole family is gathering.'
+  choices:
+    - text: 'Host the dinner'
+      outcomes:
+        - weight: 100
+          effects: [{ stat: happiness, op: '+', value: 7 }, { asset: money, op: '-', value: 300 }]
+          resultText: 'A warm, chaotic, wonderful family dinner.'
+    - text: 'Skip it this year'
+      outcomes:
+        - weight: 100
+          effects: [{ stat: happiness, op: '-', value: 4 }]
+          resultText: 'The house felt a little empty.'
+
+- id: evt.uk-gap-year
+  category: country
+  weight: 6
+  once: true
+  conditions:
+    - { char: country, op: '==', value: country.uk }
+    - { stat: age, op: '>=', value: 18 }
+    - { stat: age, op: '<=', value: 20 }
+  title: 'Your mates are planning a gap year travelling Europe.'
+  choices:
+    - text: 'Go for it'
+      outcomes:
+        - weight: 100
+          effects:
+            [
+              { stat: happiness, op: '+', value: 12 },
+              { stat: smarts, op: '+', value: 3 },
+              { asset: money, op: '-', value: 4000 },
+            ]
+          resultText: 'You came back with stories and a broader mind.'
+    - text: 'Stay and save money'
+      outcomes:
+        - weight: 100
+          effects: [{ asset: money, op: '+', value: 2000 }]
+          resultText: 'Sensible. A little dull, but sensible.'
+
+- id: evt.japan-exams
+  category: country
+  weight: 8
+  cooldownYears: 2
+  conditions:
+    - { char: country, op: '==', value: country.japan }
+    - { stat: age, op: '>=', value: 15 }
+    - { stat: age, op: '<=', value: 18 }
+  title: 'Entrance-exam season has the whole country on edge.'
+  choices:
+    - text: 'Study relentlessly'
+      outcomes:
+        - weight: 100
+          effects: [{ stat: smarts, op: '+', value: 9 }, { stat: happiness, op: '-', value: 6 }]
+          resultText: 'Grueling, but your scores soared.'
+    - text: 'Keep a balance'
+      outcomes:
+        - weight: 100
+          effects: [{ stat: smarts, op: '+', value: 4 }, { stat: happiness, op: '+', value: 2 }]
+          resultText: 'You stayed sane and did respectably.'
+
+- id: evt.india-festival
+  category: country
+  weight: 7
+  cooldownYears: 2
+  conditions:
+    - { char: country, op: '==', value: country.india }
+    - { stat: age, op: '>=', value: 4 }
+  title: 'The streets light up for a major festival.'
+  choices:
+    - text: 'Celebrate with everyone'
+      outcomes:
+        - weight: 100
+          effects: [{ stat: happiness, op: '+', value: 8 }]
+          resultText: 'Colour, food, and family — pure joy.'
+
+- id: evt.nigeria-entrepreneur
+  category: country
+  weight: 6
+  cooldownYears: 4
+  conditions:
+    - { char: country, op: '==', value: country.nigeria }
+    - { stat: age, op: '>=', value: 20 }
+  title: 'A friend pitches you a market stall partnership in Lagos.'
+  choices:
+    - text: 'Invest and hustle'
+      outcomes:
+        - weight: 55
+          effects: [{ asset: money, op: '+', value: 12000 }, { stat: happiness, op: '+', value: 5 }]
+          resultText: 'The stall thrived. Hard work paid off.'
+        - weight: 45
+          effects: [{ asset: money, op: '-', value: 3000 }]
+          resultText: 'It didn’t pan out, but you learned a lot.'
+    - text: 'Pass on it'
+      outcomes:
+        - weight: 100
+          effects: []
+          resultText: 'You kept your savings safe.'
+
+- id: evt.brazil-carnival
+  category: country
+  weight: 7
+  cooldownYears: 2
+  conditions:
+    - { char: country, op: '==', value: country.brazil }
+    - { stat: age, op: '>=', value: 16 }
+  title: 'Carnival has taken over the city.'
+  choices:
+    - text: 'Dance until dawn'
+      outcomes:
+        - weight: 80
+          effects: [{ stat: happiness, op: '+', value: 10 }, { stat: health, op: '-', value: 3 }]
+          resultText: 'Unforgettable. Your feet still ache.'
+        - weight: 20
+          effects:
+            [
+              { stat: happiness, op: '+', value: 4 },
+              { flag: 'com.fateline.core/met_someone', op: 'set', value: true },
+            ]
+          resultText: 'You danced — and caught someone’s eye.'

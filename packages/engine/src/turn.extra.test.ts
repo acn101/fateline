@@ -72,7 +72,14 @@ describe('triggerEvent chains (turn.ts resolveTriggers)', () => {
     });
     const game = createGame(reg, {
       seed: 's',
-      character: { name: 'A', gender: 'x', birthYear: 2000 },
+      character: {
+        name: 'A',
+        gender: 'x',
+        ethnicity: '',
+        country: '',
+        birthplace: '',
+        birthYear: 2000,
+      },
       assets: { money: 0 },
     });
     const pending = ageUp(game, reg);
@@ -108,7 +115,14 @@ describe('event memory: once and cooldown', () => {
     const reg = memReg({ once: true });
     const game = createGame(reg, {
       seed: 1,
-      character: { name: 'A', gender: 'x', birthYear: 2000 },
+      character: {
+        name: 'A',
+        gender: 'x',
+        ethnicity: '',
+        country: '',
+        birthplace: '',
+        birthYear: 2000,
+      },
     });
     let fires = 0;
     for (let i = 0; i < 5; i++) {
@@ -125,7 +139,14 @@ describe('event memory: once and cooldown', () => {
     const reg = memReg({ cooldownYears: 3 });
     const game = createGame(reg, {
       seed: 1,
-      character: { name: 'A', gender: 'x', birthYear: 2000 },
+      character: {
+        name: 'A',
+        gender: 'x',
+        ethnicity: '',
+        country: '',
+        birthplace: '',
+        birthYear: 2000,
+      },
     });
     const firedAges: number[] = [];
     for (let i = 0; i < 7; i++) {
@@ -161,7 +182,14 @@ describe('edge paths', () => {
     });
     const game = createGame(reg, {
       seed: 1,
-      character: { name: 'A', gender: 'x', birthYear: 2000 },
+      character: {
+        name: 'A',
+        gender: 'x',
+        ethnicity: '',
+        country: '',
+        birthplace: '',
+        birthYear: 2000,
+      },
     });
     const p = ageUp(game, reg)!;
     expect(() => applyChoice(game, reg, p, 99)).toThrow(RangeError);
@@ -170,7 +198,17 @@ describe('edge paths', () => {
   it('setStatClamped stores unknown (undeclared) stats unclamped', () => {
     const reg = compile({ manifest: baseManifest, content: { stats: [], events: [] } });
     const state: GameState = {
-      character: { id: 'pc', name: 'A', gender: 'x', age: 0, alive: true, birthYear: 2000 },
+      character: {
+        id: 'pc',
+        name: 'A',
+        gender: 'x',
+        ethnicity: '',
+        country: '',
+        birthplace: '',
+        age: 0,
+        alive: true,
+        birthYear: 2000,
+      },
       stats: {},
       flags: {},
       assets: {},
@@ -209,7 +247,14 @@ describe('edge paths', () => {
     });
     const game = createGame(reg, {
       seed: 1,
-      character: { name: 'A', gender: 'x', birthYear: 2000 },
+      character: {
+        name: 'A',
+        gender: 'x',
+        ethnicity: '',
+        country: '',
+        birthplace: '',
+        birthYear: 2000,
+      },
     });
     expect(ageUp(game, reg)).toBeNull();
     expect(game.character.age).toBe(1);
@@ -219,7 +264,17 @@ describe('edge paths', () => {
     // Bypass validation to simulate a runtime-missing target.
     const reg = compile({ manifest: baseManifest, content: { stats: [], events: [] } });
     const state: GameState = {
-      character: { id: 'pc', name: 'A', gender: 'x', age: 1, alive: true, birthYear: 2000 },
+      character: {
+        id: 'pc',
+        name: 'A',
+        gender: 'x',
+        ethnicity: '',
+        country: '',
+        birthplace: '',
+        age: 1,
+        alive: true,
+        birthYear: 2000,
+      },
       stats: {},
       flags: {},
       assets: { money: 0 },

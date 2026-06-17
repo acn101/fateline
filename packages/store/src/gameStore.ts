@@ -12,10 +12,14 @@ import {
   enroll,
   buyAsset,
   sellAsset,
+  rollBirthCandidates,
+  createRng,
   type GameState,
   type Registry,
   type PendingEvent,
   type NewGameOptions,
+  type BirthCandidate,
+  type Gender,
 } from '@fateline/engine';
 
 /**
@@ -30,6 +34,8 @@ export interface GameStore {
   pending: PendingEvent | null;
   /** Set once at startup from the enabled modules. */
   loadMods: (modules: readonly FatelineMod[]) => void;
+  /** Roll N birth candidates to choose from (goal item 6). Pure read, no mutation. */
+  rollCandidates: (seed: number | string, count?: number, gender?: Gender) => BirthCandidate[];
   startGame: (options: NewGameOptions) => void;
   /** Advance one year; surfaces a pending event if one fires. */
   advance: () => void;
@@ -60,6 +66,12 @@ export function createGameStore() {
     pending: null,
 
     loadMods: (modules) => set({ registry: compileRegistry(modules) }),
+
+    rollCandidates: (seed, count = 3, gender) => {
+      const { registry } = get();
+      if (!registry) throw new Error('loadMods must be called before rollCandidates.');
+      return rollBirthCandidates(createRng(seed), registry, count, gender ? { gender } : {});
+    },
 
     startGame: (options) => {
       const { registry } = get();

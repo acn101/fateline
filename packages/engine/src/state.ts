@@ -8,13 +8,30 @@ import type { RngState } from './rng.js';
 
 export type FlagValue = boolean | number | string | Array<boolean | number | string>;
 
+/** Player/NPC gender. `x` = nonbinary/unspecified. */
+export type Gender = 'male' | 'female' | 'x';
+
 export interface Character {
   id: string;
   name: string;
-  gender: string;
+  gender: Gender;
+  /** Ethnicity id from a demographics pack (e.g. `eth.east-asian`), or ''. */
+  ethnicity: string;
+  /** Country id (e.g. `country.us`), or ''. */
+  country: string;
+  /** Birthplace city name, or ''. */
+  birthplace: string;
   age: number;
   alive: boolean;
   birthYear: number;
+}
+
+/** A single stat/asset change shown as feedback on a history entry. */
+export interface Delta {
+  /** Display label, e.g. "Happiness" or "$". */
+  label: string;
+  /** Signed change amount. */
+  amount: number;
 }
 
 /** One entry in the scrollable life story (README §4.1). */
@@ -24,6 +41,8 @@ export interface HistoryEntry {
   text: string;
   /** Result text of the chosen outcome, if this entry came from an event. */
   resultText?: string;
+  /** Stat/asset changes this outcome caused — the visible cause→effect feedback. */
+  deltas?: Delta[];
 }
 
 /** The player's current job (README §4.5.3). */
@@ -52,6 +71,7 @@ export interface Relationship {
   /** Unique instance id within this save. */
   id: string;
   name: string;
+  gender: Gender;
   /** Relationship category, e.g. `friend`, `partner`, `parent`. */
   type: string;
   alive: boolean;

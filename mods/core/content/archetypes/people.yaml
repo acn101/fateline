@@ -1,17 +1,27 @@
-# NPC archetypes (README §4.5.2). Templates that `addRelationship` instantiates.
-# `relationship` is the per-NPC closeness stat (0–100) the interactions move.
+# NPC archetypes (README §4.5.2). The engine generates a believable, gendered
+# name for each from the demographics name pools (goal item 7) unless a fixed
+# name is supplied at creation. `relationship` is the per-NPC closeness stat.
 
-- id: arch.parent
+- id: arch.mother
   type: parent
-  defaultName: 'Parent'
+  gender: female
+  defaultName: 'Mom'
+  generateName: false # parents keep familiar labels
+  stats: { relationship: 75 }
+
+- id: arch.father
+  type: parent
+  gender: male
+  defaultName: 'Dad'
+  generateName: false
   stats: { relationship: 75 }
 
 - id: arch.friend
   type: friend
-  defaultName: 'Friend'
+  generateName: true # gets a random gendered name
   stats: { relationship: 50 }
 
 - id: arch.partner
   type: partner
-  defaultName: 'Partner'
+  generateName: true
   stats: { relationship: 60 }

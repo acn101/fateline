@@ -36,6 +36,10 @@ export const leafConditionSchema = z.union([
   z.object({ flag: z.string(), ...baseLeaf }).strict(),
   z.object({ asset: z.string(), ...baseLeaf }).strict(),
   z.object({ random: z.literal(true), ...baseLeaf }).strict(),
+  // Character identity fields (read-only): gender, ethnicity, country, birthplace.
+  z
+    .object({ char: z.enum(['gender', 'ethnicity', 'country', 'birthplace']), ...baseLeaf })
+    .strict(),
   z.object({ 'rel.stat': z.string(), ...baseLeaf }).strict(),
   z.object({ 'rel.flag': z.string(), ...baseLeaf }).strict(),
   z.object({ 'rel.type': z.literal(true), ...baseLeaf }).strict(),

@@ -1,9 +1,9 @@
 import type { GameAction } from '@fateline/mod-schema';
-import type { GameState } from './state.js';
+import type { GameState, HistoryEntry } from './state.js';
 import type { Registry } from './registry.js';
 import { weightedPick } from './rng.js';
 import { evaluateAll } from './conditions.js';
-import { applyEffects } from './effects.js';
+import { applyOutcomeWithDeltas } from './effects.js';
 import { getAsset } from './accessors.js';
 import { resolveTriggers, checkDeath } from './turn.js';
 
@@ -78,13 +78,16 @@ export function takeAction(
     ]!;
 
   state.actionMemory[action.id] = (state.actionMemory[action.id] ?? 0) + 1;
-  state.history.push({
+  const entry: HistoryEntry = {
     age: state.character.age,
     text: action.label,
     resultText: outcome.resultText,
-  });
+  };
+  state.history.push(entry);
 
-  resolveTriggers(state, registry, applyEffects(outcome.effects, state, registry));
+  const { triggered, deltas } = applyOutcomeWithDeltas(outcome.effects, state, registry);
+  if (deltas.length > 0) entry.deltas = deltas;
+  resolveTriggers(state, registry, triggered);
   checkDeath(state, registry);
   return null;
 }
