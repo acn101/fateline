@@ -6,3 +6,5 @@ coverage/
 .expo/
 web-build/
 pnpm-lock.yaml
+# Generated artifacts (emitted by build scripts, not hand-edited).
+**/generated/
