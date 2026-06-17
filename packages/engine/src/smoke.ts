@@ -3,6 +3,7 @@ import { createGame, ageUp, applyChoice } from './turn.js';
 import { availableActions, takeAction } from './actions.js';
 import { relationshipActions, takeRelationshipAction } from './relationships.js';
 import { availableCareers, applyToJob, availablePrograms, enroll } from './careers.js';
+import { availableAssets, buyAsset } from './assets.js';
 
 /**
  * Headless smoke test — README §11.2. Runs N seeded lives against a compiled
@@ -77,6 +78,9 @@ export function smokeTest(registry: Registry, options: SmokeOptions = {}): Smoke
           const careers = availableCareers(game, registry);
           if (careers.length > 0) applyToJob(game, registry, careers[seed % careers.length]!.id);
         }
+        // Occasionally buy an affordable asset (§4.5.4).
+        const buyable = availableAssets(game, registry);
+        if (buyable.length > 0) buyAsset(game, registry, buyable[seed % buyable.length]!.id);
         years += 1;
       }
 

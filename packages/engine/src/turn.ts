@@ -7,6 +7,7 @@ import { evaluateAll } from './conditions.js';
 import { applyEffects } from './effects.js';
 import { setStatClamped } from './accessors.js';
 import { advanceCareerAndEducation } from './careers.js';
+import { advanceAssets, selectRibbon } from './assets.js';
 
 /**
  * Turn loop — README §4.2. The engine is a pure state machine: `ageUp`
@@ -38,6 +39,9 @@ export function createGame(registry: Registry, options: NewGameOptions): GameSta
     nextRelationshipId: 0,
     career: null,
     education: null,
+    ownedAssets: [],
+    nextAssetId: 0,
+    ribbon: null,
     history: [],
     rng: createRng(options.seed),
     eventMemory: {},
@@ -92,6 +96,8 @@ export function ageUp(state: GameState, registry: Registry): PendingEvent | null
 
   // Job income/promotion and schooling progress for the year (§4.5.3).
   advanceCareerAndEducation(state, registry);
+  // Asset upkeep + appreciation/depreciation (§4.5.4).
+  advanceAssets(state, registry);
 
   const eligible: GameEvent[] = [];
   for (const event of registry.events.values()) {
@@ -189,6 +195,12 @@ export function checkDeath(state: GameState, registry: Registry): boolean {
   if (def && value !== undefined && value <= def.min) {
     state.character.alive = false;
     state.history.push({ age: state.character.age, text: 'You died.' });
+    // Award the end-of-life ribbon (§4.5.5).
+    const ribbon = selectRibbon(state, registry);
+    if (ribbon) {
+      state.ribbon = { id: ribbon.id, label: ribbon.label };
+      state.history.push({ age: state.character.age, text: `Ribbon: ${ribbon.label}` });
+    }
     return true;
   }
   return false;

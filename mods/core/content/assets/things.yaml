@@ -1,0 +1,33 @@
+# Ownable assets (README §4.5.4): price, yearly upkeep, appreciation.
+
+- id: asset.car
+  label: 'Used Car'
+  category: vehicle
+  price: 8000
+  yearlyUpkeep: 600
+  yearlyValueChange: -0.12 # cars depreciate
+  conditions: [{ stat: age, op: '>=', value: 16 }]
+
+- id: asset.condo
+  label: 'Condo'
+  category: realestate
+  price: 180000
+  yearlyUpkeep: 3000
+  yearlyValueChange: 0.025
+  conditions: [{ stat: age, op: '>=', value: 18 }]
+
+- id: asset.house
+  label: 'Family House'
+  category: realestate
+  price: 350000
+  yearlyUpkeep: 5000
+  yearlyValueChange: 0.03
+  conditions: [{ stat: age, op: '>=', value: 18 }]
+
+- id: asset.yacht
+  label: 'Luxury Yacht'
+  category: luxury
+  price: 2000000
+  yearlyUpkeep: 80000
+  yearlyValueChange: -0.05
+  conditions: [{ stat: age, op: '>=', value: 25 }]

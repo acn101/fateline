@@ -40,6 +40,13 @@ export interface EducationState {
   yearsCompleted: number;
 }
 
+/** An owned asset instance with its current (possibly appreciated) value. */
+export interface OwnedAsset {
+  id: string;
+  assetTypeId: string;
+  value: number;
+}
+
 /** A persistent NPC the player has a relationship with (README §4.5.2). */
 export interface Relationship {
   /** Unique instance id within this save. */
@@ -69,6 +76,12 @@ export interface GameState {
   career: CareerState | null;
   /** Current education enrollment, or null (README §4.5.3). */
   education: EducationState | null;
+  /** Owned asset instances with current value (README §4.5.4). */
+  ownedAssets: OwnedAsset[];
+  /** Monotonic counter for unique owned-asset instance ids. */
+  nextAssetId: number;
+  /** End-of-life ribbon awarded at death, or null while alive (README §4.5.5). */
+  ribbon: { id: string; label: string } | null;
   history: HistoryEntry[];
   rng: RngState;
   /** Per-event bookkeeping for cooldowns / once-only selection. */

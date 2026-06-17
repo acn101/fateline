@@ -1,0 +1,32 @@
+# End-of-life ribbons (README §4.5.5). Highest-priority match wins; the
+# unconditional 'ordinary' ribbon is the floor so every life gets one.
+
+- id: ribbon.tycoon
+  label: 'Tycoon'
+  priority: 100
+  conditions: [{ asset: money, op: '>=', value: 5000000 }]
+
+- id: ribbon.wealthy
+  label: 'Wealthy'
+  priority: 80
+  conditions: [{ asset: money, op: '>=', value: 1000000 }]
+
+- id: ribbon.scholar
+  label: 'Scholar'
+  priority: 60
+  conditions: [{ stat: smarts, op: '>=', value: 90 }]
+
+- id: ribbon.heartthrob
+  label: 'Heartthrob'
+  priority: 60
+  conditions: [{ stat: looks, op: '>=', value: 90 }]
+
+- id: ribbon.content
+  label: 'Content'
+  priority: 50
+  conditions: [{ stat: happiness, op: '>=', value: 85 }]
+
+- id: ribbon.ordinary
+  label: 'An Ordinary Life'
+  priority: 1
+  conditions: []

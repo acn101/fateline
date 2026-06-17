@@ -6,5 +6,6 @@ export * from './events.js';
 export * from './actions.js';
 export * from './relationships.js';
 export * from './careers.js';
+export * from './assets.js';
 export * from './mod.js';
 export * from './validate.js';

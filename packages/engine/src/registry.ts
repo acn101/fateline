@@ -7,6 +7,8 @@ import type {
   RelationshipAction,
   Career,
   EducationProgram,
+  AssetType,
+  Ribbon,
 } from '@fateline/mod-schema';
 
 /**
@@ -36,6 +38,10 @@ export interface Registry {
   careers: Map<string, Career>;
   /** Education programs keyed by id (§4.5.3). */
   education: Map<string, EducationProgram>;
+  /** Ownable asset types keyed by id (§4.5.4). */
+  assetTypes: Map<string, AssetType>;
+  /** End-of-life ribbons (§4.5.5), kept in load order. */
+  ribbons: Ribbon[];
   /**
    * Resolved id of the "vitality" stat: when it reaches its minimum, the
    * character dies. Set from compile options so death is configurable rather
@@ -72,6 +78,8 @@ export function compileRegistry(
   const relationshipActions = new Map<string, RelationshipAction>();
   const careers = new Map<string, Career>();
   const education = new Map<string, EducationProgram>();
+  const assetTypes = new Map<string, AssetType>();
+  const ribbons: Ribbon[] = [];
 
   for (const mod of modules) {
     const moduleId = mod.manifest.id;
@@ -99,6 +107,12 @@ export function compileRegistry(
     for (const program of mod.content.education ?? []) {
       education.set(program.id, program);
     }
+    for (const assetType of mod.content.assetTypes ?? []) {
+      assetTypes.set(assetType.id, assetType);
+    }
+    for (const ribbon of mod.content.ribbons ?? []) {
+      ribbons.push(ribbon);
+    }
   }
 
   const vitalityStatId =
@@ -113,6 +127,8 @@ export function compileRegistry(
     relationshipActions,
     careers,
     education,
+    assetTypes,
+    ribbons,
     vitalityStatId,
   };
 }

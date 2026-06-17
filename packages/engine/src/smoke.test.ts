@@ -122,6 +122,17 @@ describe('smokeTest', () => {
             grantsFlags: ['diploma'],
           },
         ],
+        assetTypes: [
+          {
+            id: 'asset.trinket',
+            label: 'Trinket',
+            price: 100,
+            yearlyUpkeep: 1,
+            yearlyValueChange: 0.01,
+            conditions: [],
+          },
+        ],
+        ribbons: [{ id: 'ribbon.any', label: 'A Life', priority: 1, conditions: [] }],
       },
     });
     const report = smokeTest(reg, { lives: 5, maxYears: 40 });

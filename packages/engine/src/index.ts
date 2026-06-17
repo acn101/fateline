@@ -8,4 +8,5 @@ export * from './turn.js';
 export * from './actions.js';
 export * from './relationships.js';
 export * from './careers.js';
+export * from './assets.js';
 export * from './smoke.js';

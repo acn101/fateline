@@ -1314,7 +1314,9 @@
       {
         "id": "rel.ask-out",
         "label": "Ask them out",
-        "appliesTo": ["friend"],
+        "appliesTo": [
+          "friend"
+        ],
         "conditions": [
           {
             "rel.stat": "relationship",
@@ -1507,7 +1509,9 @@
         ],
         "years": 4,
         "yearlyTuition": 0,
-        "grantsFlags": ["diploma"]
+        "grantsFlags": [
+          "diploma"
+        ]
       },
       {
         "id": "edu.university",
@@ -1531,7 +1535,9 @@
         ],
         "years": 4,
         "yearlyTuition": 8000,
-        "grantsFlags": ["degree"]
+        "grantsFlags": [
+          "degree"
+        ]
       },
       {
         "id": "edu.med-school",
@@ -1555,7 +1561,139 @@
         ],
         "years": 4,
         "yearlyTuition": 20000,
-        "grantsFlags": ["degree_medicine"]
+        "grantsFlags": [
+          "degree_medicine"
+        ]
+      }
+    ],
+    "assetTypes": [
+      {
+        "id": "asset.car",
+        "label": "Used Car",
+        "category": "vehicle",
+        "price": 8000,
+        "yearlyUpkeep": 600,
+        "yearlyValueChange": -0.12,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 16
+          }
+        ]
+      },
+      {
+        "id": "asset.condo",
+        "label": "Condo",
+        "category": "realestate",
+        "price": 180000,
+        "yearlyUpkeep": 3000,
+        "yearlyValueChange": 0.025,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 18
+          }
+        ]
+      },
+      {
+        "id": "asset.house",
+        "label": "Family House",
+        "category": "realestate",
+        "price": 350000,
+        "yearlyUpkeep": 5000,
+        "yearlyValueChange": 0.03,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 18
+          }
+        ]
+      },
+      {
+        "id": "asset.yacht",
+        "label": "Luxury Yacht",
+        "category": "luxury",
+        "price": 2000000,
+        "yearlyUpkeep": 80000,
+        "yearlyValueChange": -0.05,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 25
+          }
+        ]
+      }
+    ],
+    "ribbons": [
+      {
+        "id": "ribbon.tycoon",
+        "label": "Tycoon",
+        "priority": 100,
+        "conditions": [
+          {
+            "asset": "money",
+            "op": ">=",
+            "value": 5000000
+          }
+        ]
+      },
+      {
+        "id": "ribbon.wealthy",
+        "label": "Wealthy",
+        "priority": 80,
+        "conditions": [
+          {
+            "asset": "money",
+            "op": ">=",
+            "value": 1000000
+          }
+        ]
+      },
+      {
+        "id": "ribbon.scholar",
+        "label": "Scholar",
+        "priority": 60,
+        "conditions": [
+          {
+            "stat": "smarts",
+            "op": ">=",
+            "value": 90
+          }
+        ]
+      },
+      {
+        "id": "ribbon.heartthrob",
+        "label": "Heartthrob",
+        "priority": 60,
+        "conditions": [
+          {
+            "stat": "looks",
+            "op": ">=",
+            "value": 90
+          }
+        ]
+      },
+      {
+        "id": "ribbon.content",
+        "label": "Content",
+        "priority": 50,
+        "conditions": [
+          {
+            "stat": "happiness",
+            "op": ">=",
+            "value": 85
+          }
+        ]
+      },
+      {
+        "id": "ribbon.ordinary",
+        "label": "An Ordinary Life",
+        "priority": 1,
+        "conditions": []
       }
     ]
   }

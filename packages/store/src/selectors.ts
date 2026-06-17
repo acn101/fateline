@@ -3,15 +3,18 @@ import {
   relationshipActions,
   availableCareers,
   availablePrograms,
+  availableAssets,
   type Registry,
   type GameState,
   type Relationship,
+  type OwnedAsset,
 } from '@fateline/engine';
 import type {
   GameAction,
   RelationshipAction,
   Career,
   EducationProgram,
+  AssetType,
 } from '@fateline/mod-schema';
 
 /** A stat ready for display: declared metadata joined with its current value. */
@@ -112,5 +115,27 @@ export function careerView(registry: Registry, game: GameState): CareerView {
     enrolledIn,
     openJobs: availableCareers(game, registry),
     openPrograms: availablePrograms(game, registry),
+  };
+}
+
+/** An owned asset joined with its type's label, for display. */
+export interface OwnedAssetView {
+  owned: OwnedAsset;
+  label: string;
+}
+
+export interface AssetsView {
+  owned: OwnedAssetView[];
+  buyable: AssetType[];
+}
+
+/** Owned assets + assets the player can currently buy (README §7, §4.5.4). */
+export function assetsView(registry: Registry, game: GameState): AssetsView {
+  return {
+    owned: game.ownedAssets.map((owned) => ({
+      owned,
+      label: registry.assetTypes.get(owned.assetTypeId)?.label ?? owned.assetTypeId,
+    })),
+    buyable: availableAssets(game, registry),
   };
 }

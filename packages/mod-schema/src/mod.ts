@@ -5,6 +5,7 @@ import { eventSchema } from './events.js';
 import { actionSchema } from './actions.js';
 import { archetypeSchema, relationshipActionSchema } from './relationships.js';
 import { careerSchema, educationProgramSchema } from './careers.js';
+import { assetTypeSchema, ribbonSchema } from './assets.js';
 
 /**
  * Full module schema — manifest (§5.2) + content (§5.1). This is the shape a
@@ -22,6 +23,8 @@ export const modSchema = z
         relationshipActions: z.array(relationshipActionSchema).default([]),
         careers: z.array(careerSchema).default([]),
         education: z.array(educationProgramSchema).default([]),
+        assetTypes: z.array(assetTypeSchema).default([]),
+        ribbons: z.array(ribbonSchema).default([]),
       })
       .strict()
       .default({
@@ -32,6 +35,8 @@ export const modSchema = z
         relationshipActions: [],
         careers: [],
         education: [],
+        assetTypes: [],
+        ribbons: [],
       }),
   })
   .strict();

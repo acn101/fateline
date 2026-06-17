@@ -10,6 +10,8 @@ import {
   applyToJob,
   quitJob,
   enroll,
+  buyAsset,
+  sellAsset,
   type GameState,
   type Registry,
   type PendingEvent,
@@ -43,6 +45,10 @@ export interface GameStore {
   quitJob: () => void;
   /** Enroll in an education program (§4.5.3). */
   enroll: (programId: string) => void;
+  /** Buy an asset by type id (§4.5.4). */
+  buy: (assetTypeId: string) => void;
+  /** Sell an owned asset by instance id (§4.5.4). */
+  sell: (ownedId: string) => void;
   /** Replace the whole session (e.g. after loading a save). */
   hydrate: (game: GameState) => void;
 }
@@ -110,6 +116,20 @@ export function createGameStore() {
       const { registry, game } = get();
       if (!registry || !game) throw new Error('No game in progress.');
       enroll(game, registry, programId);
+      set({ game: { ...game } });
+    },
+
+    buy: (assetTypeId) => {
+      const { registry, game } = get();
+      if (!registry || !game) throw new Error('No game in progress.');
+      buyAsset(game, registry, assetTypeId);
+      set({ game: { ...game } });
+    },
+
+    sell: (ownedId) => {
+      const { game } = get();
+      if (!game) throw new Error('No game in progress.');
+      sellAsset(game, ownedId);
       set({ game: { ...game } });
     },
 

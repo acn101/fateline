@@ -1,7 +1,13 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { visibleStats, actionMenu, relationshipViews, careerView } from '@fateline/store';
+import {
+  visibleStats,
+  actionMenu,
+  relationshipViews,
+  careerView,
+  assetsView,
+} from '@fateline/store';
 import {
   StatsHeader,
   HistoryFeed,
@@ -10,6 +16,7 @@ import {
   ActionsMenu,
   RelationshipsPanel,
   CareerPanel,
+  AssetsPanel,
 } from '@fateline/ui';
 import { useGame } from '../src/gameSession';
 import { gameStore } from '../src/gameSession';
@@ -32,6 +39,7 @@ export default function PlayScreen() {
   const groups = alive ? actionMenu(registry, game) : [];
   const relationships = alive ? relationshipViews(registry, game) : [];
   const career = careerView(registry, game);
+  const assets = assetsView(registry, game);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -51,6 +59,13 @@ export default function PlayScreen() {
             onEnroll={(id) => gameStore.getState().enroll(id)}
           />
         ) : null}
+        {alive ? (
+          <AssetsPanel
+            view={assets}
+            onBuy={(id) => gameStore.getState().buy(id)}
+            onSell={(id) => gameStore.getState().sell(id)}
+          />
+        ) : null}
         <RelationshipsPanel
           views={relationships}
           onInteract={(npcId, actionId) => gameStore.getState().interact(npcId, actionId)}
@@ -58,7 +73,11 @@ export default function PlayScreen() {
       </ScrollView>
 
       <View style={styles.footer}>
-        {game.character.alive ? null : <Text style={styles.epitaph}>Your story has ended.</Text>}
+        {game.character.alive ? null : (
+          <Text style={styles.epitaph}>
+            Your story has ended.{game.ribbon ? ` 🎗 ${game.ribbon.label}` : ''}
+          </Text>
+        )}
         <AgeUpButton
           disabled={!game.character.alive}
           onPress={() => gameStore.getState().advance()}

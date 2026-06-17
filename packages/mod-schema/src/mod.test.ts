@@ -279,3 +279,80 @@ describe('validateMod — relationships (§4.5.2)', () => {
     ).toBe(false);
   });
 });
+
+describe('validateMod — careers, education, assets, ribbons (§4.5.3–5)', () => {
+  const career = {
+    id: 'career.dev',
+    title: 'Developer',
+    field: 'tech',
+    requirements: [{ flag: 'degree', op: '==', value: true }],
+    levels: [
+      { title: 'Junior', salary: 80000, promoteAfterYears: 2, promoteChance: 0.5 },
+      { title: 'Senior', salary: 150000 },
+    ],
+  };
+  const program = {
+    id: 'edu.uni',
+    title: 'University',
+    requirements: [{ stat: 'age', op: '>=', value: 18 }],
+    years: 4,
+    yearlyTuition: 8000,
+    grantsFlags: ['degree'],
+  };
+  const house = {
+    id: 'asset.house',
+    label: 'House',
+    category: 'realestate',
+    price: 200000,
+    yearlyUpkeep: 4000,
+    yearlyValueChange: 0.03,
+    conditions: [],
+  };
+  const ribbon = {
+    id: 'ribbon.rich',
+    label: 'Loaded',
+    priority: 50,
+    conditions: [{ asset: 'money', op: '>=', value: 1000000 }],
+  };
+
+  it('accepts well-formed careers/education/assets/ribbons with defaults', () => {
+    const result = validateMod({
+      manifest,
+      content: { careers: [career], education: [program], assetTypes: [house], ribbons: [ribbon] },
+    });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.value.content.careers[0]!.levels[0]!.promoteChance).toBe(0.5);
+      expect(result.value.content.assetTypes[0]!.yearlyValueChange).toBe(0.03);
+    }
+  });
+
+  it('rejects an empty career ladder and out-of-range promoteChance', () => {
+    expect(validateMod({ manifest, content: { careers: [{ ...career, levels: [] }] } }).ok).toBe(
+      false,
+    );
+    expect(
+      validateMod({
+        manifest,
+        content: {
+          careers: [{ ...career, levels: [{ title: 'x', salary: 1, promoteChance: 2 }] }],
+        },
+      }).ok,
+    ).toBe(false);
+  });
+
+  it('rejects duplicate career/education/asset/ribbon ids', () => {
+    expect(
+      validateMod({ manifest, content: { careers: [career, structuredClone(career)] } }).ok,
+    ).toBe(false);
+    expect(
+      validateMod({ manifest, content: { education: [program, structuredClone(program)] } }).ok,
+    ).toBe(false);
+    expect(
+      validateMod({ manifest, content: { assetTypes: [house, structuredClone(house)] } }).ok,
+    ).toBe(false);
+    expect(
+      validateMod({ manifest, content: { ribbons: [ribbon, structuredClone(ribbon)] } }).ok,
+    ).toBe(false);
+  });
+});

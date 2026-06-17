@@ -2,7 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { validateMod, type FatelineMod } from '@fateline/mod-schema';
 import { addRelationship } from '@fateline/engine';
 import { createGameStore } from './gameStore.js';
-import { visibleStats, actionMenu, relationshipViews, careerView } from './selectors.js';
+import {
+  visibleStats,
+  actionMenu,
+  relationshipViews,
+  careerView,
+  assetsView,
+} from './selectors.js';
 
 function coreLikeMod(): FatelineMod {
   const raw = {
@@ -92,6 +98,17 @@ function coreLikeMod(): FatelineMod {
           grantsFlags: ['diploma'],
         },
       ],
+      assetTypes: [
+        {
+          id: 'asset.car',
+          label: 'Car',
+          price: 100,
+          yearlyUpkeep: 0,
+          yearlyValueChange: 0,
+          conditions: [],
+        },
+      ],
+      ribbons: [{ id: 'ribbon.any', label: 'A Life', priority: 1, conditions: [] }],
     },
   };
   const r = validateMod(raw);
@@ -285,5 +302,49 @@ describe('careers/education: applyJob/quitJob/enroll + careerView', () => {
     expect(() => store.getState().applyJob('career.clerk')).toThrow();
     expect(() => store.getState().quitJob()).toThrow();
     expect(() => store.getState().enroll('edu.school')).toThrow();
+  });
+});
+
+describe('assets: buy/sell + assetsView', () => {
+  function started(money = 1000) {
+    const store = createGameStore();
+    store.getState().loadMods([coreLikeMod()]);
+    store.getState().startGame({
+      seed: 1,
+      character: { name: 'A', gender: 'x', birthYear: 2000 },
+      assets: { money },
+    });
+    store.getState().advance();
+    if (store.getState().pending) store.getState().choose(0);
+    return store;
+  }
+
+  it('assetsView lists buyable assets and owned instances', () => {
+    const store = started();
+    let view = assetsView(store.getState().registry!, store.getState().game!);
+    expect(view.buyable.map((a) => a.id)).toContain('asset.car');
+    expect(view.owned).toHaveLength(0);
+
+    store.getState().buy('asset.car');
+    view = assetsView(store.getState().registry!, store.getState().game!);
+    expect(view.owned).toHaveLength(1);
+    expect(view.owned[0]!.label).toBe('Car');
+  });
+
+  it('buy debits money; sell credits it back', () => {
+    const store = started(1000);
+    store.getState().buy('asset.car');
+    expect(store.getState().game!.assets['money']).toBe(900);
+    const ownedId = store.getState().game!.ownedAssets[0]!.id;
+    store.getState().sell(ownedId);
+    expect(store.getState().game!.assets['money']).toBe(1000);
+    expect(store.getState().game!.ownedAssets).toHaveLength(0);
+  });
+
+  it('asset methods throw with no game in progress', () => {
+    const store = createGameStore();
+    store.getState().loadMods([coreLikeMod()]);
+    expect(() => store.getState().buy('asset.car')).toThrow();
+    expect(() => store.getState().sell('x')).toThrow();
   });
 });

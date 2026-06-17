@@ -7,3 +7,4 @@ export * from './AgeUpButton.js';
 export * from './ActionsMenu.js';
 export * from './RelationshipsPanel.js';
 export * from './CareerPanel.js';
+export * from './AssetsPanel.js';

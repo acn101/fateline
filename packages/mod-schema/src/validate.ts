@@ -142,6 +142,14 @@ export function validateMod(input: unknown): ValidationResult<FatelineMod> {
     issues.push({ path: 'content.education', message: `Duplicate education id "${id}".` });
   }
 
+  // Assets & ribbons (§4.5.4–5): unique ids.
+  for (const id of findDuplicates(mod.content.assetTypes.map((a) => a.id))) {
+    issues.push({ path: 'content.assetTypes', message: `Duplicate asset id "${id}".` });
+  }
+  for (const id of findDuplicates(mod.content.ribbons.map((r) => r.id))) {
+    issues.push({ path: 'content.ribbons', message: `Duplicate ribbon id "${id}".` });
+  }
+
   if (issues.length > 0) return { ok: false, errors: issues };
   return { ok: true, value: mod };
 }

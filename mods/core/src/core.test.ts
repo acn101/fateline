@@ -59,7 +59,8 @@ describe('core module (README §8 — base game is a module)', () => {
 
     expect(a).toEqual(b); // deterministic
     expect(a.character.alive).toBe(false); // life ended through content-driven mortality
-    expect(a.history.at(-1)?.text).toBe('You died.');
+    expect(a.history.some((h) => h.text === 'You died.')).toBe(true);
+    expect(a.ribbon).not.toBeNull(); // every life earns an end-of-life ribbon (§4.5.5)
     // Stats never escaped their declared bounds.
     for (const value of Object.values(a.stats)) {
       expect(value).toBeGreaterThanOrEqual(0);
