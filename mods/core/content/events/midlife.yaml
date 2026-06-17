@@ -1,0 +1,62 @@
+# Mid-life events (roughly 25–55): milestones, setbacks, and crime fallout.
+
+- id: evt.health-scare
+  category: adult
+  weight: 8
+  cooldownYears: 5
+  conditions: [{ stat: age, op: '>=', value: 35 }]
+  title: 'A routine checkup turns up something concerning.'
+  choices:
+    - text: 'Follow the doctor’s plan'
+      outcomes:
+        - weight: 80
+          effects: [{ stat: health, op: '+', value: 6 }, { asset: money, op: '-', value: 2000 }]
+          resultText: 'You caught it early and recovered.'
+        - weight: 20
+          effects: [{ stat: health, op: '-', value: 10 }]
+          resultText: 'Treatment was harder than expected.'
+    - text: 'Ignore it'
+      outcomes:
+        - weight: 100
+          effects: [{ stat: health, op: '-', value: 12 }]
+          resultText: 'Putting it off made things worse.'
+
+- id: evt.midlife-reflection
+  category: adult
+  weight: 6
+  once: true
+  conditions: [{ stat: age, op: '>=', value: 45 }]
+  title: 'You find yourself reflecting on the life you’ve built.'
+  choices:
+    - text: 'Embrace a fresh start'
+      outcomes:
+        - weight: 60
+          effects: [{ stat: happiness, op: '+', value: 12 }]
+          resultText: 'You reinvented yourself and feel renewed.'
+        - weight: 40
+          effects: [{ stat: happiness, op: '-', value: 5 }, { asset: money, op: '-', value: 5000 }]
+          resultText: 'The midlife crisis was expensive and a little embarrassing.'
+    - text: 'Count your blessings'
+      outcomes:
+        - weight: 100
+          effects: [{ stat: happiness, op: '+', value: 6 }]
+          resultText: 'Gratitude settled your mind.'
+
+# Fires only for those with a criminal record — content reading a flag.
+- id: evt.background-check
+  category: adult
+  weight: 10
+  cooldownYears: 4
+  conditions:
+    - { stat: age, op: '>=', value: 22 }
+    - { flag: 'com.fateline.core/criminal_record', op: '==', value: true }
+  title: 'A background check resurfaces your record.'
+  choices:
+    - text: 'Own up to your past'
+      outcomes:
+        - weight: 60
+          effects: [{ stat: happiness, op: '+', value: 4 }]
+          resultText: 'Honesty earned you a second chance.'
+        - weight: 40
+          effects: [{ asset: money, op: '-', value: 3000 }, { stat: happiness, op: '-', value: 6 }]
+          resultText: 'It cost you an opportunity.'

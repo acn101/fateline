@@ -1,0 +1,52 @@
+# Crime activities (README §4.5 — crime/prison is content, not an engine system).
+# A criminal record and jail are just flags set by outcomes; gated content reads them.
+
+- id: act.shoplift
+  label: 'Shoplift'
+  category: crime
+  conditions:
+    - { stat: age, op: '>=', value: 12 }
+    - { flag: 'com.fateline.core/in_jail', op: '!=', value: true }
+  perYearLimit: 2
+  outcomes:
+    - weight: 55
+      effects: [{ asset: money, op: '+', value: 120 }, { stat: happiness, op: '+', value: 2 }]
+      resultText: 'You walked out with free goods.'
+    - weight: 45
+      effects:
+        - { flag: 'com.fateline.core/criminal_record', op: 'set', value: true }
+        - { stat: happiness, op: '-', value: 8 }
+      resultText: 'Caught on camera. You now have a record.'
+
+- id: act.rob-bank
+  label: 'Rob a bank'
+  category: crime
+  conditions:
+    - { stat: age, op: '>=', value: 18 }
+    - { flag: 'com.fateline.core/in_jail', op: '!=', value: true }
+  perYearLimit: 1
+  outcomes:
+    - weight: 25
+      effects: [{ asset: money, op: '+', value: 75000 }, { stat: happiness, op: '+', value: 10 }]
+      resultText: 'You pulled off the heist of the decade.'
+    - weight: 75
+      effects:
+        - { flag: 'com.fateline.core/in_jail', op: 'set', value: true }
+        - { flag: 'com.fateline.core/criminal_record', op: 'set', value: true }
+        - { stat: happiness, op: '-', value: 20 }
+      resultText: 'The vault held longer than your luck. You were arrested.'
+
+# Only available while jailed: the one thing you can do is try to behave.
+- id: act.serve-time
+  label: 'Keep your head down'
+  category: crime
+  conditions: [{ flag: 'com.fateline.core/in_jail', op: '==', value: true }]
+  outcomes:
+    - weight: 70
+      effects:
+        - { flag: 'com.fateline.core/in_jail', op: 'set', value: false }
+        - { stat: happiness, op: '+', value: 5 }
+      resultText: 'You served your time and walked free.'
+    - weight: 30
+      effects: [{ stat: health, op: '-', value: 6 }]
+      resultText: 'Prison was rough this year.'

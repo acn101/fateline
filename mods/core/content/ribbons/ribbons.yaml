@@ -26,6 +26,16 @@
   priority: 50
   conditions: [{ stat: happiness, op: '>=', value: 85 }]
 
+- id: ribbon.outlaw
+  label: 'Outlaw'
+  priority: 70
+  conditions: [{ flag: 'com.fateline.core/criminal_record', op: '==', value: true }]
+
+- id: ribbon.elder
+  label: 'Ripe Old Age'
+  priority: 55
+  conditions: [{ stat: age, op: '>=', value: 90 }]
+
 - id: ribbon.ordinary
   label: 'An Ordinary Life'
   priority: 1

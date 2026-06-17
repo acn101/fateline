@@ -645,6 +645,195 @@
         ]
       },
       {
+        "id": "evt.health-scare",
+        "category": "adult",
+        "weight": 8,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 35
+          }
+        ],
+        "cooldownYears": 5,
+        "once": false,
+        "title": "A routine checkup turns up something concerning.",
+        "choices": [
+          {
+            "text": "Follow the doctor’s plan",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 80,
+                "effects": [
+                  {
+                    "stat": "health",
+                    "op": "+",
+                    "value": 6
+                  },
+                  {
+                    "asset": "money",
+                    "op": "-",
+                    "value": 2000
+                  }
+                ],
+                "resultText": "You caught it early and recovered."
+              },
+              {
+                "weight": 20,
+                "effects": [
+                  {
+                    "stat": "health",
+                    "op": "-",
+                    "value": 10
+                  }
+                ],
+                "resultText": "Treatment was harder than expected."
+              }
+            ]
+          },
+          {
+            "text": "Ignore it",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "health",
+                    "op": "-",
+                    "value": 12
+                  }
+                ],
+                "resultText": "Putting it off made things worse."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.midlife-reflection",
+        "category": "adult",
+        "weight": 6,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 45
+          }
+        ],
+        "cooldownYears": 0,
+        "once": true,
+        "title": "You find yourself reflecting on the life you’ve built.",
+        "choices": [
+          {
+            "text": "Embrace a fresh start",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 60,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 12
+                  }
+                ],
+                "resultText": "You reinvented yourself and feel renewed."
+              },
+              {
+                "weight": 40,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "-",
+                    "value": 5
+                  },
+                  {
+                    "asset": "money",
+                    "op": "-",
+                    "value": 5000
+                  }
+                ],
+                "resultText": "The midlife crisis was expensive and a little embarrassing."
+              }
+            ]
+          },
+          {
+            "text": "Count your blessings",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 100,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 6
+                  }
+                ],
+                "resultText": "Gratitude settled your mind."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "evt.background-check",
+        "category": "adult",
+        "weight": 10,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 22
+          },
+          {
+            "flag": "com.fateline.core/criminal_record",
+            "op": "==",
+            "value": true
+          }
+        ],
+        "cooldownYears": 4,
+        "once": false,
+        "title": "A background check resurfaces your record.",
+        "choices": [
+          {
+            "text": "Own up to your past",
+            "conditions": [],
+            "outcomes": [
+              {
+                "weight": 60,
+                "effects": [
+                  {
+                    "stat": "happiness",
+                    "op": "+",
+                    "value": 4
+                  }
+                ],
+                "resultText": "Honesty earned you a second chance."
+              },
+              {
+                "weight": 40,
+                "effects": [
+                  {
+                    "asset": "money",
+                    "op": "-",
+                    "value": 3000
+                  },
+                  {
+                    "stat": "happiness",
+                    "op": "-",
+                    "value": 6
+                  }
+                ],
+                "resultText": "It cost you an opportunity."
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "evt.exam",
         "category": "teen",
         "weight": 12,
@@ -872,6 +1061,156 @@
       }
     ],
     "actions": [
+      {
+        "id": "act.shoplift",
+        "label": "Shoplift",
+        "category": "crime",
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 12
+          },
+          {
+            "flag": "com.fateline.core/in_jail",
+            "op": "!=",
+            "value": true
+          }
+        ],
+        "perYearLimit": 2,
+        "outcomes": [
+          {
+            "weight": 55,
+            "effects": [
+              {
+                "asset": "money",
+                "op": "+",
+                "value": 120
+              },
+              {
+                "stat": "happiness",
+                "op": "+",
+                "value": 2
+              }
+            ],
+            "resultText": "You walked out with free goods."
+          },
+          {
+            "weight": 45,
+            "effects": [
+              {
+                "flag": "com.fateline.core/criminal_record",
+                "op": "set",
+                "value": true
+              },
+              {
+                "stat": "happiness",
+                "op": "-",
+                "value": 8
+              }
+            ],
+            "resultText": "Caught on camera. You now have a record."
+          }
+        ]
+      },
+      {
+        "id": "act.rob-bank",
+        "label": "Rob a bank",
+        "category": "crime",
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 18
+          },
+          {
+            "flag": "com.fateline.core/in_jail",
+            "op": "!=",
+            "value": true
+          }
+        ],
+        "perYearLimit": 1,
+        "outcomes": [
+          {
+            "weight": 25,
+            "effects": [
+              {
+                "asset": "money",
+                "op": "+",
+                "value": 75000
+              },
+              {
+                "stat": "happiness",
+                "op": "+",
+                "value": 10
+              }
+            ],
+            "resultText": "You pulled off the heist of the decade."
+          },
+          {
+            "weight": 75,
+            "effects": [
+              {
+                "flag": "com.fateline.core/in_jail",
+                "op": "set",
+                "value": true
+              },
+              {
+                "flag": "com.fateline.core/criminal_record",
+                "op": "set",
+                "value": true
+              },
+              {
+                "stat": "happiness",
+                "op": "-",
+                "value": 20
+              }
+            ],
+            "resultText": "The vault held longer than your luck. You were arrested."
+          }
+        ]
+      },
+      {
+        "id": "act.serve-time",
+        "label": "Keep your head down",
+        "category": "crime",
+        "conditions": [
+          {
+            "flag": "com.fateline.core/in_jail",
+            "op": "==",
+            "value": true
+          }
+        ],
+        "outcomes": [
+          {
+            "weight": 70,
+            "effects": [
+              {
+                "flag": "com.fateline.core/in_jail",
+                "op": "set",
+                "value": false
+              },
+              {
+                "stat": "happiness",
+                "op": "+",
+                "value": 5
+              }
+            ],
+            "resultText": "You served your time and walked free."
+          },
+          {
+            "weight": 30,
+            "effects": [
+              {
+                "stat": "health",
+                "op": "-",
+                "value": 6
+              }
+            ],
+            "resultText": "Prison was rough this year."
+          }
+        ]
+      },
       {
         "id": "act.gym",
         "label": "Go to the gym",
@@ -1686,6 +2025,30 @@
             "stat": "happiness",
             "op": ">=",
             "value": 85
+          }
+        ]
+      },
+      {
+        "id": "ribbon.outlaw",
+        "label": "Outlaw",
+        "priority": 70,
+        "conditions": [
+          {
+            "flag": "com.fateline.core/criminal_record",
+            "op": "==",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "ribbon.elder",
+        "label": "Ripe Old Age",
+        "priority": 55,
+        "conditions": [
+          {
+            "stat": "age",
+            "op": ">=",
+            "value": 90
           }
         ]
       },

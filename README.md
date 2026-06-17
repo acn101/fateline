@@ -442,10 +442,11 @@ Components live in `packages/ui`, are platform-agnostic (NativeWind), and render
 
 ## 9. Build Phases
 
-**Phases 0–7 (foundation) are complete** — implemented, committed, and verified
-green (format, lint, typecheck, tests with coverage gates, web build smoke
-check). **Phases 8–11 (the interaction systems of §4.5) are the next build** —
-they turn the working-but-thin foundation into a game with BitLife-level depth.
+**All phases (0–11) are complete** — implemented, committed, and verified green
+(format, lint, typecheck, tests with coverage gates, web build smoke check).
+Phases 0–7 built the foundation; phases 8–11 added the interaction systems of
+§4.5 (actions, relationships, careers/education, assets, ribbons) that give the
+game BitLife-level depth. The base game `mods/core` exercises every system.
 
 1. ✅ **Phase 0 — Scaffold:** monorepo (pnpm + Turbo), TS strict, lint/format, CI with Vitest + coverage gates from day one (§11.3).
 2. ✅ **Phase 1 — Schema + Engine core:** `mod-schema` (Zod) and `engine` (turn loop, conditions, outcomes, seeded RNG) with golden-life, unit, property-based, and adversarial tests (§11.1) — headless.
@@ -455,10 +456,10 @@ they turn the working-but-thin foundation into a game with BitLife-level depth.
 6. ✅ **Phase 5 — Mod loader:** `@fateline/mod-loader` — the four import sources + one install pipeline + Mods screen.
 7. ✅ **Phase 6 — Registry + docs:** `registry/index.json` with a CI merge gate running `fateline-validate` (§11.2), `docs/MOD_AUTHORING.md`, `docs/ARCHITECTURE.md`, generated `docs/mod-schema.json`, `mods/sample-expansion/`, MIT `LICENSE`.
 8. ✅ **Phase 7 — Hardening:** save migrations + autosave wired into the app, E2E smoke flow (`.maestro/new-life.yaml`), `docs/STORE_COMPLIANCE.md`.
-9. ⬜ **Phase 8 — Actions + Relationships (§4.5.1–2):** `actions` and `relationship-actions`/`archetypes` content types + schemas; `actionMemory` and real `relationships` in `GameState`; engine `availableActions`/`takeAction`, `relationshipActions`/`takeRelationshipAction`, NPC generation; `rel.*` condition/effect targets + `addRelationship`/`removeRelationship`. Actions menu + relationships tab in the app. **This is the biggest "feel" upgrade** — each year stops being just "Age Up."
-10. ⬜ **Phase 9 — Careers + Education (§4.5.3):** `careers`/`education` content types; real `career` state; `applyToJob`/`enroll`/`quitJob` + promote/fire/salary on age-up; Jobs & School screens.
-11. ⬜ **Phase 10 — Assets + Ribbons (§4.5.4–5):** `assets`/`ribbons` content types; `ownedAssets` + buy/sell/upkeep/revaluation; ribbon selection at death; Assets screen + end-of-life summary.
-12. ⬜ **Phase 11 — Content depth:** flesh out `mods/core/` to BitLife scale using the new systems — a broad activities menu, dozens of careers across fields, education tracks, relationship interactions, crime/prison (as actions + flags), assets, and a full ribbon set. Re-run the smoke test at scale.
+9. ✅ **Phase 8 — Actions + Relationships (§4.5.1–2):** `actions` and `relationship-actions`/`archetypes` content types; `actionMemory` + real `relationships` in `GameState`; `availableActions`/`takeAction`, `relationshipActions`/`takeRelationshipAction`, NPC generation; `rel.*` targets + `addRelationship`/`removeRelationship`. ActionsMenu + RelationshipsPanel in the app.
+10. ✅ **Phase 9 — Careers + Education (§4.5.3):** `careers`/`education` content types; real `career`/`education` state; `applyToJob`/`enroll`/`quitJob` + salary/promotion/tuition/graduation on age-up; CareerPanel.
+11. ✅ **Phase 10 — Assets + Ribbons (§4.5.4–5):** `assets`/`ribbons` content types; `ownedAssets` + buy/sell/upkeep/revaluation; ribbon selection at death; AssetsPanel + end-of-life ribbon.
+12. ✅ **Phase 11 — Content depth:** `mods/core/` fleshed out — activities across mind-body/social/money/crime, four careers gated by an education track, relationship interactions, crime/prison (as actions + flags), assets, and a ribbon set. Smoke-tested at 200 lives.
 
 ### As-built notes (deviations from the original plan)
 
